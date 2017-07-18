@@ -14,7 +14,7 @@ tags:
 
 将应用设置为系统级应用。可以调用系统级别API。
 
-[下载](http://www.baidu.com) 签名文件
+[下载](http://download.csdn.net/detail/q4878802/9902460) 签名文件
 
 在`AndroidManifest.xml`中添加`sharedUserId` 为 `android.uid.system`，设置应用为系统级。
 
