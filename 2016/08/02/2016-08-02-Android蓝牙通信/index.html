@@ -1,0 +1,910 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Android,蓝牙通信," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.1" />
+
+
+
+
+
+
+<meta name="description" content="转载请说明出处！作者：kqw攻城狮出处：个人站 | CSDN  Android蓝牙通信效果图 两台真机设备   源码GitHub  关于蓝牙的开关控制，设置设备可见、搜索附近的蓝牙设备，已经封装到了 BluetoothManager类  关于设备的连接、通信。已经封装到了 BluetoothService 类   注：下面的全部内容，主要是思路，具体的可以参考上面的源码，如果对你有帮助记得给个赞">
+<meta name="keywords" content="Android,蓝牙通信">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Android蓝牙通信">
+<meta property="og:url" content="http://yoursite.com/2016/08/02/2016-08-02-Android蓝牙通信/index.html">
+<meta property="og:site_name" content="孔庆威的博客">
+<meta property="og:description" content="转载请说明出处！作者：kqw攻城狮出处：个人站 | CSDN  Android蓝牙通信效果图 两台真机设备   源码GitHub  关于蓝牙的开关控制，设置设备可见、搜索附近的蓝牙设备，已经封装到了 BluetoothManager类  关于设备的连接、通信。已经封装到了 BluetoothService 类   注：下面的全部内容，主要是思路，具体的可以参考上面的源码，如果对你有帮助记得给个赞">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://img.blog.csdn.net/20160802162530186">
+<meta property="og:updated_time" content="2017-10-26T02:44:31.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Android蓝牙通信">
+<meta name="twitter:description" content="转载请说明出处！作者：kqw攻城狮出处：个人站 | CSDN  Android蓝牙通信效果图 两台真机设备   源码GitHub  关于蓝牙的开关控制，设置设备可见、搜索附近的蓝牙设备，已经封装到了 BluetoothManager类  关于设备的连接、通信。已经封装到了 BluetoothService 类   注：下面的全部内容，主要是思路，具体的可以参考上面的源码，如果对你有帮助记得给个赞">
+<meta name="twitter:image" content="http://img.blog.csdn.net/20160802162530186">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2016/08/02/2016-08-02-Android蓝牙通信/"/>
+
+
+
+
+
+  <title>Android蓝牙通信 | 孔庆威的博客</title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?e8ad05f02e13a412b09b2e8a632634af";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">孔庆威的博客</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">精于心，简于形</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/08/02/2016-08-02-Android蓝牙通信/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="kongqw">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="孔庆威的博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Android蓝牙通信</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-08-02T17:44:54+08:00">
+                2016-08-02
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2016/08/02/2016-08-02-Android蓝牙通信/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2016/08/02/2016-08-02-Android蓝牙通信/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <hr>
+<p>转载请说明出处！<br>作者：<a href="http://kongqw.github.io/about/index.html" target="_blank" rel="external">kqw攻城狮</a><br>出处：<a href="http://kongqw.github.io" target="_blank" rel="external">个人站</a> | <a href="http://blog.csdn.net/q4878802/" target="_blank" rel="external">CSDN</a></p>
+<hr>
+<h1 id="Android蓝牙通信"><a href="#Android蓝牙通信" class="headerlink" title="Android蓝牙通信"></a>Android蓝牙通信</h1><h2 id="效果图"><a href="#效果图" class="headerlink" title="效果图"></a>效果图</h2><blockquote>
+<p>两台真机设备</p>
+</blockquote>
+<p><img src="http://img.blog.csdn.net/20160802162530186" alt="G1"></p>
+<h2 id="源码"><a href="#源码" class="headerlink" title="源码"></a>源码</h2><p><a href="https://github.com/kongqw/KqwBluetoothDemo" target="_blank" rel="external">GitHub</a></p>
+<ul>
+<li><p>关于蓝牙的<strong>开关控制</strong>，设置<strong>设备可见</strong>、<strong>搜索附近的蓝牙设备</strong>，已经封装到了 <a href="https://github.com/kongqw/KqwBluetoothDemo/blob/master/app/src/main/java/kong/qingwei/kqwbluetoothdemo/BluetoothManager.java" target="_blank" rel="external">BluetoothManager</a><br>类</p>
+</li>
+<li><p>关于<strong>设备的连接</strong>、<strong>通信</strong>。已经封装到了 <a href="https://github.com/kongqw/KqwBluetoothDemo/blob/master/app/src/main/java/kong/qingwei/kqwbluetoothdemo/BluetoothService.java" target="_blank" rel="external">BluetoothService</a> 类</p>
+</li>
+</ul>
+<p><strong>注：下面的全部内容，主要是思路，具体的可以参考上面的源码，如果对你有帮助记得给个赞哦。</strong></p>
+<h2 id="权限"><a href="#权限" class="headerlink" title="权限"></a>权限</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">&lt;!-- 蓝牙的权限 --&gt;</div><div class="line">&lt;uses-permission android:name=<span class="string">"android.permission.BLUETOOTH"</span> /&gt;</div><div class="line">&lt;uses-permission android:name=<span class="string">"android.permission.BLUETOOTH_ADMIN"</span> /&gt;</div></pre></td></tr></table></figure>
+<h2 id="蓝牙的打开与关闭"><a href="#蓝牙的打开与关闭" class="headerlink" title="蓝牙的打开与关闭"></a>蓝牙的打开与关闭</h2><h3 id="开启蓝牙"><a href="#开启蓝牙" class="headerlink" title="开启蓝牙"></a>开启蓝牙</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();</div><div class="line"></div><div class="line"><span class="comment">/**</span></div><div class="line"><span class="comment"> * 开启蓝牙</span></div><div class="line"><span class="comment"> */</span></div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">openBluetooth</span><span class="params">()</span> </span>&#123;</div><div class="line">    <span class="keyword">try</span> &#123;</div><div class="line">        mBluetoothAdapter.enable();</div><div class="line">    &#125; <span class="keyword">catch</span> (Exception e) &#123;</div><div class="line">        e.printStackTrace();</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="关闭蓝牙"><a href="#关闭蓝牙" class="headerlink" title="关闭蓝牙"></a>关闭蓝牙</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();</div><div class="line"></div><div class="line"><span class="comment">/**</span></div><div class="line"><span class="comment"> * 关闭蓝牙</span></div><div class="line"><span class="comment"> */</span></div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">closeBluetooth</span><span class="params">()</span> </span>&#123;</div><div class="line">    <span class="keyword">try</span> &#123;</div><div class="line">        mBluetoothAdapter.disable();</div><div class="line">    &#125; <span class="keyword">catch</span> (Exception e) &#123;</div><div class="line">        e.printStackTrace();</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="设置蓝牙设备可见"><a href="#设置蓝牙设备可见" class="headerlink" title="设置蓝牙设备可见"></a>设置蓝牙设备可见</h2><blockquote>
+<p>设置设备可见对于服务端是必须的，客户端设不设置无所谓。</p>
+<p>如果服务端不可见，配对过的设备也搜索到并可以连接上，但是不能通信，没有配对过的设备连搜索都搜索不到。</p>
+<p>可见时间的取值范围是0到120，单位是秒，0表示永久可见。<br><strong>手机上的蓝牙可见仅限一次连接有效。也就是说，一次连接断开以后，下次再等待客户端连接的时候，还需要再设置一次设备可见。</strong></p>
+</blockquote>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line"><span class="comment"> * 设置设备可见</span></div><div class="line"><span class="comment"> * 0 ~ 120</span></div><div class="line"><span class="comment"> */</span></div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setDuration</span><span class="params">()</span> </span>&#123;</div><div class="line">    Intent duration = <span class="keyword">new</span> Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);</div><div class="line">    duration.putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, <span class="number">120</span>);</div><div class="line">    mActivity.startActivity(duration);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="扫描附近的蓝牙设备"><a href="#扫描附近的蓝牙设备" class="headerlink" title="扫描附近的蓝牙设备"></a>扫描附近的蓝牙设备</h2><blockquote>
+<p>扫描附近设备的设备，需要注册一个广播接收者，来接收扫描到的结果。</p>
+<p><strong>需要注意的是，接收扫描结果的广播接收者必须使用动态注册，不能在清单文件里注册！</strong></p>
+</blockquote>
+<h3 id="注册搜索蓝牙设备的广播接收者"><a href="#注册搜索蓝牙设备的广播接收者" class="headerlink" title="注册搜索蓝牙设备的广播接收者"></a>注册搜索蓝牙设备的广播接收者</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 获取设备的广播接收者</span></div><div class="line">FoundDeviceBroadcastReceiver mFoundDeviceBroadcastReceiver = <span class="keyword">new</span> FoundDeviceBroadcastReceiver();</div><div class="line"></div><div class="line"><span class="comment">// 注册receiver监听</span></div><div class="line">IntentFilter mFilter = <span class="keyword">new</span> IntentFilter(BluetoothDevice.ACTION_FOUND);</div><div class="line"></div><div class="line"><span class="comment">/**</span></div><div class="line"><span class="comment"> * 注册搜索蓝牙设备的广播接收者</span></div><div class="line"><span class="comment"> */</span></div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">registerFoundDeviceReceiver</span><span class="params">()</span> </span>&#123;</div><div class="line">    mActivity.registerReceiver(mFoundDeviceBroadcastReceiver, mFilter);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="反注册搜索蓝牙设备的广播接收者"><a href="#反注册搜索蓝牙设备的广播接收者" class="headerlink" title="反注册搜索蓝牙设备的广播接收者"></a>反注册搜索蓝牙设备的广播接收者</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 获取设备的广播接收者</span></div><div class="line">FoundDeviceBroadcastReceiver mFoundDeviceBroadcastReceiver = <span class="keyword">new</span> FoundDeviceBroadcastReceiver();</div><div class="line"></div><div class="line"><span class="comment">/**</span></div><div class="line"><span class="comment"> * 反注册搜索蓝牙设备的广播接收者</span></div><div class="line"><span class="comment"> */</span></div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">unregisterReceiver</span><span class="params">()</span> </span>&#123;</div><div class="line">    mActivity.unregisterReceiver(mFoundDeviceBroadcastReceiver);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="广播接收者"><a href="#广播接收者" class="headerlink" title="广播接收者"></a>广播接收者</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line"><span class="comment"> * Created by kqw on 2016/8/2.</span></div><div class="line"><span class="comment"> * 蓝牙的广播接收者</span></div><div class="line"><span class="comment"> */</span></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">FoundDeviceBroadcastReceiver</span> <span class="keyword">extends</span> <span class="title">BroadcastReceiver</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String TAG = <span class="string">"FoundDeviceBroadcast"</span>;</div><div class="line">    <span class="keyword">private</span> <span class="keyword">static</span> OnFoundDeviceListener mOnFoundDeviceListener;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onReceive</span><span class="params">(Context context, Intent intent)</span> </span>&#123;</div><div class="line">        String action = intent.getAction();</div><div class="line">        <span class="comment">// 获取设备</span></div><div class="line">        BluetoothDevice btDevice = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);</div><div class="line"></div><div class="line">        <span class="keyword">if</span> (BluetoothDevice.ACTION_FOUND.equals(action)) &#123;</div><div class="line">            <span class="comment">// 扫描发现的设备</span></div><div class="line">            <span class="keyword">if</span> (<span class="keyword">null</span> != mOnFoundDeviceListener) &#123;</div><div class="line">                mOnFoundDeviceListener.foundDevice(btDevice);</div><div class="line">            &#125;</div><div class="line">        &#125; </div><div class="line">        ……</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setOnFoundDeviceListener</span><span class="params">(OnFoundDeviceListener listener)</span> </span>&#123;</div><div class="line">        mOnFoundDeviceListener = listener;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="开始扫描附近的蓝牙设备"><a href="#开始扫描附近的蓝牙设备" class="headerlink" title="开始扫描附近的蓝牙设备"></a>开始扫描附近的蓝牙设备</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line"><span class="comment"> * 开始扫描设备</span></div><div class="line"><span class="comment"> */</span></div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">startDiscovery</span><span class="params">()</span> </span>&#123;</div><div class="line">    Log.i(TAG, <span class="string">"startDiscovery: "</span>);</div><div class="line">    <span class="keyword">if</span> (mBluetoothAdapter.isDiscovering()) &#123;</div><div class="line">        mBluetoothAdapter.cancelDiscovery();</div><div class="line">    &#125; <span class="keyword">else</span> &#123;</div><div class="line">		<span class="comment">// TODO 这里可以先获取已经配对的设备</span></div><div class="line">		<span class="comment">// Set&lt;BluetoothDevice&gt; pairedDevices = mBluetoothAdapter.getBondedDevices();</span></div><div class="line"></div><div class="line">        <span class="comment">// 开始扫描设备</span></div><div class="line">        mBluetoothAdapter.startDiscovery();</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="获取已经配对的设备"><a href="#获取已经配对的设备" class="headerlink" title="获取已经配对的设备"></a>获取已经配对的设备</h3><blockquote>
+<p>扫描附近的蓝牙设备是一个很消耗性能的操作，在扫描之前，可以先获取已经配对过的设备，如果已经配对过，就不用再扫描了。</p>
+</blockquote>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();</div><div class="line">Set&lt;BluetoothDevice&gt; pairedDevices = mBluetoothAdapter.getBondedDevices();</div></pre></td></tr></table></figure>
+<h2 id="蓝牙连接"><a href="#蓝牙连接" class="headerlink" title="蓝牙连接"></a>蓝牙连接</h2><blockquote>
+<p>获取到附近的设备以后，就可以通过MAC地址进行配对连接了。</p>
+</blockquote>
+<h3 id="配对"><a href="#配对" class="headerlink" title="配对"></a>配对</h3><blockquote>
+<p>没有配对过的设备，在连接之前是需要配对的，配对成功才可以连接、通信。</p>
+<p>配对可以手动点击，根据配对码进行配对，也可以设置自动配对。手动配对没什么好说的，这里介绍自动配对</p>
+<p>还是用到上面的蓝牙广播接收者，我们在清单文件里添加Action</p>
+</blockquote>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">&lt;!-- 蓝牙广播接收者 --&gt;</div><div class="line">&lt;receiver android:name=<span class="string">".receiver.FoundDeviceBroadcastReceiver"</span>&gt;</div><div class="line">    &lt;intent-filter&gt;</div><div class="line">        &lt;!-- 添加配对请求 --&gt;</div><div class="line">        &lt;action android:name=<span class="string">"android.bluetooth.device.action.PAIRING_REQUEST"</span> /&gt;</div><div class="line">    &lt;/intent-filter&gt;</div><div class="line">&lt;/receiver&gt;</div></pre></td></tr></table></figure>
+<blockquote>
+<p>注意：这里的自动配对仅支持4.4.2以上系统，以下的版本想要实现需要用到反射</p>
+</blockquote>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line"><span class="comment"> * Created by kqw on 2016/8/2.</span></div><div class="line"><span class="comment"> * 蓝牙的广播接收者</span></div><div class="line"><span class="comment"> */</span></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">FoundDeviceBroadcastReceiver</span> <span class="keyword">extends</span> <span class="title">BroadcastReceiver</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String TAG = <span class="string">"FoundDeviceBroadcast"</span>;</div><div class="line">    <span class="keyword">private</span> <span class="keyword">static</span> OnFoundDeviceListener mOnFoundDeviceListener;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onReceive</span><span class="params">(Context context, Intent intent)</span> </span>&#123;</div><div class="line">        String action = intent.getAction();</div><div class="line">        <span class="comment">// 获取设备</span></div><div class="line">        BluetoothDevice btDevice = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);</div><div class="line"></div><div class="line">        <span class="keyword">if</span> (BluetoothDevice.ACTION_PAIRING_REQUEST.equals(action)) &#123;</div><div class="line">            <span class="keyword">if</span> (<span class="keyword">new</span> ConfigUtil(context).getPairingConfirmation()) &#123;</div><div class="line">                <span class="comment">// 收到配对请求</span></div><div class="line">                <span class="keyword">if</span> (Build.VERSION.SDK_INT &gt;= Build.VERSION_CODES.KITKAT) &#123;</div><div class="line">                    <span class="comment">// 同意请求</span></div><div class="line">                    btDevice.setPairingConfirmation(<span class="keyword">true</span>);</div><div class="line">                &#125; <span class="keyword">else</span> &#123;</div><div class="line">                    Log.i(TAG, <span class="string">"onReceive: 4.4.2 以下版本的设备需要通过反射实现自动配对"</span>);</div><div class="line">                &#125;</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">        ……</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="连接"><a href="#连接" class="headerlink" title="连接"></a>连接</h3><h4 id="服务端等待连接"><a href="#服务端等待连接" class="headerlink" title="服务端等待连接"></a>服务端等待连接</h4><blockquote>
+<p>服务端开启连接，需要开启一个阻塞线程，等待客户端的连接，类似这样</p>
+</blockquote>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">try</span> &#123;</div><div class="line">       <span class="comment">// 等待客户端连接 阻塞线程 连接成功继续向下执行 连接失败抛异常</span></div><div class="line">       socket = mmServerSocket.accept();</div><div class="line">   &#125; <span class="keyword">catch</span> (IOException e) &#123;</div><div class="line">       Log.e(TAG, <span class="string">"Socket Type: "</span> + mSocketType + <span class="string">"accept() failed"</span>, e);</div><div class="line">       <span class="keyword">break</span>;</div><div class="line">   &#125;</div></pre></td></tr></table></figure>
+<h4 id="客户端发起连接"><a href="#客户端发起连接" class="headerlink" title="客户端发起连接"></a>客户端发起连接</h4><blockquote>
+<p>客户端发起连接，如果没有配对过，需要先进行配对，连接同样是一个阻塞线程，连接成功会继续向下执行，连接失败会抛异常，类似这样</p>
+</blockquote>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">try</span> &#123;</div><div class="line">    ……</div><div class="line">    <span class="comment">// 开始连接 阻塞线程 连接成功继续执行 连接失败抛异常</span></div><div class="line">    mmSocket.connect();</div><div class="line">&#125; <span class="keyword">catch</span> (IOException e) &#123;</div><div class="line">    <span class="comment">// 连接失败</span></div><div class="line">    e.printStackTrace();</div><div class="line">    <span class="keyword">try</span> &#123;</div><div class="line">        mmSocket.close();</div><div class="line">    &#125; <span class="keyword">catch</span> (IOException e2) &#123;</div><div class="line">        Log.e(TAG, <span class="string">"unable to close() "</span> + mSocketType + <span class="string">" socket during connection failure"</span>, e2);</div><div class="line">    &#125;</div><div class="line">    ……</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="通信"><a href="#通信" class="headerlink" title="通信"></a>通信</h2><h3 id="接收数据"><a href="#接收数据" class="headerlink" title="接收数据"></a>接收数据</h3><blockquote>
+<p>连接成功以后，需要开启一个线程，一直循环读取数据流，类似这样</p>
+</blockquote>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 只有蓝牙处于连接状态就一直循环读取数据</span></div><div class="line"><span class="keyword">while</span> (mState == STATE_CONNECTED) &#123;</div><div class="line">    <span class="keyword">try</span> &#123;</div><div class="line">        <span class="comment">// Read from the InputStream</span></div><div class="line">        bytes = mmInStream.read(buffer);</div><div class="line"></div><div class="line">        <span class="comment">// 读取到数据的回调</span></div><div class="line">        ……</div><div class="line">    &#125; <span class="keyword">catch</span> (IOException e) &#123;</div><div class="line">        <span class="comment">// 读取数据出现异常</span></div><div class="line">        Log.e(TAG, <span class="string">"disconnected"</span>, e);</div><div class="line">        ……</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="发送数据"><a href="#发送数据" class="headerlink" title="发送数据"></a>发送数据</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line"><span class="comment"> * 发数据</span></div><div class="line"><span class="comment"> *</span></div><div class="line"><span class="comment"> * <span class="doctag">@param</span> buffer 发送内容</span></div><div class="line"><span class="comment"> */</span></div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">write</span><span class="params">(<span class="keyword">final</span> <span class="keyword">byte</span>[] buffer)</span> </span>&#123;</div><div class="line">    <span class="keyword">try</span> &#123;</div><div class="line">        mmOutStream.write(buffer);</div><div class="line">        <span class="comment">// 发送数据的回调</span></div><div class="line">        ……</div><div class="line">    &#125; <span class="keyword">catch</span> (IOException e) &#123;</div><div class="line">        <span class="comment">// 发送数据出现失败</span></div><div class="line">        Log.e(TAG, <span class="string">"Exception during write"</span>, e);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="坑"><a href="#坑" class="headerlink" title="坑"></a>坑</h2><p>有时候当你重复的连接、断开、连接、断开……</p>
+<p>你会发现出现连接失败，或者可以连接成功，但是不能通信了，这个时候你要考虑你得服务端是不是已经不可见了。</p>
+<p>上面已经提过，如果两个设备已经配对，即使服务端是不可见的，也同样可以搜索到并连接上，但是是不能通信的。</p>
+<p>而如果两个设备没有配对过，是连搜索都搜索不到服务端的。</p>
+<p>当然，如果在服务端可见的时候，连接上就是连接上了，只要连接不断开，即使连接上以后服务端变为不可见了，也一样可以一直通信。</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+  <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+    <div>坚持原创技术分享，您的支持将鼓励我继续创作！</div>
+    <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+      <span>赏</span>
+    </button>
+    <div id="QR" style="display: none;">
+      
+        <div id="wechat" style="display: inline-block">
+          <img id="wechat_qr" src="/images/wechat.jpeg" alt="kongqw WeChat Pay"/>
+          <p>微信打赏</p>
+        </div>
+      
+      
+        <div id="alipay" style="display: inline-block">
+          <img id="alipay_qr" src="/images/alipay.jpeg" alt="kongqw Alipay"/>
+          <p>支付宝打赏</p>
+        </div>
+      
+    </div>
+  </div>
+
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Android/" rel="tag"># Android</a>
+          
+            <a href="/tags/蓝牙通信/" rel="tag"># 蓝牙通信</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/07/27/2016-07-27-Android设备的唯一标识/" rel="next" title="Android设备的唯一标识">
+                <i class="fa fa-chevron-left"></i> Android设备的唯一标识
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/08/04/2016-08-04-Android连接WIFI/" rel="prev" title="Android连接WIFI">
+                Android连接WIFI <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.jpg"
+               alt="kongqw" />
+          <p class="site-author-name" itemprop="name">kongqw</p>
+           
+              <p class="site-description motion-element" itemprop="description">Android Developer</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives/">
+                <span class="site-state-item-count">51</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">4</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">23</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/kongqw" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://blog.csdn.net/q4878802" target="_blank" title="CSDN">
+                  
+                    <i class="fa fa-fw fa-home"></i>
+                  
+                  CSDN
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              Links
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://gank.io" title="干货集中营" target="_blank">干货集中营</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.xfyun.cn" title="讯飞开放平台" target="_blank">讯飞开放平台</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://www.easemob.com" title="环信" target="_blank">环信</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://tongji.baidu.com" title="百度统计" target="_blank">百度统计</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://kongqw.disqus.com/admin/" title="DISQUS评论" target="_blank">DISQUS评论</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://wallet.btc.com/" title="BTC Wallet" target="_blank">BTC Wallet</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://www.okcoin.cn/" title="OKCoin中国站" target="_blank">OKCoin中国站</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://www.okcoin.com/" title="OKCoin国际站" target="_blank">OKCoin国际站</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://btc.com/" title="BTC.com" target="_blank">BTC.com</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Android蓝牙通信"><span class="nav-number">1.</span> <span class="nav-text">Android蓝牙通信</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#效果图"><span class="nav-number">1.1.</span> <span class="nav-text">效果图</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#源码"><span class="nav-number">1.2.</span> <span class="nav-text">源码</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#权限"><span class="nav-number">1.3.</span> <span class="nav-text">权限</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#蓝牙的打开与关闭"><span class="nav-number">1.4.</span> <span class="nav-text">蓝牙的打开与关闭</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#开启蓝牙"><span class="nav-number">1.4.1.</span> <span class="nav-text">开启蓝牙</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#关闭蓝牙"><span class="nav-number">1.4.2.</span> <span class="nav-text">关闭蓝牙</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#设置蓝牙设备可见"><span class="nav-number">1.5.</span> <span class="nav-text">设置蓝牙设备可见</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#扫描附近的蓝牙设备"><span class="nav-number">1.6.</span> <span class="nav-text">扫描附近的蓝牙设备</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#注册搜索蓝牙设备的广播接收者"><span class="nav-number">1.6.1.</span> <span class="nav-text">注册搜索蓝牙设备的广播接收者</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#反注册搜索蓝牙设备的广播接收者"><span class="nav-number">1.6.2.</span> <span class="nav-text">反注册搜索蓝牙设备的广播接收者</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#广播接收者"><span class="nav-number">1.6.3.</span> <span class="nav-text">广播接收者</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#开始扫描附近的蓝牙设备"><span class="nav-number">1.6.4.</span> <span class="nav-text">开始扫描附近的蓝牙设备</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#获取已经配对的设备"><span class="nav-number">1.6.5.</span> <span class="nav-text">获取已经配对的设备</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#蓝牙连接"><span class="nav-number">1.7.</span> <span class="nav-text">蓝牙连接</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#配对"><span class="nav-number">1.7.1.</span> <span class="nav-text">配对</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#连接"><span class="nav-number">1.7.2.</span> <span class="nav-text">连接</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#服务端等待连接"><span class="nav-number">1.7.2.1.</span> <span class="nav-text">服务端等待连接</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#客户端发起连接"><span class="nav-number">1.7.2.2.</span> <span class="nav-text">客户端发起连接</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#通信"><span class="nav-number">1.8.</span> <span class="nav-text">通信</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#接收数据"><span class="nav-number">1.8.1.</span> <span class="nav-text">接收数据</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#发送数据"><span class="nav-number">1.8.2.</span> <span class="nav-text">发送数据</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#坑"><span class="nav-number">1.9.</span> <span class="nav-text">坑</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2015 - 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">kongqw</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.1"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.1"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://kongqw.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://yoursite.com/2016/08/02/2016-08-02-Android蓝牙通信/';
+          this.page.identifier = '2016/08/02/2016-08-02-Android蓝牙通信/';
+          this.page.title = 'Android蓝牙通信';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://kongqw.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

@@ -1,0 +1,848 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Android,加密,AES," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.1" />
+
+
+
+
+
+
+<meta name="description" content="AES加密介绍 ASE 加密、解密的关键在于秘钥、只有使用加密时使用的秘钥，才可以解密。 生成秘钥的代码网上一大堆，下面的代码可生成一个秘钥 12345678910private SecretKey generateKey(String seed) throws Exception &amp;#123;    // 获取秘钥生成器    KeyGenerator keyGenerator = KeyGen">
+<meta name="keywords" content="Android,加密,AES">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Android AES 加密、解密">
+<meta property="og:url" content="http://yoursite.com/2017/08/04/2017-08-04-Android-AES-加密、解密/index.html">
+<meta property="og:site_name" content="孔庆威的博客">
+<meta property="og:description" content="AES加密介绍 ASE 加密、解密的关键在于秘钥、只有使用加密时使用的秘钥，才可以解密。 生成秘钥的代码网上一大堆，下面的代码可生成一个秘钥 12345678910private SecretKey generateKey(String seed) throws Exception &amp;#123;    // 获取秘钥生成器    KeyGenerator keyGenerator = KeyGen">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2017-10-26T02:44:31.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Android AES 加密、解密">
+<meta name="twitter:description" content="AES加密介绍 ASE 加密、解密的关键在于秘钥、只有使用加密时使用的秘钥，才可以解密。 生成秘钥的代码网上一大堆，下面的代码可生成一个秘钥 12345678910private SecretKey generateKey(String seed) throws Exception &amp;#123;    // 获取秘钥生成器    KeyGenerator keyGenerator = KeyGen">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2017/08/04/2017-08-04-Android-AES-加密、解密/"/>
+
+
+
+
+
+  <title>Android AES 加密、解密 | 孔庆威的博客</title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?e8ad05f02e13a412b09b2e8a632634af";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">孔庆威的博客</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">精于心，简于形</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/08/04/2017-08-04-Android-AES-加密、解密/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="kongqw">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="孔庆威的博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Android AES 加密、解密</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-08-04T15:32:49+08:00">
+                2017-08-04
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2017/08/04/2017-08-04-Android-AES-加密、解密/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2017/08/04/2017-08-04-Android-AES-加密、解密/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p><a href="https://baike.baidu.com/item/aes/5903?fr=aladdin" target="_blank" rel="external">AES加密介绍</a></p>
+<p>ASE 加密、解密的关键在于秘钥、只有使用加密时使用的秘钥，才可以解密。</p>
+<p>生成秘钥的代码网上一大堆，下面的代码可生成一个秘钥</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">private</span> SecretKey <span class="title">generateKey</span><span class="params">(String seed)</span> <span class="keyword">throws</span> Exception </span>&#123;</div><div class="line">    <span class="comment">// 获取秘钥生成器</span></div><div class="line">    KeyGenerator keyGenerator = KeyGenerator.getInstance(<span class="string">"AES"</span>);</div><div class="line">    <span class="comment">// 通过种子初始化</span></div><div class="line">    SecureRandom secureRandom = <span class="keyword">new</span> SecureRandom();</div><div class="line">    secureRandom.setSeed(seed.getBytes(<span class="string">"UTF-8"</span>));</div><div class="line">    keyGenerator.init(<span class="number">128</span>, secureRandom);</div><div class="line">    <span class="comment">// 生成秘钥并返回</span></div><div class="line">    <span class="keyword">return</span> keyGenerator.generateKey();</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>然后使用秘钥进行<strong>加密</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">private</span> <span class="keyword">byte</span>[] encrypt(String content, SecretKey secretKey) <span class="keyword">throws</span> Exception &#123;</div><div class="line">    <span class="comment">// 秘钥</span></div><div class="line">    <span class="keyword">byte</span>[] enCodeFormat = secretKey.getEncoded();</div><div class="line">    <span class="comment">// 创建AES秘钥</span></div><div class="line">    SecretKeySpec key = <span class="keyword">new</span> SecretKeySpec(enCodeFormat, <span class="string">"AES"</span>);</div><div class="line">    <span class="comment">// 创建密码器</span></div><div class="line">    Cipher cipher = Cipher.getInstance(<span class="string">"AES"</span>);</div><div class="line">    <span class="comment">// 初始化加密器</span></div><div class="line">    cipher.init(Cipher.ENCRYPT_MODE, key);</div><div class="line">    <span class="comment">// 加密</span></div><div class="line">    <span class="keyword">return</span> cipher.doFinal(content.getBytes(<span class="string">"UTF-8"</span>));</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p><strong>解密</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">private</span> <span class="keyword">byte</span>[] decrypt(<span class="keyword">byte</span>[] content, SecretKey secretKey) <span class="keyword">throws</span> Exception &#123;</div><div class="line">    <span class="comment">// 秘钥</span></div><div class="line">    <span class="keyword">byte</span>[] enCodeFormat = secretKey.getEncoded();</div><div class="line">    <span class="comment">// 创建AES秘钥</span></div><div class="line">    SecretKeySpec key = <span class="keyword">new</span> SecretKeySpec(enCodeFormat, <span class="string">"AES"</span>);</div><div class="line">    <span class="comment">// 创建密码器</span></div><div class="line">    Cipher cipher = Cipher.getInstance(<span class="string">"AES"</span>);</div><div class="line">    <span class="comment">// 初始化解密器</span></div><div class="line">    cipher.init(Cipher.DECRYPT_MODE, key);</div><div class="line">    <span class="comment">// 解密</span></div><div class="line">    <span class="keyword">return</span> cipher.doFinal(content);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>通常，如果加密和解密都是在同一个平台，比较简单，我们生成一个秘钥以后，将秘钥保存到本地，解密的时候直接获取本地的秘钥来解密就可以了，通常的使用场景为本地将xxx文件加密后上传保存或备份，需要的时候，下载再解密。这样上传的文件比较安全。</p>
+<p>看上去很完美，下面问题来了，上述生产秘钥的方法，每次执行生成的秘钥都是不一样的。也就是说，加密时的秘钥如果没有保存到本地，解密的时候再次调用上述方法生成一个秘钥，那么将无法解密。</p>
+<p>解决办法也有，使用如下方式生成秘钥，只要种子一样，生成的秘钥就是一样的。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">private</span> SecretKey <span class="title">generateKey</span><span class="params">(String seed)</span> <span class="keyword">throws</span> Exception </span>&#123;</div><div class="line">    <span class="comment">// 获取秘钥生成器</span></div><div class="line">    KeyGenerator keyGenerator = KeyGenerator.getInstance(<span class="string">"AES"</span>);</div><div class="line">    <span class="comment">// 通过种子初始化</span></div><div class="line">    SecureRandom secureRandom = SecureRandom.getInstance(<span class="string">"SHA1PRNG"</span>, <span class="string">"Crypto"</span>);</div><div class="line">    secureRandom.setSeed(seed.getBytes(<span class="string">"UTF-8"</span>));</div><div class="line">    keyGenerator.init(<span class="number">128</span>, secureRandom);</div><div class="line">    <span class="comment">// 生成秘钥并返回</span></div><div class="line">    <span class="keyword">return</span> keyGenerator.generateKey();</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>但是Android N（7.0）以后将不再支持，移除了<code>Crypto</code>。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">E/System:  ********** PLEASE READ ************ </div><div class="line">E/System:  * </div><div class="line">E/System:  * New versions of the Android SDK no longer support the Crypto provider.</div><div class="line">E/System:  * If your app was relying on setSeed() to derive keys from strings, you</div><div class="line">E/System:  * should switch to using SecretKeySpec to load raw key bytes directly OR</div><div class="line">E/System:  * use a real key derivation function (KDF). See advice here : </div><div class="line">E/System:  * http://android-developers.blogspot.com/2016/06/security-crypto-provider-deprecated-in.html </div><div class="line">E/System:  *********************************** </div><div class="line">W/System.err: java.security.NoSuchProviderException: no such provider: Crypto</div></pre></td></tr></table></figure>
+<p>Google也对应给出了解决方案，详见 <a href="https://android-developers.googleblog.com/2016/06/security-crypto-provider-deprecated-in.html" target="_blank" rel="external">Security “Crypto” provider deprecated in Android N</a></p>
+<p>下面介绍另一种解决方案，我们不用种子生成秘钥，直接将password作为秘钥。</p>
+<blockquote>
+<p>关于Android和IOS的同步问题，小伙伴也可以借鉴 <a href="http://www.jianshu.com/p/df828a57cb8f" target="_blank" rel="external">AES加密 - iOS与Java的同步实现</a></p>
+<p>如下方法 Android测试可行，IOS如果有小伙测试有问题也可以反馈给我。</p>
+</blockquote>
+<p><strong>加密</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">private</span> <span class="keyword">byte</span>[] encrypt(String content, String password) <span class="keyword">throws</span> Exception &#123;</div><div class="line">    <span class="comment">// 创建AES秘钥</span></div><div class="line">    SecretKeySpec key = <span class="keyword">new</span> SecretKeySpec(password.getBytes(), <span class="string">"AES/CBC/PKCS5PADDING"</span>);</div><div class="line">    <span class="comment">// 创建密码器</span></div><div class="line">    Cipher cipher = Cipher.getInstance(<span class="string">"AES"</span>);</div><div class="line">    <span class="comment">// 初始化加密器</span></div><div class="line">    cipher.init(Cipher.ENCRYPT_MODE, key);</div><div class="line">    <span class="comment">// 加密</span></div><div class="line">    <span class="keyword">return</span> cipher.doFinal(content.getBytes(<span class="string">"UTF-8"</span>));</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p><strong>解密</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">private</span> <span class="keyword">byte</span>[] decrypt(<span class="keyword">byte</span>[] content, String password) <span class="keyword">throws</span> Exception &#123;</div><div class="line">    <span class="comment">// 创建AES秘钥</span></div><div class="line">    SecretKeySpec key = <span class="keyword">new</span> SecretKeySpec(password.getBytes(), <span class="string">"AES/CBC/PKCS5PADDING"</span>);</div><div class="line">    <span class="comment">// 创建密码器</span></div><div class="line">    Cipher cipher = Cipher.getInstance(<span class="string">"AES"</span>);</div><div class="line">    <span class="comment">// 初始化解密器</span></div><div class="line">    cipher.init(Cipher.DECRYPT_MODE, key);</div><div class="line">    <span class="comment">// 解密</span></div><div class="line">    <span class="keyword">return</span> cipher.doFinal(content);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p><strong>注意：</strong>必须必须要注意的是，这里的<code>password</code>的长度，必须为<code>128</code>或<code>192</code>或<code>256</code>bits.也就是<code>16</code>或<code>24</code>或<code>32</code>byte。否则会报出如下错误：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">com.android.org.bouncycastle.jcajce.provider.symmetric.util.BaseBlockCipher$1: Key length not 128/192/256 bits.</div></pre></td></tr></table></figure>
+<blockquote>
+<p>至于数字、字母、中文都各自占几个字节，相信小伙伴的都是了解的，就不废话了。<br>也可以<code>byte[] password = new byte[16/24/32];</code></p>
+</blockquote>
+<p>最后：至于最开始提到生成秘钥的方法，为什么种子相同，所生成的秘钥不同，还没看具体实现。有知道的小伙伴还请先指点一二。</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+  <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+    <div>坚持原创技术分享，您的支持将鼓励我继续创作！</div>
+    <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+      <span>赏</span>
+    </button>
+    <div id="QR" style="display: none;">
+      
+        <div id="wechat" style="display: inline-block">
+          <img id="wechat_qr" src="/images/wechat.jpeg" alt="kongqw WeChat Pay"/>
+          <p>微信打赏</p>
+        </div>
+      
+      
+        <div id="alipay" style="display: inline-block">
+          <img id="alipay_qr" src="/images/alipay.jpeg" alt="kongqw Alipay"/>
+          <p>支付宝打赏</p>
+        </div>
+      
+    </div>
+  </div>
+
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Android/" rel="tag"># Android</a>
+          
+            <a href="/tags/加密/" rel="tag"># 加密</a>
+          
+            <a href="/tags/AES/" rel="tag"># AES</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/04/05/2017-04-05-Android-APK添加系统签名/" rel="next" title="Android APK添加系统签名">
+                <i class="fa fa-chevron-left"></i> Android APK添加系统签名
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/09/15/2017-09-19-即拿即用——Android文件存取/" rel="prev" title="即拿即用一Android文件存取">
+                即拿即用一Android文件存取 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+
+      <section class="site-overview sidebar-panel sidebar-panel-active">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.jpg"
+               alt="kongqw" />
+          <p class="site-author-name" itemprop="name">kongqw</p>
+           
+              <p class="site-description motion-element" itemprop="description">Android Developer</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives/">
+                <span class="site-state-item-count">51</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">4</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">23</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/kongqw" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://blog.csdn.net/q4878802" target="_blank" title="CSDN">
+                  
+                    <i class="fa fa-fw fa-home"></i>
+                  
+                  CSDN
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              Links
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://gank.io" title="干货集中营" target="_blank">干货集中营</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.xfyun.cn" title="讯飞开放平台" target="_blank">讯飞开放平台</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://www.easemob.com" title="环信" target="_blank">环信</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://tongji.baidu.com" title="百度统计" target="_blank">百度统计</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://kongqw.disqus.com/admin/" title="DISQUS评论" target="_blank">DISQUS评论</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://wallet.btc.com/" title="BTC Wallet" target="_blank">BTC Wallet</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://www.okcoin.cn/" title="OKCoin中国站" target="_blank">OKCoin中国站</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://www.okcoin.com/" title="OKCoin国际站" target="_blank">OKCoin国际站</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://btc.com/" title="BTC.com" target="_blank">BTC.com</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+        
+
+
+      </section>
+
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2015 - 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">kongqw</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.1"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.1"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://kongqw.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://yoursite.com/2017/08/04/2017-08-04-Android-AES-加密、解密/';
+          this.page.identifier = '2017/08/04/2017-08-04-Android-AES-加密、解密/';
+          this.page.title = 'Android AES 加密、解密';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://kongqw.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

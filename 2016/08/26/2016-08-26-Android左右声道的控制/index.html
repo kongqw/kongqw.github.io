@@ -1,0 +1,898 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Android,声道," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.1" />
+
+
+
+
+
+
+<meta name="description" content="转载请说明出处！作者：kqw攻城狮出处：个人站 | CSDN  效果图 源码AndroidSoundManagerDemo  我这里主要是用到了AudioTrack实现的左右声道的控制，手机一般都只有两个声道，即左声道和右声道，我们在输出的时候可以选择单声道，也可以选择双声道（立体声）。 查看了AudioTrack的API，提供了play()、pause()、stop()、write()等一系列">
+<meta name="keywords" content="Android,声道">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Android左右声道的控制">
+<meta property="og:url" content="http://yoursite.com/2016/08/26/2016-08-26-Android左右声道的控制/index.html">
+<meta property="og:site_name" content="孔庆威的博客">
+<meta property="og:description" content="转载请说明出处！作者：kqw攻城狮出处：个人站 | CSDN  效果图 源码AndroidSoundManagerDemo  我这里主要是用到了AudioTrack实现的左右声道的控制，手机一般都只有两个声道，即左声道和右声道，我们在输出的时候可以选择单声道，也可以选择双声道（立体声）。 查看了AudioTrack的API，提供了play()、pause()、stop()、write()等一系列">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://img.blog.csdn.net/20160826164630772">
+<meta property="og:updated_time" content="2017-10-26T02:44:31.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Android左右声道的控制">
+<meta name="twitter:description" content="转载请说明出处！作者：kqw攻城狮出处：个人站 | CSDN  效果图 源码AndroidSoundManagerDemo  我这里主要是用到了AudioTrack实现的左右声道的控制，手机一般都只有两个声道，即左声道和右声道，我们在输出的时候可以选择单声道，也可以选择双声道（立体声）。 查看了AudioTrack的API，提供了play()、pause()、stop()、write()等一系列">
+<meta name="twitter:image" content="http://img.blog.csdn.net/20160826164630772">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2016/08/26/2016-08-26-Android左右声道的控制/"/>
+
+
+
+
+
+  <title>Android左右声道的控制 | 孔庆威的博客</title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?e8ad05f02e13a412b09b2e8a632634af";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">孔庆威的博客</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">精于心，简于形</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/08/26/2016-08-26-Android左右声道的控制/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="kongqw">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="孔庆威的博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Android左右声道的控制</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-08-26T15:36:50+08:00">
+                2016-08-26
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2016/08/26/2016-08-26-Android左右声道的控制/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2016/08/26/2016-08-26-Android左右声道的控制/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <hr>
+<p>转载请说明出处！<br>作者：<a href="http://kongqw.github.io/about/index.html" target="_blank" rel="external">kqw攻城狮</a><br>出处：<a href="http://kongqw.github.io" target="_blank" rel="external">个人站</a> | <a href="http://blog.csdn.net/q4878802/" target="_blank" rel="external">CSDN</a></p>
+<hr>
+<h1 id="效果图"><a href="#效果图" class="headerlink" title="效果图"></a>效果图</h1><p><img src="http://img.blog.csdn.net/20160826164630772" alt="效果图"></p>
+<h1 id="源码"><a href="#源码" class="headerlink" title="源码"></a>源码</h1><p><a href="https://github.com/kongqw/AndroidSoundManagerDemo" target="_blank" rel="external">AndroidSoundManagerDemo</a></p>
+<hr>
+<p>我这里主要是用到了<a href="https://developer.android.com/reference/android/media/AudioTrack.html" target="_blank" rel="external">AudioTrack</a>实现的左右声道的控制，手机一般都只有两个声道，即左声道和右声道，我们在输出的时候可以选择单声道，也可以选择双声道（立体声）。</p>
+<p>查看了<code>AudioTrack</code>的API，提供了<code>play()</code>、<code>pause()</code>、<code>stop()</code>、<code>write()</code>等一系列的方法。<br>通过<code>write()</code>方法，可以实现将音频数据发送出去（播放出来）。</p>
+<h1 id="AudioTrack对象的构造"><a href="#AudioTrack对象的构造" class="headerlink" title="AudioTrack对象的构造"></a>AudioTrack对象的构造</h1><p>有三个构造方法</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">AudioTrack (<span class="keyword">int</span> streamType, <span class="keyword">int</span> sampleRateInHz, <span class="keyword">int</span> channelConfig, <span class="keyword">int</span> audioFormat, <span class="keyword">int</span> bufferSizeInBytes, <span class="keyword">int</span> mode)</div><div class="line">AudioTrack (<span class="keyword">int</span> streamType, <span class="keyword">int</span> sampleRateInHz, <span class="keyword">int</span> channelConfig, <span class="keyword">int</span> audioFormat, <span class="keyword">int</span> bufferSizeInBytes, <span class="keyword">int</span> mode, <span class="keyword">int</span> sessionId)</div><div class="line">AudioTrack (AudioAttributes attributes, AudioFormat format, <span class="keyword">int</span> bufferSizeInBytes, <span class="keyword">int</span> mode, <span class="keyword">int</span> sessionId)</div></pre></td></tr></table></figure>
+<p>主要参数有如下几个</p>
+<ul>
+<li><p>streamType：以什么形式播放</p>
+<ul>
+<li>STREAM_VOICE_CALL</li>
+<li>STREAM_SYSTEM</li>
+<li>STREAM_RING</li>
+<li>STREAM_MUSIC</li>
+<li>STREAM_ALARM</li>
+<li>STREAM_NOTIFICATION</li>
+</ul>
+</li>
+<li><p>sampleRateInHz：采样率</p>
+</li>
+<li><p>channelConfig：声道</p>
+<ul>
+<li>AudioFormat.CHANNEL_OUT_MONO：输出单声道音频数据</li>
+<li>AudioFormat.CHANNEL_OUT_STEREO：输出双声道音频数据（立体声）</li>
+</ul>
+</li>
+<li><p>audioFormat：音频数据格式</p>
+</li>
+<li><p>mode：缓冲模式</p>
+<ul>
+<li>MODE_STATIC：一次性将音频载入以后再播放</li>
+<li>MODE_STREAM：以流的形式，加载一点就播放一点</li>
+</ul>
+</li>
+</ul>
+<p>把channelConfig的相关参数都看了一遍，没发现有可以指定向某声道发送数据的，只能通过<code>AudioFormat.CHANNEL_OUT_MONO</code>和<code>AudioFormat.CHANNEL_OUT_STEREO</code>选择是输出单声道的音频数据还是双声道的音频数据。</p>
+<h1 id="左右声道控制"><a href="#左右声道控制" class="headerlink" title="左右声道控制"></a>左右声道控制</h1><p>构造的时候不能选择指定声道输出音频，但是有这样一个方法</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">setStereoVolume(<span class="keyword">float</span> leftGain, <span class="keyword">float</span> rightGain)</div></pre></td></tr></table></figure>
+<p>可以通过把某一个声道的音量设置到最小，达到只向某个声道输出音频的效果。<br>我自己也有点”呵呵“，但是也没有发现还有别的方法可以实现这样的效果。</p>
+<blockquote>
+<p>这个方法还有一点小问题，在个别手机上，即使将某个声道的声音设置到了最小，也还是会有一点声音，这个我也还没有搞清楚为什么，个人猜测可能和手机硬件有关系。</p>
+</blockquote>
+<h1 id="封装"><a href="#封装" class="headerlink" title="封装"></a>封装</h1><p>我这里的缓冲模式使用的<code>MODE_STREAM</code>的形式，以流的形式播放，因为这个逻辑要稍微复杂一点，尤其是暂停以后再继续播放的位置。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div><div class="line">95</div><div class="line">96</div><div class="line">97</div><div class="line">98</div><div class="line">99</div><div class="line">100</div><div class="line">101</div><div class="line">102</div><div class="line">103</div><div class="line">104</div><div class="line">105</div><div class="line">106</div><div class="line">107</div><div class="line">108</div><div class="line">109</div><div class="line">110</div><div class="line">111</div><div class="line">112</div><div class="line">113</div><div class="line">114</div><div class="line">115</div><div class="line">116</div><div class="line">117</div><div class="line">118</div><div class="line">119</div><div class="line">120</div><div class="line">121</div><div class="line">122</div><div class="line">123</div><div class="line">124</div><div class="line">125</div><div class="line">126</div><div class="line">127</div><div class="line">128</div><div class="line">129</div><div class="line">130</div><div class="line">131</div><div class="line">132</div><div class="line">133</div><div class="line">134</div><div class="line">135</div><div class="line">136</div><div class="line">137</div><div class="line">138</div><div class="line">139</div><div class="line">140</div><div class="line">141</div><div class="line">142</div><div class="line">143</div><div class="line">144</div><div class="line">145</div><div class="line">146</div><div class="line">147</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">package</span> kong.qingwei.androidsoundmanagerdemo;</div><div class="line"></div><div class="line"><span class="keyword">import</span> android.app.Activity;</div><div class="line"><span class="keyword">import</span> android.media.AudioFormat;</div><div class="line"><span class="keyword">import</span> android.media.AudioManager;</div><div class="line"><span class="keyword">import</span> android.media.AudioTrack;</div><div class="line"><span class="keyword">import</span> android.util.Log;</div><div class="line"></div><div class="line"><span class="keyword">import</span> java.io.ByteArrayOutputStream;</div><div class="line"><span class="keyword">import</span> java.io.IOException;</div><div class="line"><span class="keyword">import</span> java.io.InputStream;</div><div class="line"></div><div class="line"><span class="comment">/**</span></div><div class="line"><span class="comment"> * Created by kqw on 2016/8/26.</span></div><div class="line"><span class="comment"> * 播放音乐的线程</span></div><div class="line"><span class="comment"> */</span></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">PlayThread</span> <span class="keyword">extends</span> <span class="title">Thread</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="comment">// 采样率</span></div><div class="line">    <span class="keyword">private</span> <span class="keyword">int</span> mSampleRateInHz = <span class="number">16000</span>;</div><div class="line">    <span class="comment">// 单声道</span></div><div class="line">    <span class="keyword">private</span> <span class="keyword">int</span> mChannelConfig = AudioFormat.CHANNEL_OUT_MONO;</div><div class="line">    <span class="comment">// 双声道（立体声）</span></div><div class="line">    <span class="comment">// private int mChannelConfig = AudioFormat.CHANNEL_OUT_STEREO;</span></div><div class="line"></div><div class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String TAG = <span class="string">"PlayThread"</span>;</div><div class="line">    <span class="keyword">private</span> Activity mActivity;</div><div class="line">    <span class="keyword">private</span> AudioTrack mAudioTrack;</div><div class="line">    <span class="keyword">private</span> <span class="keyword">byte</span>[] data;</div><div class="line">    <span class="keyword">private</span> String mFileName;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">PlayThread</span><span class="params">(Activity activity, String fileName)</span> </span>&#123;</div><div class="line">        mActivity = activity;</div><div class="line">        mFileName = fileName;</div><div class="line"></div><div class="line">        <span class="keyword">int</span> bufferSize = AudioTrack.getMinBufferSize(mSampleRateInHz, mChannelConfig, AudioFormat.ENCODING_PCM_16BIT);</div><div class="line">        mAudioTrack = <span class="keyword">new</span> AudioTrack(</div><div class="line">                AudioManager.STREAM_MUSIC,</div><div class="line">                mSampleRateInHz,</div><div class="line">                mChannelConfig,</div><div class="line">                AudioFormat.ENCODING_PCM_16BIT,</div><div class="line">                bufferSize,</div><div class="line">                AudioTrack.MODE_STREAM);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">super</span>.run();</div><div class="line">        <span class="keyword">try</span> &#123;</div><div class="line">            <span class="keyword">if</span> (<span class="keyword">null</span> != mAudioTrack)</div><div class="line">                mAudioTrack.play();</div><div class="line"></div><div class="line">            ByteArrayOutputStream byteArrayOutputStream = <span class="keyword">new</span> ByteArrayOutputStream();</div><div class="line">            InputStream inputStream = mActivity.getResources().getAssets().open(mFileName);</div><div class="line"></div><div class="line">            <span class="comment">// 缓冲区</span></div><div class="line">            <span class="keyword">byte</span>[] buffer = <span class="keyword">new</span> <span class="keyword">byte</span>[<span class="number">1024</span>];</div><div class="line">            <span class="comment">// 播放进度</span></div><div class="line">            <span class="keyword">int</span> playIndex = <span class="number">0</span>;</div><div class="line">            <span class="comment">// 是否缓冲完成</span></div><div class="line">            <span class="keyword">boolean</span> isLoaded = <span class="keyword">false</span>;</div><div class="line">            <span class="comment">// 缓冲 + 播放</span></div><div class="line">            <span class="keyword">while</span> (<span class="keyword">null</span> != mAudioTrack &amp;&amp; AudioTrack.PLAYSTATE_STOPPED != mAudioTrack.getPlayState()) &#123;</div><div class="line">                <span class="comment">// 字符长度</span></div><div class="line">                <span class="keyword">int</span> len;</div><div class="line">                <span class="keyword">if</span> (-<span class="number">1</span> != (len = inputStream.read(buffer))) &#123;</div><div class="line">                    byteArrayOutputStream.write(buffer, <span class="number">0</span>, len);</div><div class="line">                    data = byteArrayOutputStream.toByteArray();</div><div class="line">                    Log.i(TAG, <span class="string">"run: 已缓冲 : "</span> + data.length);</div><div class="line">                &#125; <span class="keyword">else</span> &#123;</div><div class="line">                    <span class="comment">// 缓冲完成</span></div><div class="line">                    isLoaded = <span class="keyword">true</span>;</div><div class="line">                &#125;</div><div class="line"></div><div class="line">                <span class="keyword">if</span> (AudioTrack.PLAYSTATE_PAUSED == mAudioTrack.getPlayState()) &#123;</div><div class="line">                    <span class="comment">// TODO 已经暂停</span></div><div class="line">                &#125;</div><div class="line">                <span class="keyword">if</span> (AudioTrack.PLAYSTATE_PLAYING == mAudioTrack.getPlayState()) &#123;</div><div class="line">                    Log.i(TAG, <span class="string">"run: 开始从 "</span> + playIndex + <span class="string">" 播放"</span>);</div><div class="line">                    playIndex += mAudioTrack.write(data, playIndex, data.length - playIndex);</div><div class="line">                    Log.i(TAG, <span class="string">"run: 播放到了 : "</span> + playIndex);</div><div class="line">                    <span class="keyword">if</span> (isLoaded &amp;&amp; playIndex == data.length) &#123;</div><div class="line">                        Log.i(TAG, <span class="string">"run: 播放完了"</span>);</div><div class="line">                        mAudioTrack.stop();</div><div class="line">                    &#125;</div><div class="line"></div><div class="line">                    <span class="keyword">if</span> (playIndex &lt; <span class="number">0</span>) &#123;</div><div class="line">                        Log.i(TAG, <span class="string">"run: 播放出错"</span>);</div><div class="line">                        mAudioTrack.stop();</div><div class="line">                        <span class="keyword">break</span>;</div><div class="line">                    &#125;</div><div class="line">                &#125;</div><div class="line">            &#125;</div><div class="line">            Log.i(TAG, <span class="string">"run: play end"</span>);</div><div class="line">        &#125; <span class="keyword">catch</span> (IOException e) &#123;</div><div class="line">            e.printStackTrace();</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="comment">/**</span></div><div class="line"><span class="comment">     * 设置左右声道平衡</span></div><div class="line"><span class="comment">     *</span></div><div class="line"><span class="comment">     * <span class="doctag">@param</span> max     最大值</span></div><div class="line"><span class="comment">     * <span class="doctag">@param</span> balance 当前值</span></div><div class="line"><span class="comment">     */</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setBalance</span><span class="params">(<span class="keyword">int</span> max, <span class="keyword">int</span> balance)</span> </span>&#123;</div><div class="line">        <span class="keyword">float</span> b = (<span class="keyword">float</span>) balance / (<span class="keyword">float</span>) max;</div><div class="line">        Log.i(TAG, <span class="string">"setBalance: b = "</span> + b);</div><div class="line">        <span class="keyword">if</span> (<span class="keyword">null</span> != mAudioTrack)</div><div class="line">            mAudioTrack.setStereoVolume(<span class="number">1</span> - b, b);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="comment">/**</span></div><div class="line"><span class="comment">     * 设置左右声道是否可用</span></div><div class="line"><span class="comment">     *</span></div><div class="line"><span class="comment">     * <span class="doctag">@param</span> left  左声道</span></div><div class="line"><span class="comment">     * <span class="doctag">@param</span> right 右声道</span></div><div class="line"><span class="comment">     */</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setChannel</span><span class="params">(<span class="keyword">boolean</span> left, <span class="keyword">boolean</span> right)</span> </span>&#123;</div><div class="line">        <span class="keyword">if</span> (<span class="keyword">null</span> != mAudioTrack) &#123;</div><div class="line">            mAudioTrack.setStereoVolume(left ? <span class="number">1</span> : <span class="number">0</span>, right ? <span class="number">1</span> : <span class="number">0</span>);</div><div class="line">            mAudioTrack.play();</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">pause</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">if</span> (<span class="keyword">null</span> != mAudioTrack)</div><div class="line">            mAudioTrack.pause();</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">play</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">if</span> (<span class="keyword">null</span> != mAudioTrack)</div><div class="line">            mAudioTrack.play();</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">stopp</span><span class="params">()</span> </span>&#123;</div><div class="line">        releaseAudioTrack();</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">releaseAudioTrack</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">if</span> (<span class="keyword">null</span> != mAudioTrack) &#123;</div><div class="line">            mAudioTrack.stop();</div><div class="line">            mAudioTrack.release();</div><div class="line">            mAudioTrack = <span class="keyword">null</span>;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h1 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h1><h2 id="从头开始播放"><a href="#从头开始播放" class="headerlink" title="从头开始播放"></a>从头开始播放</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">mPlayThread = <span class="keyword">new</span> PlayThread(<span class="keyword">this</span>, <span class="string">"tts1.pcm"</span>);</div><div class="line">mPlayThread.start();</div></pre></td></tr></table></figure>
+<h2 id="暂停"><a href="#暂停" class="headerlink" title="暂停"></a>暂停</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">mPlayThread.pause();</div></pre></td></tr></table></figure>
+<h2 id="暂停后继续播放"><a href="#暂停后继续播放" class="headerlink" title="暂停后继续播放"></a>暂停后继续播放</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">mPlayThread.play();</div></pre></td></tr></table></figure>
+<h2 id="停止播放"><a href="#停止播放" class="headerlink" title="停止播放"></a>停止播放</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">mPlayThread.stopp();</div><div class="line">mPlayThread = <span class="keyword">null</span>;</div></pre></td></tr></table></figure>
+<h2 id="左右声道控制-1"><a href="#左右声道控制-1" class="headerlink" title="左右声道控制"></a>左右声道控制</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 禁用左声道（右声道同理）</span></div><div class="line">mPlayThread.setChannel(<span class="keyword">false</span>, <span class="keyword">true</span>);</div></pre></td></tr></table></figure>
+<h1 id="向左右声道单独输出不同的音频数据"><a href="#向左右声道单独输出不同的音频数据" class="headerlink" title="向左右声道单独输出不同的音频数据"></a>向左右声道单独输出不同的音频数据</h1><p>也是一个很”呵呵“的做法，但是依然还没有找到更好的方法。<br>构造两个<code>AudioTrack</code>对象，分别输出两个音频，一个禁用左声道，一个禁用右声道，达到预期效果。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">mChannelLeftPlayer = <span class="keyword">new</span> PlayThread(<span class="keyword">this</span>, <span class="string">"tts1.pcm"</span>);</div><div class="line">mChannelRightPlayer = <span class="keyword">new</span> PlayThread(<span class="keyword">this</span>, <span class="string">"tts2.pcm"</span>);</div><div class="line"></div><div class="line">mChannelLeftPlayer.setChannel(<span class="keyword">true</span>, <span class="keyword">false</span>);</div><div class="line">mChannelRightPlayer.setChannel(<span class="keyword">false</span>, <span class="keyword">true</span>);</div><div class="line"></div><div class="line">mChannelLeftPlayer.start();</div><div class="line">mChannelRightPlayer.start();</div></pre></td></tr></table></figure>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+  <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+    <div>坚持原创技术分享，您的支持将鼓励我继续创作！</div>
+    <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+      <span>赏</span>
+    </button>
+    <div id="QR" style="display: none;">
+      
+        <div id="wechat" style="display: inline-block">
+          <img id="wechat_qr" src="/images/wechat.jpeg" alt="kongqw WeChat Pay"/>
+          <p>微信打赏</p>
+        </div>
+      
+      
+        <div id="alipay" style="display: inline-block">
+          <img id="alipay_qr" src="/images/alipay.jpeg" alt="kongqw Alipay"/>
+          <p>支付宝打赏</p>
+        </div>
+      
+    </div>
+  </div>
+
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Android/" rel="tag"># Android</a>
+          
+            <a href="/tags/声道/" rel="tag"># 声道</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/08/22/2016-08-22-环信即时通讯在Android平台的部署/" rel="next" title="环信即时通讯在Android平台的部署">
+                <i class="fa fa-chevron-left"></i> 环信即时通讯在Android平台的部署
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/08/29/2016-08-29-Android输出正弦波音频信号-左右声道对称/" rel="prev" title="Android输出正弦波音频信号(左右声道对称)">
+                Android输出正弦波音频信号(左右声道对称) <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.jpg"
+               alt="kongqw" />
+          <p class="site-author-name" itemprop="name">kongqw</p>
+           
+              <p class="site-description motion-element" itemprop="description">Android Developer</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives/">
+                <span class="site-state-item-count">51</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">4</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">23</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/kongqw" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://blog.csdn.net/q4878802" target="_blank" title="CSDN">
+                  
+                    <i class="fa fa-fw fa-home"></i>
+                  
+                  CSDN
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              Links
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://gank.io" title="干货集中营" target="_blank">干货集中营</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.xfyun.cn" title="讯飞开放平台" target="_blank">讯飞开放平台</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://www.easemob.com" title="环信" target="_blank">环信</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://tongji.baidu.com" title="百度统计" target="_blank">百度统计</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://kongqw.disqus.com/admin/" title="DISQUS评论" target="_blank">DISQUS评论</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://wallet.btc.com/" title="BTC Wallet" target="_blank">BTC Wallet</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://www.okcoin.cn/" title="OKCoin中国站" target="_blank">OKCoin中国站</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://www.okcoin.com/" title="OKCoin国际站" target="_blank">OKCoin国际站</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://btc.com/" title="BTC.com" target="_blank">BTC.com</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#效果图"><span class="nav-number">1.</span> <span class="nav-text">效果图</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#源码"><span class="nav-number">2.</span> <span class="nav-text">源码</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#AudioTrack对象的构造"><span class="nav-number">3.</span> <span class="nav-text">AudioTrack对象的构造</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#左右声道控制"><span class="nav-number">4.</span> <span class="nav-text">左右声道控制</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#封装"><span class="nav-number">5.</span> <span class="nav-text">封装</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#使用"><span class="nav-number">6.</span> <span class="nav-text">使用</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#从头开始播放"><span class="nav-number">6.1.</span> <span class="nav-text">从头开始播放</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#暂停"><span class="nav-number">6.2.</span> <span class="nav-text">暂停</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#暂停后继续播放"><span class="nav-number">6.3.</span> <span class="nav-text">暂停后继续播放</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#停止播放"><span class="nav-number">6.4.</span> <span class="nav-text">停止播放</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#左右声道控制-1"><span class="nav-number">6.5.</span> <span class="nav-text">左右声道控制</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#向左右声道单独输出不同的音频数据"><span class="nav-number">7.</span> <span class="nav-text">向左右声道单独输出不同的音频数据</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2015 - 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">kongqw</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.1"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.1"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://kongqw.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://yoursite.com/2016/08/26/2016-08-26-Android左右声道的控制/';
+          this.page.identifier = '2016/08/26/2016-08-26-Android左右声道的控制/';
+          this.page.title = 'Android左右声道的控制';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://kongqw.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

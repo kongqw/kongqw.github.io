@@ -1,0 +1,889 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="语音," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.1" />
+
+
+
+
+
+
+<meta name="description" content="转载请说明出处！作者：kqw攻城狮出处：个人站 | CSDN  效果图  示例源码  地址：http://download.csdn.net/detail/q4878802/9023825 步骤：1. 下载SDK前面文章有，就不在复述了。这里要选择离线命令词的服务以后，重新加载，因为需要下载离线命令词识别的资源文件 地址：http://blog.csdn.net/q4878802/article">
+<meta name="keywords" content="语音">
+<meta property="og:type" content="article">
+<meta property="og:title" content="科大讯飞离线命令词识别">
+<meta property="og:url" content="http://yoursite.com/2015/08/19/2015-08-19-科大讯飞离线命令词识别/index.html">
+<meta property="og:site_name" content="孔庆威的博客">
+<meta property="og:description" content="转载请说明出处！作者：kqw攻城狮出处：个人站 | CSDN  效果图  示例源码  地址：http://download.csdn.net/detail/q4878802/9023825 步骤：1. 下载SDK前面文章有，就不在复述了。这里要选择离线命令词的服务以后，重新加载，因为需要下载离线命令词识别的资源文件 地址：http://blog.csdn.net/q4878802/article">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://img.blog.csdn.net/20150819143649670">
+<meta property="og:updated_time" content="2017-10-26T02:44:31.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="科大讯飞离线命令词识别">
+<meta name="twitter:description" content="转载请说明出处！作者：kqw攻城狮出处：个人站 | CSDN  效果图  示例源码  地址：http://download.csdn.net/detail/q4878802/9023825 步骤：1. 下载SDK前面文章有，就不在复述了。这里要选择离线命令词的服务以后，重新加载，因为需要下载离线命令词识别的资源文件 地址：http://blog.csdn.net/q4878802/article">
+<meta name="twitter:image" content="http://img.blog.csdn.net/20150819143649670">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2015/08/19/2015-08-19-科大讯飞离线命令词识别/"/>
+
+
+
+
+
+  <title>科大讯飞离线命令词识别 | 孔庆威的博客</title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?e8ad05f02e13a412b09b2e8a632634af";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">孔庆威的博客</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">精于心，简于形</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/08/19/2015-08-19-科大讯飞离线命令词识别/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="kongqw">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="孔庆威的博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">科大讯飞离线命令词识别</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-08-19T17:41:31+08:00">
+                2015-08-19
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/语音/" itemprop="url" rel="index">
+                    <span itemprop="name">语音</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2015/08/19/2015-08-19-科大讯飞离线命令词识别/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2015/08/19/2015-08-19-科大讯飞离线命令词识别/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <hr>
+<p>转载请说明出处！<br>作者：<a href="http://kongqw.github.io/about/index.html" target="_blank" rel="external">kqw攻城狮</a><br>出处：<a href="http://kongqw.github.io" target="_blank" rel="external">个人站</a> | <a href="http://blog.csdn.net/q4878802/" target="_blank" rel="external">CSDN</a></p>
+<hr>
+<h1 id="效果图"><a href="#效果图" class="headerlink" title="效果图"></a>效果图</h1><p><img src="http://img.blog.csdn.net/20150819143649670" alt="效果图"></p>
+<ul>
+<li>示例源码</li>
+</ul>
+<p>地址：<a href="http://download.csdn.net/detail/q4878802/9023825" target="_blank" rel="external">http://download.csdn.net/detail/q4878802/9023825</a></p>
+<h2 id="步骤："><a href="#步骤：" class="headerlink" title="步骤："></a>步骤：</h2><h3 id="1-下载SDK"><a href="#1-下载SDK" class="headerlink" title="1. 下载SDK"></a>1. 下载SDK</h3><p>前面文章有，就不在复述了。<strong>这里要选择离线命令词的服务以后，重新加载，因为需要下载离线命令词识别的资源文件</strong></p>
+<p>地址：<a href="http://blog.csdn.net/q4878802/article/details/47762169" target="_blank" rel="external">http://blog.csdn.net/q4878802/article/details/47762169</a></p>
+<h3 id="2-集成方法"><a href="#2-集成方法" class="headerlink" title="2. 集成方法"></a>2. 集成方法</h3><p>前面文章有，就不在复述了。</p>
+<p>地址：<a href="http://blog.csdn.net/q4878802/article/details/47778629" target="_blank" rel="external">http://blog.csdn.net/q4878802/article/details/47778629</a></p>
+<h3 id="3-正题，开始集成"><a href="#3-正题，开始集成" class="headerlink" title="3. 正题，开始集成"></a>3. 正题，开始集成</h3><h4 id="1-添加权限"><a href="#1-添加权限" class="headerlink" title="1. 添加权限"></a>1. 添加权限</h4><p>这里用到的唤醒功能不是所有的权限都用到的，具体用到了哪些权限，可以看上面的链接，用到哪写权限就加哪些权限，这个为了快速方便测试，把讯飞用到的权限都加上了。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">&lt;uses-permission android:name=<span class="string">"android.permission.RECORD_AUDIO"</span> /&gt;</div><div class="line">&lt;uses-permission android:name=<span class="string">"android.permission.INTERNET"</span> /&gt;</div><div class="line">&lt;uses-permission android:name=<span class="string">"android.permission.ACCESS_NETWORK_STATE"</span> /&gt;</div><div class="line">&lt;uses-permission android:name=<span class="string">"android.permission.ACCESS_WIFI_STATE"</span> /&gt;</div><div class="line">&lt;uses-permission android:name=<span class="string">"android.permission.CHANGE_NETWORK_STATE"</span> /&gt;</div><div class="line">&lt;uses-permission android:name=<span class="string">"android.permission.READ_PHONE_STATE"</span> /&gt;</div><div class="line">&lt;uses-permission android:name=<span class="string">"android.permission.ACCESS_FINE_LOCATION"</span> /&gt;</div><div class="line">&lt;uses-permission android:name=<span class="string">"android.permission.READ_CONTACTS"</span> /&gt;</div><div class="line">&lt;uses-permission android:name=<span class="string">"android.permission.WRITE_EXTERNAL_STORAGE"</span> /&gt;</div></pre></td></tr></table></figure>
+<h4 id="2-初始化appid"><a href="#2-初始化appid" class="headerlink" title="2. 初始化appid"></a>2. 初始化appid</h4><p>我是将appid的初始化放在的Applicaiton下，具体可以下载源码</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 应用程序入口处调用,避免手机内存过小,杀死后台进程后通过历史intent进入Activity造成SpeechUtility对象为null</span></div><div class="line"><span class="comment">// 如在Application中调用初始化，需要在Mainifest中注册该Applicaiton</span></div><div class="line"><span class="comment">// 注意：此接口在非主进程调用会返回null对象，如需在非主进程使用语音功能，请增加参数：SpeechConstant.FORCE_LOGIN+"=true"</span></div><div class="line"><span class="comment">// 参数间使用“,”分隔。</span></div><div class="line"><span class="comment">// 设置你申请的应用appid</span></div><div class="line">StringBuffer param = <span class="keyword">new</span> StringBuffer();</div><div class="line">param.append(<span class="string">"appid=55d33f09"</span>);</div><div class="line">param.append(<span class="string">","</span>);</div><div class="line">param.append(SpeechConstant.ENGINE_MODE + <span class="string">"="</span> + SpeechConstant.MODE_MSC);</div><div class="line"><span class="comment">// param.append(",");</span></div><div class="line"><span class="comment">// param.append(SpeechConstant.FORCE_LOGIN + "=true");</span></div><div class="line">SpeechUtility.createUtility(InitKqwSpeech.<span class="keyword">this</span>, param.toString());</div></pre></td></tr></table></figure>
+<h4 id="3-工具类"><a href="#3-工具类" class="headerlink" title="3. 工具类"></a>3. 工具类</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">package</span> com.example.kqwspeechdemo2.utils;</div><div class="line"></div><div class="line"><span class="keyword">import</span> java.io.InputStream;</div><div class="line"><span class="keyword">import</span> android.content.Context;</div><div class="line"><span class="keyword">import</span> android.util.Log;</div><div class="line"></div><div class="line"><span class="comment">/**</span></div><div class="line"><span class="comment"> * 功能性函数扩展类</span></div><div class="line"><span class="comment"> * </span></div><div class="line"><span class="comment"> * <span class="doctag">@author</span> kongqw</span></div><div class="line"><span class="comment"> * </span></div><div class="line"><span class="comment"> */</span></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">FucUtil</span> </span>&#123;</div><div class="line"></div><div class="line">	<span class="comment">// Log标签</span></div><div class="line">	<span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String TAG = <span class="string">"FucUtil"</span>;</div><div class="line"></div><div class="line">	<span class="comment">/**</span></div><div class="line"><span class="comment">	 * 读取asset目录下文件内容</span></div><div class="line"><span class="comment">	 * </span></div><div class="line"><span class="comment">	 * <span class="doctag">@return</span> content</span></div><div class="line"><span class="comment">	 */</span></div><div class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> String <span class="title">readFile</span><span class="params">(Context mContext, String file, String code)</span> </span>&#123;</div><div class="line">		<span class="keyword">int</span> len = <span class="number">0</span>;</div><div class="line">		<span class="keyword">byte</span>[] buf = <span class="keyword">null</span>;</div><div class="line">		String result = <span class="string">""</span>;</div><div class="line">		<span class="keyword">try</span> &#123;</div><div class="line">			InputStream in = mContext.getAssets().open(file);</div><div class="line">			len = in.available();</div><div class="line">			buf = <span class="keyword">new</span> <span class="keyword">byte</span>[len];</div><div class="line">			in.read(buf, <span class="number">0</span>, len);</div><div class="line"></div><div class="line">			result = <span class="keyword">new</span> String(buf, code);</div><div class="line">		&#125; <span class="keyword">catch</span> (Exception e) &#123;</div><div class="line">			Log.e(TAG, e.toString());</div><div class="line">			e.printStackTrace();</div><div class="line">		&#125;</div><div class="line">		<span class="keyword">return</span> result;</div><div class="line">	&#125;</div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h4 id="4-构建语法文件的工具类"><a href="#4-构建语法文件的工具类" class="headerlink" title="4. 构建语法文件的工具类"></a>4. 构建语法文件的工具类</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div><div class="line">95</div><div class="line">96</div><div class="line">97</div><div class="line">98</div><div class="line">99</div><div class="line">100</div><div class="line">101</div><div class="line">102</div><div class="line">103</div><div class="line">104</div><div class="line">105</div><div class="line">106</div><div class="line">107</div><div class="line">108</div><div class="line">109</div><div class="line">110</div><div class="line">111</div><div class="line">112</div><div class="line">113</div><div class="line">114</div><div class="line">115</div><div class="line">116</div><div class="line">117</div><div class="line">118</div><div class="line">119</div><div class="line">120</div><div class="line">121</div><div class="line">122</div><div class="line">123</div><div class="line">124</div><div class="line">125</div><div class="line">126</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">package</span> com.example.kqwspeechdemo2.engine;</div><div class="line"></div><div class="line"><span class="keyword">import</span> com.example.kqwspeechdemo2.utils.FucUtil;</div><div class="line"><span class="keyword">import</span> com.iflytek.cloud.ErrorCode;</div><div class="line"><span class="keyword">import</span> com.iflytek.cloud.GrammarListener;</div><div class="line"><span class="keyword">import</span> com.iflytek.cloud.InitListener;</div><div class="line"><span class="keyword">import</span> com.iflytek.cloud.SpeechConstant;</div><div class="line"><span class="keyword">import</span> com.iflytek.cloud.SpeechError;</div><div class="line"><span class="keyword">import</span> com.iflytek.cloud.SpeechRecognizer;</div><div class="line"><span class="keyword">import</span> com.iflytek.cloud.util.ResourceUtil;</div><div class="line"><span class="keyword">import</span> com.iflytek.cloud.util.ResourceUtil.RESOURCE_TYPE;</div><div class="line"></div><div class="line"><span class="keyword">import</span> android.content.Context;</div><div class="line"><span class="keyword">import</span> android.os.Environment;</div><div class="line"><span class="keyword">import</span> android.util.Log;</div><div class="line"><span class="keyword">import</span> android.widget.Toast;</div><div class="line"></div><div class="line"><span class="comment">/**</span></div><div class="line"><span class="comment"> * 构建离线命令词语法</span></div><div class="line"><span class="comment"> * </span></div><div class="line"><span class="comment"> * <span class="doctag">@author</span> kongqw</span></div><div class="line"><span class="comment"> * </span></div><div class="line"><span class="comment"> */</span></div><div class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">BuildLocalGrammar</span> </span>&#123;</div><div class="line"></div><div class="line">	<span class="comment">/**</span></div><div class="line"><span class="comment">	 * 构建语法的回调</span></div><div class="line"><span class="comment">	 * </span></div><div class="line"><span class="comment">	 * <span class="doctag">@param</span> errMsg</span></div><div class="line"><span class="comment">	 *            null 构造成功</span></div><div class="line"><span class="comment">	 */</span></div><div class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">void</span> <span class="title">result</span><span class="params">(String errMsg, String grammarId)</span></span>;</div><div class="line"></div><div class="line">	<span class="comment">// Log标签</span></div><div class="line">	<span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String TAG = <span class="string">"BuildLocalGrammar"</span>;</div><div class="line"></div><div class="line">	<span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> String GRAMMAR_PATH = Environment.getExternalStorageDirectory().getAbsolutePath() + <span class="string">"/msc/test"</span>;</div><div class="line">	<span class="comment">// 上下文</span></div><div class="line">	<span class="keyword">private</span> Context mContext;</div><div class="line">	<span class="comment">// 语音识别对象</span></div><div class="line">	<span class="keyword">private</span> SpeechRecognizer mAsr;</div><div class="line"></div><div class="line">	<span class="function"><span class="keyword">public</span> <span class="title">BuildLocalGrammar</span><span class="params">(Context context)</span> </span>&#123;</div><div class="line">		mContext = context;</div><div class="line"></div><div class="line">		<span class="comment">// 初始化识别对象</span></div><div class="line">		mAsr = SpeechRecognizer.createRecognizer(context, <span class="keyword">new</span> InitListener() &#123;</div><div class="line"></div><div class="line">			<span class="meta">@Override</span></div><div class="line">			<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onInit</span><span class="params">(<span class="keyword">int</span> code)</span> </span>&#123;</div><div class="line">				Log.d(TAG, <span class="string">"SpeechRecognizer init() code = "</span> + code);</div><div class="line">				<span class="keyword">if</span> (code != ErrorCode.SUCCESS) &#123;</div><div class="line">					result(code + <span class="string">""</span>, <span class="keyword">null</span>);</div><div class="line">					Log.d(TAG, <span class="string">"初始化失败,错误码："</span> + code);</div><div class="line">					Toast.makeText(mContext, <span class="string">"初始化失败,错误码："</span> + code, Toast.LENGTH_SHORT).show();</div><div class="line">				&#125;</div><div class="line">			&#125;</div><div class="line">		&#125;);</div><div class="line">	&#125;;</div><div class="line"></div><div class="line">	<span class="comment">/**</span></div><div class="line"><span class="comment">	 * 构建语法</span></div><div class="line"><span class="comment">	 * </span></div><div class="line"><span class="comment">	 * <span class="doctag">@return</span></span></div><div class="line"><span class="comment">	 */</span></div><div class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">buildLocalGrammar</span><span class="params">()</span> </span>&#123;</div><div class="line">		<span class="keyword">try</span> &#123;</div><div class="line">			<span class="comment">/*</span></div><div class="line"><span class="comment">			 * TODO 如果你要在程序里维护bnf文件，可以在这里加上你维护的一些逻辑</span></div><div class="line"><span class="comment">			 * 如果不嫌麻烦，要一直改bnf文件，这里的代码可以不用动，不过我个人不建议一直手动修改bnf文件</span></div><div class="line"><span class="comment">			 * ，内容多了以后很容易出错，不好找Bug，建议每次改之前先备份。 建议用程序维护bnf文件。</span></div><div class="line"><span class="comment">			 */</span></div><div class="line"></div><div class="line">			<span class="comment">/*</span></div><div class="line"><span class="comment">			 * 构建语法</span></div><div class="line"><span class="comment">			 */</span></div><div class="line">			String mContent;<span class="comment">// 语法、词典临时变量</span></div><div class="line">			String mLocalGrammar = FucUtil.readFile(mContext, <span class="string">"kqw.bnf"</span>, <span class="string">"utf-8"</span>);</div><div class="line">			mContent = <span class="keyword">new</span> String(mLocalGrammar);</div><div class="line">			mAsr.setParameter(SpeechConstant.PARAMS, <span class="keyword">null</span>);</div><div class="line">			<span class="comment">// 设置文本编码格式</span></div><div class="line">			mAsr.setParameter(SpeechConstant.TEXT_ENCODING, <span class="string">"utf-8"</span>);</div><div class="line">			<span class="comment">// 设置引擎类型</span></div><div class="line">			mAsr.setParameter(SpeechConstant.ENGINE_TYPE, SpeechConstant.TYPE_LOCAL);</div><div class="line">			<span class="comment">// 设置语法构建路径</span></div><div class="line">			mAsr.setParameter(ResourceUtil.GRM_BUILD_PATH, GRAMMAR_PATH);</div><div class="line">			<span class="comment">// 使用8k音频的时候请解开注释</span></div><div class="line">			<span class="comment">// mAsr.setParameter(SpeechConstant.SAMPLE_RATE, "8000");</span></div><div class="line">			<span class="comment">// 设置资源路径</span></div><div class="line">			mAsr.setParameter(ResourceUtil.ASR_RES_PATH, getResourcePath());</div><div class="line">			<span class="comment">// 构建语法</span></div><div class="line">			<span class="keyword">int</span> ret = mAsr.buildGrammar(<span class="string">"bnf"</span>, mContent, <span class="keyword">new</span> GrammarListener() &#123;</div><div class="line"></div><div class="line">				<span class="meta">@Override</span></div><div class="line">				<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onBuildFinish</span><span class="params">(String grammarId, SpeechError error)</span> </span>&#123;</div><div class="line">					<span class="keyword">if</span> (error == <span class="keyword">null</span>) &#123;</div><div class="line">						Log.d(TAG, <span class="string">"语法构建成功"</span>);</div><div class="line">						result(<span class="keyword">null</span>, grammarId);</div><div class="line">					&#125; <span class="keyword">else</span> &#123;</div><div class="line">						Log.d(TAG, <span class="string">"语法构建失败,错误码:"</span> + error.getErrorCode());</div><div class="line">						result(error.getErrorCode() + <span class="string">""</span>, grammarId);</div><div class="line">					&#125;</div><div class="line">				&#125;</div><div class="line">			&#125;);</div><div class="line">			<span class="keyword">if</span> (ret != ErrorCode.SUCCESS) &#123;</div><div class="line">				Log.d(TAG, <span class="string">"语法构建失败,错误码:"</span> + ret);</div><div class="line">				result(ret + <span class="string">""</span>, <span class="keyword">null</span>);</div><div class="line">			&#125;</div><div class="line">		&#125; <span class="keyword">catch</span> (Exception e) &#123;</div><div class="line">			e.printStackTrace();</div><div class="line">		&#125;</div><div class="line">	&#125;</div><div class="line"></div><div class="line">	<span class="comment">// 获取识别资源路径</span></div><div class="line">	<span class="function"><span class="keyword">private</span> String <span class="title">getResourcePath</span><span class="params">()</span> </span>&#123;</div><div class="line">		StringBuffer tempBuffer = <span class="keyword">new</span> StringBuffer();</div><div class="line">		<span class="comment">// 识别通用资源</span></div><div class="line">		tempBuffer.append(ResourceUtil.generateResourcePath(mContext, RESOURCE_TYPE.assets, <span class="string">"asr/common.jet"</span>));</div><div class="line">		<span class="comment">// 识别8k资源-使用8k的时候请解开注释</span></div><div class="line">		<span class="comment">// tempBuffer.append(";");</span></div><div class="line">		<span class="comment">// tempBuffer.append(ResourceUtil.generateResourcePath(this,</span></div><div class="line">		<span class="comment">// RESOURCE_TYPE.assets, "asr/common_8k.jet"));</span></div><div class="line">		<span class="keyword">return</span> tempBuffer.toString();</div><div class="line">	&#125;</div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h4 id="5-命令词识别工具类"><a href="#5-命令词识别工具类" class="headerlink" title="5. 命令词识别工具类"></a>5. 命令词识别工具类</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div><div class="line">95</div><div class="line">96</div><div class="line">97</div><div class="line">98</div><div class="line">99</div><div class="line">100</div><div class="line">101</div><div class="line">102</div><div class="line">103</div><div class="line">104</div><div class="line">105</div><div class="line">106</div><div class="line">107</div><div class="line">108</div><div class="line">109</div><div class="line">110</div><div class="line">111</div><div class="line">112</div><div class="line">113</div><div class="line">114</div><div class="line">115</div><div class="line">116</div><div class="line">117</div><div class="line">118</div><div class="line">119</div><div class="line">120</div><div class="line">121</div><div class="line">122</div><div class="line">123</div><div class="line">124</div><div class="line">125</div><div class="line">126</div><div class="line">127</div><div class="line">128</div><div class="line">129</div><div class="line">130</div><div class="line">131</div><div class="line">132</div><div class="line">133</div><div class="line">134</div><div class="line">135</div><div class="line">136</div><div class="line">137</div><div class="line">138</div><div class="line">139</div><div class="line">140</div><div class="line">141</div><div class="line">142</div><div class="line">143</div><div class="line">144</div><div class="line">145</div><div class="line">146</div><div class="line">147</div><div class="line">148</div><div class="line">149</div><div class="line">150</div><div class="line">151</div><div class="line">152</div><div class="line">153</div><div class="line">154</div><div class="line">155</div><div class="line">156</div><div class="line">157</div><div class="line">158</div><div class="line">159</div><div class="line">160</div><div class="line">161</div><div class="line">162</div><div class="line">163</div><div class="line">164</div><div class="line">165</div><div class="line">166</div><div class="line">167</div><div class="line">168</div><div class="line">169</div><div class="line">170</div><div class="line">171</div><div class="line">172</div><div class="line">173</div><div class="line">174</div><div class="line">175</div><div class="line">176</div><div class="line">177</div><div class="line">178</div><div class="line">179</div><div class="line">180</div><div class="line">181</div><div class="line">182</div><div class="line">183</div><div class="line">184</div><div class="line">185</div><div class="line">186</div><div class="line">187</div><div class="line">188</div><div class="line">189</div><div class="line">190</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">package</span> com.example.kqwspeechdemo2.engine;</div><div class="line"></div><div class="line"><span class="keyword">import</span> com.iflytek.cloud.ErrorCode;</div><div class="line"><span class="keyword">import</span> com.iflytek.cloud.InitListener;</div><div class="line"><span class="keyword">import</span> com.iflytek.cloud.RecognizerListener;</div><div class="line"><span class="keyword">import</span> com.iflytek.cloud.RecognizerResult;</div><div class="line"><span class="keyword">import</span> com.iflytek.cloud.SpeechConstant;</div><div class="line"><span class="keyword">import</span> com.iflytek.cloud.SpeechError;</div><div class="line"><span class="keyword">import</span> com.iflytek.cloud.SpeechRecognizer;</div><div class="line"><span class="keyword">import</span> com.iflytek.cloud.util.ResourceUtil;</div><div class="line"><span class="keyword">import</span> com.iflytek.cloud.util.ResourceUtil.RESOURCE_TYPE;</div><div class="line"></div><div class="line"><span class="keyword">import</span> android.content.Context;</div><div class="line"><span class="keyword">import</span> android.os.Bundle;</div><div class="line"><span class="keyword">import</span> android.os.Environment;</div><div class="line"><span class="keyword">import</span> android.util.Log;</div><div class="line"><span class="keyword">import</span> android.widget.Toast;</div><div class="line"></div><div class="line"><span class="comment">/**</span></div><div class="line"><span class="comment"> * 命令词识别</span></div><div class="line"><span class="comment"> * </span></div><div class="line"><span class="comment"> * <span class="doctag">@author</span> kongqw</span></div><div class="line"><span class="comment"> * </span></div><div class="line"><span class="comment"> */</span></div><div class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">KqwSpeechRecognizer</span> </span>&#123;</div><div class="line">	<span class="comment">/**</span></div><div class="line"><span class="comment">	 * 初始化的回调</span></div><div class="line"><span class="comment">	 * </span></div><div class="line"><span class="comment">	 * <span class="doctag">@param</span> flag</span></div><div class="line"><span class="comment">	 *            true 初始化成功 false 初始化失败</span></div><div class="line"><span class="comment">	 */</span></div><div class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">void</span> <span class="title">initListener</span><span class="params">(<span class="keyword">boolean</span> flag)</span></span>;</div><div class="line"></div><div class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">void</span> <span class="title">resultData</span><span class="params">(String data)</span></span>;</div><div class="line"></div><div class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">void</span> <span class="title">speechLog</span><span class="params">(String log)</span></span>;</div><div class="line"></div><div class="line">	<span class="comment">// Log标签</span></div><div class="line">	<span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String TAG = <span class="string">"KqwLocalCommandRecognizer"</span>;</div><div class="line"></div><div class="line">	<span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> String GRAMMAR_PATH = Environment.getExternalStorageDirectory().getAbsolutePath() + <span class="string">"/msc/test"</span>;</div><div class="line">	<span class="comment">// 上下文</span></div><div class="line">	<span class="keyword">private</span> Context mContext;</div><div class="line">	<span class="comment">// 语音识别对象</span></div><div class="line">	<span class="keyword">private</span> SpeechRecognizer mAsr;</div><div class="line"></div><div class="line">	<span class="function"><span class="keyword">public</span> <span class="title">KqwSpeechRecognizer</span><span class="params">(Context context)</span> </span>&#123;</div><div class="line">		mContext = context;</div><div class="line"></div><div class="line">		<span class="comment">// 初始化识别对象</span></div><div class="line">		mAsr = SpeechRecognizer.createRecognizer(context, <span class="keyword">new</span> InitListener() &#123;</div><div class="line"></div><div class="line">			<span class="meta">@Override</span></div><div class="line">			<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onInit</span><span class="params">(<span class="keyword">int</span> code)</span> </span>&#123;</div><div class="line">				Log.d(TAG, <span class="string">"SpeechRecognizer init() code = "</span> + code);</div><div class="line">				<span class="keyword">if</span> (code != ErrorCode.SUCCESS) &#123;</div><div class="line">					initListener(<span class="keyword">false</span>);</div><div class="line">					Toast.makeText(mContext, <span class="string">"初始化失败,错误码："</span> + code, Toast.LENGTH_SHORT).show();</div><div class="line">				&#125; <span class="keyword">else</span> &#123;</div><div class="line">					initListener(<span class="keyword">true</span>);</div><div class="line">				&#125;</div><div class="line">			&#125;</div><div class="line">		&#125;);</div><div class="line"></div><div class="line">	&#125;</div><div class="line"></div><div class="line">	<span class="comment">/**</span></div><div class="line"><span class="comment">	 * 参数设置</span></div><div class="line"><span class="comment">	 */</span></div><div class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setParam</span><span class="params">()</span> </span>&#123;</div><div class="line">		<span class="comment">// 清空参数</span></div><div class="line">		mAsr.setParameter(SpeechConstant.PARAMS, <span class="keyword">null</span>);</div><div class="line">		<span class="comment">// 设置识别引擎 本地引擎</span></div><div class="line">		mAsr.setParameter(SpeechConstant.ENGINE_TYPE, SpeechConstant.TYPE_LOCAL);</div><div class="line">		<span class="comment">// mAsr.setParameter(SpeechConstant.ENGINE_TYPE,</span></div><div class="line">		<span class="comment">// SpeechConstant.TYPE_MIX);</span></div><div class="line">		<span class="comment">// mAsr.setParameter(SpeechConstant.ENGINE_TYPE, "mixed");</span></div><div class="line">		<span class="comment">// // 设置本地识别资源</span></div><div class="line">		mAsr.setParameter(ResourceUtil.ASR_RES_PATH, getResourcePath());</div><div class="line">		<span class="comment">// 设置语法构建路径</span></div><div class="line">		mAsr.setParameter(ResourceUtil.GRM_BUILD_PATH, GRAMMAR_PATH);</div><div class="line">		<span class="comment">// 设置返回结果格式</span></div><div class="line">		mAsr.setParameter(SpeechConstant.RESULT_TYPE, <span class="string">"json"</span>);</div><div class="line">		<span class="comment">// 设置本地识别使用语法id</span></div><div class="line">		mAsr.setParameter(SpeechConstant.LOCAL_GRAMMAR, <span class="string">"kqw"</span>);</div><div class="line">		<span class="comment">// 设置识别的门限值</span></div><div class="line">		mAsr.setParameter(SpeechConstant.MIXED_THRESHOLD, <span class="string">"60"</span>);</div><div class="line">		<span class="comment">// 使用8k音频的时候请解开注释</span></div><div class="line">		<span class="comment">// mAsr.setParameter(SpeechConstant.SAMPLE_RATE, "8000");</span></div><div class="line">		mAsr.setParameter(SpeechConstant.DOMAIN, <span class="string">"iat"</span>);</div><div class="line">		mAsr.setParameter(SpeechConstant.NLP_VERSION, <span class="string">"2.0"</span>);</div><div class="line">		mAsr.setParameter(<span class="string">"asr_sch"</span>, <span class="string">"1"</span>);</div><div class="line">		<span class="comment">// mAsr.setParameter(SpeechConstant.RESULT_TYPE, "json");</span></div><div class="line">	&#125;</div><div class="line"></div><div class="line">	<span class="comment">// 获取识别资源路径</span></div><div class="line">	<span class="function"><span class="keyword">private</span> String <span class="title">getResourcePath</span><span class="params">()</span> </span>&#123;</div><div class="line">		StringBuffer tempBuffer = <span class="keyword">new</span> StringBuffer();</div><div class="line">		<span class="comment">// 识别通用资源</span></div><div class="line">		tempBuffer.append(ResourceUtil.generateResourcePath(mContext, RESOURCE_TYPE.assets, <span class="string">"asr/common.jet"</span>));</div><div class="line">		<span class="comment">// 识别8k资源-使用8k的时候请解开注释</span></div><div class="line">		<span class="comment">// tempBuffer.append(";");</span></div><div class="line">		<span class="comment">// tempBuffer.append(ResourceUtil.generateResourcePath(this,</span></div><div class="line">		<span class="comment">// RESOURCE_TYPE.assets, "asr/common_8k.jet"));</span></div><div class="line">		<span class="keyword">return</span> tempBuffer.toString();</div><div class="line">	&#125;</div><div class="line"></div><div class="line">	<span class="keyword">int</span> ret = <span class="number">0</span>;<span class="comment">// 函数调用返回值</span></div><div class="line"></div><div class="line">	<span class="comment">/**</span></div><div class="line"><span class="comment">	 * 开始识别</span></div><div class="line"><span class="comment">	 */</span></div><div class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">startListening</span><span class="params">()</span> </span>&#123;</div><div class="line">		<span class="comment">// 设置参数</span></div><div class="line">		setParam();</div><div class="line"></div><div class="line">		ret = mAsr.startListening(mRecognizerListener);</div><div class="line">		<span class="keyword">if</span> (ret != ErrorCode.SUCCESS) &#123;</div><div class="line">			Log.i(TAG, <span class="string">"识别失败,错误码: "</span> + ret);</div><div class="line">		&#125;</div><div class="line">	&#125;</div><div class="line"></div><div class="line">	<span class="comment">/**</span></div><div class="line"><span class="comment">	 * 识别监听器。</span></div><div class="line"><span class="comment">	 */</span></div><div class="line">	<span class="keyword">private</span> RecognizerListener mRecognizerListener = <span class="keyword">new</span> RecognizerListener() &#123;</div><div class="line"></div><div class="line">		StringBuffer stringBuffer = <span class="keyword">new</span> StringBuffer();</div><div class="line"></div><div class="line">		<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onVolumeChanged</span><span class="params">(<span class="keyword">int</span> volume)</span> </span>&#123;</div><div class="line">			Log.i(TAG, <span class="string">"当前正在说话，音量大小："</span> + volume);</div><div class="line">			speechLog(<span class="string">"当前正在说话，音量大小："</span> + volume);</div><div class="line">		&#125;</div><div class="line"></div><div class="line">		<span class="meta">@Override</span></div><div class="line">		<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onResult</span><span class="params">(<span class="keyword">final</span> RecognizerResult result, <span class="keyword">boolean</span> isLast)</span> </span>&#123;</div><div class="line">			<span class="comment">/*</span></div><div class="line"><span class="comment">			 * TODO 拼接返回的数据</span></div><div class="line"><span class="comment">			 * </span></div><div class="line"><span class="comment">			 * 这里返回的是Json数据，具体返回的是离线名命令词返回的Json还是语义返回的Json，需要做判断以后在对数据数据进行拼接</span></div><div class="line"><span class="comment">			 */</span></div><div class="line">			stringBuffer.append(result.getResultString()).append(<span class="string">"\n\n"</span>);</div><div class="line">			<span class="comment">// isLast为true的时候，表示一句话说完，将拼接后的完整的一句话返回</span></div><div class="line">			<span class="keyword">if</span> (isLast) &#123;</div><div class="line">				<span class="comment">// 数据回调</span></div><div class="line">				resultData(stringBuffer.toString());</div><div class="line">			&#125;</div><div class="line">		&#125;</div><div class="line"></div><div class="line">		<span class="meta">@Override</span></div><div class="line">		<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onEndOfSpeech</span><span class="params">()</span> </span>&#123;</div><div class="line">			Log.i(TAG, <span class="string">"结束说话"</span>);</div><div class="line">			speechLog(<span class="string">"结束说话"</span>);</div><div class="line">		&#125;</div><div class="line"></div><div class="line">		<span class="meta">@Override</span></div><div class="line">		<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onBeginOfSpeech</span><span class="params">()</span> </span>&#123;</div><div class="line">			stringBuffer.delete(<span class="number">0</span>, stringBuffer.length());</div><div class="line">			Log.i(TAG, <span class="string">"开始说话"</span>);</div><div class="line">			speechLog(<span class="string">"开始说话"</span>);</div><div class="line">		&#125;</div><div class="line"></div><div class="line">		<span class="meta">@Override</span></div><div class="line">		<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onError</span><span class="params">(SpeechError error)</span> </span>&#123;</div><div class="line">			Log.i(TAG, <span class="string">"error = "</span> + error.getErrorCode());</div><div class="line">			<span class="keyword">if</span> (error.getErrorCode() == <span class="number">20005</span>) &#123;</div><div class="line">				<span class="comment">// 本地命令词没有识别，也没有请求到网络</span></div><div class="line">				resultData(<span class="string">"没有构建的语法"</span>);</div><div class="line">				speechLog(<span class="string">"没有构建的语法"</span>);</div><div class="line">				<span class="comment">/*</span></div><div class="line"><span class="comment">				 * TODO</span></div><div class="line"><span class="comment">				 * 当网络正常的情况下是不会回调20005的错误，只有当本地命令词识别不匹配，网络请求也失败的情况下，会返回20005</span></div><div class="line"><span class="comment">				 * 这里可以自己再做处理，例如回复“没有听清”等回复</span></div><div class="line"><span class="comment">				 */</span></div><div class="line">			&#125; <span class="keyword">else</span> &#123;</div><div class="line">				<span class="comment">/*</span></div><div class="line"><span class="comment">				 * TODO</span></div><div class="line"><span class="comment">				 * 其他错误有很多，需要具体问题具体分析，正常在程序没有错误的情况下，只会回调一个没有检测到说话的错误，没记错的话错误码是10118</span></div><div class="line"><span class="comment">				 */</span></div><div class="line">			&#125;</div><div class="line">		&#125;</div><div class="line"></div><div class="line">		<span class="meta">@Override</span></div><div class="line">		<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onEvent</span><span class="params">(<span class="keyword">int</span> eventType, <span class="keyword">int</span> arg1, <span class="keyword">int</span> arg2, Bundle obj)</span> </span>&#123;</div><div class="line">			Log.i(TAG, <span class="string">"eventType = "</span> + eventType);</div><div class="line">		&#125;</div><div class="line"></div><div class="line">	&#125;;</div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>这里的识别引擎设置的是<strong>SpeechConstant.TYPE_LOCAL</strong>，这种是本地识别引擎，只走本地识别，不走网络，如果换成<strong>SpeechConstant.TYPE_MIX</strong>，就是混合引擎，这种引擎方式，当本地没有识别到语法，返回20005错误码的时候，会直接请求语义接口，如果你语义开通了对应的场景，会走网络把你的语音转为语义，如果没有开通对应的场景，会把语音转为文字。</p>
+<h4 id="6-测试类"><a href="#6-测试类" class="headerlink" title="6. 测试类"></a>6. 测试类</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">package</span> com.example.kqwspeechdemo2;</div><div class="line"></div><div class="line"><span class="keyword">import</span> com.example.kqwspeechdemo2.engine.BuildLocalGrammar;</div><div class="line"><span class="keyword">import</span> com.example.kqwspeechdemo2.engine.KqwSpeechRecognizer;</div><div class="line"></div><div class="line"><span class="keyword">import</span> android.app.Activity;</div><div class="line"><span class="keyword">import</span> android.os.Bundle;</div><div class="line"><span class="keyword">import</span> android.text.TextUtils;</div><div class="line"><span class="keyword">import</span> android.view.View;</div><div class="line"><span class="keyword">import</span> android.widget.TextView;</div><div class="line"><span class="keyword">import</span> android.widget.Toast;</div><div class="line"></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MainActivity</span> <span class="keyword">extends</span> <span class="title">Activity</span> </span>&#123;</div><div class="line"></div><div class="line">	<span class="keyword">private</span> TextView mTvResult;</div><div class="line">	<span class="keyword">private</span> TextView mTvLog;</div><div class="line">	<span class="keyword">private</span> BuildLocalGrammar buildLocalGrammar;</div><div class="line">	<span class="keyword">private</span> KqwSpeechRecognizer kqwSpeechRecognizer;</div><div class="line"></div><div class="line">	<span class="meta">@Override</span></div><div class="line">	<span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">(Bundle savedInstanceState)</span> </span>&#123;</div><div class="line">		<span class="keyword">super</span>.onCreate(savedInstanceState);</div><div class="line">		setContentView(R.layout.activity_main);</div><div class="line"></div><div class="line">		mTvResult = (TextView) findViewById(R.id.tv_result);</div><div class="line">		mTvLog = (TextView) findViewById(R.id.tv_log);</div><div class="line"></div><div class="line">		<span class="comment">/**</span></div><div class="line"><span class="comment">		 * 初始化本地语法构造器</span></div><div class="line"><span class="comment">		 */</span></div><div class="line">		buildLocalGrammar = <span class="keyword">new</span> BuildLocalGrammar(<span class="keyword">this</span>) &#123;</div><div class="line"></div><div class="line">			<span class="meta">@Override</span></div><div class="line">			<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">result</span><span class="params">(String errMsg, String grammarId)</span> </span>&#123;</div><div class="line">				<span class="comment">// errMsg为null 构造成功</span></div><div class="line">				<span class="keyword">if</span> (TextUtils.isEmpty(errMsg)) &#123;</div><div class="line">					Toast.makeText(MainActivity.<span class="keyword">this</span>, <span class="string">"构造成功"</span>, Toast.LENGTH_SHORT).show();</div><div class="line">				&#125; <span class="keyword">else</span> &#123;</div><div class="line">					Toast.makeText(MainActivity.<span class="keyword">this</span>, <span class="string">"构造失败"</span>, Toast.LENGTH_SHORT).show();</div><div class="line">				&#125;</div><div class="line">			&#125;</div><div class="line">		&#125;;</div><div class="line"></div><div class="line">		<span class="comment">/**</span></div><div class="line"><span class="comment">		 * 初始化离线命令词识别器</span></div><div class="line"><span class="comment">		 */</span></div><div class="line">		kqwSpeechRecognizer = <span class="keyword">new</span> KqwSpeechRecognizer(<span class="keyword">this</span>) &#123;</div><div class="line"></div><div class="line">			<span class="meta">@Override</span></div><div class="line">			<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">speechLog</span><span class="params">(String log)</span> </span>&#123;</div><div class="line">				<span class="comment">// 录音Log信息的回调</span></div><div class="line">				mTvLog.setText(log);</div><div class="line">			&#125;</div><div class="line"></div><div class="line">			<span class="meta">@Override</span></div><div class="line">			<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">resultData</span><span class="params">(String data)</span> </span>&#123;</div><div class="line">				<span class="comment">// 是识别结果的回调</span></div><div class="line">				mTvResult.setText(data);</div><div class="line">			&#125;</div><div class="line"></div><div class="line">			<span class="meta">@Override</span></div><div class="line">			<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">initListener</span><span class="params">(<span class="keyword">boolean</span> flag)</span> </span>&#123;</div><div class="line">				<span class="comment">// 初始化的回调</span></div><div class="line">				<span class="keyword">if</span> (flag) &#123;</div><div class="line">					Toast.makeText(MainActivity.<span class="keyword">this</span>, <span class="string">"初始化成功"</span>, Toast.LENGTH_SHORT).show();</div><div class="line">				&#125; <span class="keyword">else</span> &#123;</div><div class="line">					Toast.makeText(MainActivity.<span class="keyword">this</span>, <span class="string">"初始化失败"</span>, Toast.LENGTH_SHORT).show();</div><div class="line">				&#125;</div><div class="line">			&#125;</div><div class="line">		&#125;;</div><div class="line"></div><div class="line">		<span class="comment">/**</span></div><div class="line"><span class="comment">		 * 构造本地语法文件，只有语法文件有变化的时候构造成功一次即可，不用每次都构造</span></div><div class="line"><span class="comment">		 */</span></div><div class="line">		buildLocalGrammar.buildLocalGrammar();</div><div class="line"></div><div class="line">	&#125;</div><div class="line"></div><div class="line">	<span class="comment">/**</span></div><div class="line"><span class="comment">	 * 开始识别按钮</span></div><div class="line"><span class="comment">	 * </span></div><div class="line"><span class="comment">	 * <span class="doctag">@param</span> view</span></div><div class="line"><span class="comment">	 */</span></div><div class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">start</span><span class="params">(View view)</span> </span>&#123;</div><div class="line">		mTvResult.setText(<span class="keyword">null</span>);</div><div class="line">		<span class="comment">// 开始识别</span></div><div class="line">		kqwSpeechRecognizer.startListening();</div><div class="line">	&#125;</div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h4 id="7-界面布局"><a href="#7-界面布局" class="headerlink" title="7. 界面布局"></a>7. 界面布局</h4><figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div></pre></td><td class="code"><pre><div class="line">&lt;RelativeLayout xmlns:android=<span class="string">"http://schemas.android.com/apk/res/android"</span></div><div class="line">    xmlns:tools=<span class="string">"http://schemas.android.com/tools"</span></div><div class="line">    android:layout_width=<span class="string">"match_parent"</span></div><div class="line">    android:layout_height=<span class="string">"match_parent"</span></div><div class="line">    android:paddingBottom=<span class="string">"@dimen/activity_vertical_margin"</span></div><div class="line">    android:paddingLeft=<span class="string">"@dimen/activity_horizontal_margin"</span></div><div class="line">    android:paddingRight=<span class="string">"@dimen/activity_horizontal_margin"</span></div><div class="line">    android:paddingTop=<span class="string">"@dimen/activity_vertical_margin"</span></div><div class="line">    tools:context=<span class="string">"com.example.kqwspeechdemo2.MainActivity"</span> &gt;</div><div class="line"></div><div class="line">    &lt;Button</div><div class="line">        android:id=<span class="string">"@+id/bt_start"</span></div><div class="line">        android:layout_width=<span class="string">"match_parent"</span></div><div class="line">        android:layout_height=<span class="string">"wrap_content"</span></div><div class="line">        android:layout_alignParentBottom=<span class="string">"true"</span></div><div class="line">        android:onClick=<span class="string">"start"</span></div><div class="line">        android:text=<span class="string">"开始录音"</span> /&gt;</div><div class="line"></div><div class="line">    &lt;TextView</div><div class="line">        android:id=<span class="string">"@+id/tv_log"</span></div><div class="line">        android:layout_width=<span class="string">"match_parent"</span></div><div class="line">        android:layout_height=<span class="string">"wrap_content"</span></div><div class="line">        android:layout_above=<span class="string">"@id/bt_start"</span></div><div class="line">        android:gravity=<span class="string">"center"</span></div><div class="line">        android:text=<span class="string">"录音信息"</span> /&gt;</div><div class="line"></div><div class="line">    &lt;ScrollView</div><div class="line">        android:layout_width=<span class="string">"match_parent"</span></div><div class="line">        android:layout_height=<span class="string">"match_parent"</span></div><div class="line">        android:layout_above=<span class="string">"@id/tv_log"</span> &gt;</div><div class="line"></div><div class="line">        &lt;TextView</div><div class="line">            android:id=<span class="string">"@+id/tv_result"</span></div><div class="line">            android:layout_width=<span class="string">"match_parent"</span></div><div class="line">            android:layout_height=<span class="string">"wrap_content"</span></div><div class="line">            android:text=<span class="string">"返回结果"</span> /&gt;</div><div class="line">    &lt;/ScrollView&gt;</div><div class="line"></div><div class="line">&lt;/RelativeLayout&gt;</div></pre></td></tr></table></figure>
+<h4 id="8-BNF语法文件"><a href="#8-BNF语法文件" class="headerlink" title="8. BNF语法文件"></a>8. BNF语法文件</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div></pre></td><td class="code"><pre><div class="line">#BNF+IAT 1.0 UTF-8;</div><div class="line">!grammar kqw;</div><div class="line">!slot &lt;contact&gt;;</div><div class="line">!slot &lt;callPre&gt;;</div><div class="line">!slot &lt;callPhone&gt;;</div><div class="line">!slot &lt;callTo&gt;;</div><div class="line">!slot &lt;go&gt;;</div><div class="line">!slot &lt;position&gt;;</div><div class="line"></div><div class="line">!slot &lt;move&gt;;</div><div class="line"></div><div class="line">!start &lt;callStart&gt;;</div><div class="line">&lt;callStart&gt;:</div><div class="line">[&lt;callPre&gt;][&lt;callTo&gt;]&lt;contact&gt;&lt;callPhone&gt;</div><div class="line">|[&lt;callPre&gt;]&lt;callPhone&gt;[&lt;callTo&gt;]&lt;contact&gt;</div><div class="line">|[&lt;callPre&gt;]&lt;callPhone&gt;</div><div class="line"></div><div class="line">|&lt;move&gt;</div><div class="line"></div><div class="line">|&lt;go&gt;&lt;position&gt;;</div><div class="line"></div><div class="line">&lt;contact&gt;:庆威|小孔;</div><div class="line">&lt;callPre&gt;:我要|我想|我想要;</div><div class="line">&lt;callPhone&gt;:打电话;</div><div class="line">&lt;callTo&gt;:给;</div><div class="line"></div><div class="line">&lt;move&gt;:前进|后退|左转|右转;</div><div class="line"></div><div class="line">&lt;go&gt;:去|到;</div><div class="line">&lt;position&gt;:厨房|卧室|阳台|客厅;</div></pre></td></tr></table></figure>
+<p>在构建语法的时候，我们不是必要在assets目录下创建一个xxx.bnf文件，构建的时候我们只要能够拿到满足BNF语法文件的字符串就行，至于这个文件内容，你存在哪都无所谓，在程序里写死、存sp、数据库、自己程序维护都OK，只要满足BNF的语法就行。</p>
+<p><strong>BNF语法开发指南</strong> </p>
+<p>下载地址：<a href="http://download.csdn.net/detail/q4878802/9023791" target="_blank" rel="external">http://download.csdn.net/detail/q4878802/9023791</a></p>
+<h2 id="最后"><a href="#最后" class="headerlink" title="最后"></a>最后</h2><ol>
+<li>如果你直接用我的Demo，我用的是测试版的离线包，只有35天的试用期，而且装机量只有3个，如果大家都用，很可能是不能正常运行的</li>
+<li>如果是参考我的demo自己写一个，千万不要忘记替换appid和资源文件。</li>
+</ol>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+  <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+    <div>坚持原创技术分享，您的支持将鼓励我继续创作！</div>
+    <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+      <span>赏</span>
+    </button>
+    <div id="QR" style="display: none;">
+      
+        <div id="wechat" style="display: inline-block">
+          <img id="wechat_qr" src="/images/wechat.jpeg" alt="kongqw WeChat Pay"/>
+          <p>微信打赏</p>
+        </div>
+      
+      
+        <div id="alipay" style="display: inline-block">
+          <img id="alipay_qr" src="/images/alipay.jpeg" alt="kongqw Alipay"/>
+          <p>支付宝打赏</p>
+        </div>
+      
+    </div>
+  </div>
+
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/语音/" rel="tag"># 语音</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2015/08/19/2015-08-19-科大讯飞语音唤醒/" rel="prev" title="科大讯飞语音唤醒">
+                科大讯飞语音唤醒 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.jpg"
+               alt="kongqw" />
+          <p class="site-author-name" itemprop="name">kongqw</p>
+           
+              <p class="site-description motion-element" itemprop="description">Android Developer</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives/">
+                <span class="site-state-item-count">51</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">4</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">23</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/kongqw" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://blog.csdn.net/q4878802" target="_blank" title="CSDN">
+                  
+                    <i class="fa fa-fw fa-home"></i>
+                  
+                  CSDN
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              Links
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://gank.io" title="干货集中营" target="_blank">干货集中营</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.xfyun.cn" title="讯飞开放平台" target="_blank">讯飞开放平台</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://www.easemob.com" title="环信" target="_blank">环信</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://tongji.baidu.com" title="百度统计" target="_blank">百度统计</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://kongqw.disqus.com/admin/" title="DISQUS评论" target="_blank">DISQUS评论</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://wallet.btc.com/" title="BTC Wallet" target="_blank">BTC Wallet</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://www.okcoin.cn/" title="OKCoin中国站" target="_blank">OKCoin中国站</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://www.okcoin.com/" title="OKCoin国际站" target="_blank">OKCoin国际站</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://btc.com/" title="BTC.com" target="_blank">BTC.com</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#效果图"><span class="nav-number">1.</span> <span class="nav-text">效果图</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#步骤："><span class="nav-number">1.1.</span> <span class="nav-text">步骤：</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-下载SDK"><span class="nav-number">1.1.1.</span> <span class="nav-text">1. 下载SDK</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-集成方法"><span class="nav-number">1.1.2.</span> <span class="nav-text">2. 集成方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-正题，开始集成"><span class="nav-number">1.1.3.</span> <span class="nav-text">3. 正题，开始集成</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-添加权限"><span class="nav-number">1.1.3.1.</span> <span class="nav-text">1. 添加权限</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-初始化appid"><span class="nav-number">1.1.3.2.</span> <span class="nav-text">2. 初始化appid</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-工具类"><span class="nav-number">1.1.3.3.</span> <span class="nav-text">3. 工具类</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-构建语法文件的工具类"><span class="nav-number">1.1.3.4.</span> <span class="nav-text">4. 构建语法文件的工具类</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#5-命令词识别工具类"><span class="nav-number">1.1.3.5.</span> <span class="nav-text">5. 命令词识别工具类</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#6-测试类"><span class="nav-number">1.1.3.6.</span> <span class="nav-text">6. 测试类</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#7-界面布局"><span class="nav-number">1.1.3.7.</span> <span class="nav-text">7. 界面布局</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#8-BNF语法文件"><span class="nav-number">1.1.3.8.</span> <span class="nav-text">8. BNF语法文件</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#最后"><span class="nav-number">1.2.</span> <span class="nav-text">最后</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2015 - 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">kongqw</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.1"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.1"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://kongqw.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://yoursite.com/2015/08/19/2015-08-19-科大讯飞离线命令词识别/';
+          this.page.identifier = '2015/08/19/2015-08-19-科大讯飞离线命令词识别/';
+          this.page.title = '科大讯飞离线命令词识别';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://kongqw.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

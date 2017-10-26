@@ -1,0 +1,887 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="语音," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.1" />
+
+
+
+
+
+
+<meta name="description" content="转载请说明出处！作者：kqw攻城狮出处：个人站 | CSDN  效果图 源码下载地址（Android Studio工程）：http://download.csdn.net/detail/q4878802/9062261 下载SDK1. 选择服务 2. 选择平台 3. 选择应用 4. 下载SDK说明之前的工程都是在Eclipse下演示的，随着Android Studio的普及，我这里也开始使用An">
+<meta name="keywords" content="语音">
+<meta property="og:type" content="article">
+<meta property="og:title" content="科大讯飞在线语音合成">
+<meta property="og:url" content="http://yoursite.com/2015/08/29/2015-08-29-科大讯飞在线语音合成/index.html">
+<meta property="og:site_name" content="孔庆威的博客">
+<meta property="og:description" content="转载请说明出处！作者：kqw攻城狮出处：个人站 | CSDN  效果图 源码下载地址（Android Studio工程）：http://download.csdn.net/detail/q4878802/9062261 下载SDK1. 选择服务 2. 选择平台 3. 选择应用 4. 下载SDK说明之前的工程都是在Eclipse下演示的，随着Android Studio的普及，我这里也开始使用An">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://img.blog.csdn.net/20150829221013499">
+<meta property="og:image" content="http://img.blog.csdn.net/20150829221023070">
+<meta property="og:image" content="http://img.blog.csdn.net/20150829221039284">
+<meta property="og:image" content="http://img.blog.csdn.net/20150829221049027">
+<meta property="og:image" content="http://img.blog.csdn.net/20150829221100011">
+<meta property="og:image" content="http://img.blog.csdn.net/20150829221123212">
+<meta property="og:updated_time" content="2017-10-26T02:44:31.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="科大讯飞在线语音合成">
+<meta name="twitter:description" content="转载请说明出处！作者：kqw攻城狮出处：个人站 | CSDN  效果图 源码下载地址（Android Studio工程）：http://download.csdn.net/detail/q4878802/9062261 下载SDK1. 选择服务 2. 选择平台 3. 选择应用 4. 下载SDK说明之前的工程都是在Eclipse下演示的，随着Android Studio的普及，我这里也开始使用An">
+<meta name="twitter:image" content="http://img.blog.csdn.net/20150829221013499">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2015/08/29/2015-08-29-科大讯飞在线语音合成/"/>
+
+
+
+
+
+  <title>科大讯飞在线语音合成 | 孔庆威的博客</title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?e8ad05f02e13a412b09b2e8a632634af";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">孔庆威的博客</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">精于心，简于形</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/08/29/2015-08-29-科大讯飞在线语音合成/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="kongqw">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="孔庆威的博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">科大讯飞在线语音合成</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-08-29T18:19:12+08:00">
+                2015-08-29
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/语音/" itemprop="url" rel="index">
+                    <span itemprop="name">语音</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2015/08/29/2015-08-29-科大讯飞在线语音合成/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2015/08/29/2015-08-29-科大讯飞在线语音合成/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <hr>
+<p>转载请说明出处！<br>作者：<a href="http://kongqw.github.io/about/index.html" target="_blank" rel="external">kqw攻城狮</a><br>出处：<a href="http://kongqw.github.io" target="_blank" rel="external">个人站</a> | <a href="http://blog.csdn.net/q4878802/" target="_blank" rel="external">CSDN</a></p>
+<hr>
+<h1 id="效果图"><a href="#效果图" class="headerlink" title="效果图"></a>效果图</h1><p><img src="http://img.blog.csdn.net/20150829221013499" alt="效果图"><br><img src="http://img.blog.csdn.net/20150829221023070" alt="效果图"></p>
+<h1 id="源码"><a href="#源码" class="headerlink" title="源码"></a>源码</h1><p><a href="http://download.csdn.net/detail/q4878802/9062261" target="_blank" rel="external">下载地址（Android Studio工程）：http://download.csdn.net/detail/q4878802/9062261</a></p>
+<h1 id="下载SDK"><a href="#下载SDK" class="headerlink" title="下载SDK"></a>下载SDK</h1><h2 id="1-选择服务"><a href="#1-选择服务" class="headerlink" title="1. 选择服务"></a>1. 选择服务</h2><p><img src="http://img.blog.csdn.net/20150829221039284" alt="选择服务"></p>
+<h2 id="2-选择平台"><a href="#2-选择平台" class="headerlink" title="2. 选择平台"></a>2. 选择平台</h2><p><img src="http://img.blog.csdn.net/20150829221049027" alt="选择平台"></p>
+<h2 id="3-选择应用"><a href="#3-选择应用" class="headerlink" title="3. 选择应用"></a>3. 选择应用</h2><p><img src="http://img.blog.csdn.net/20150829221100011" alt="选择应用"></p>
+<h2 id="4-下载SDK"><a href="#4-下载SDK" class="headerlink" title="4. 下载SDK"></a>4. 下载SDK</h2><h1 id="说明"><a href="#说明" class="headerlink" title="说明"></a>说明</h1><p>之前的工程都是在Eclipse下演示的，随着Android Studio的普及，我这里也开始使用Android Studio写Demo，虽然细节导入jar包和so库的过程可能不太一样，但是整体的流程是一样的。</p>
+<h1 id="将jar包和so库导入Android-Studio工程"><a href="#将jar包和so库导入Android-Studio工程" class="headerlink" title="将jar包和so库导入Android Studio工程"></a>将jar包和so库导入Android Studio工程</h1><p>将jar包copy到libs目录下<br>在main目录下创建jniLibs目录，将so文件copy过来</p>
+<p><img src="http://img.blog.csdn.net/20150829221123212" alt="导入SDK"></p>
+<h1 id="添加网络权限"><a href="#添加网络权限" class="headerlink" title="添加网络权限"></a>添加网络权限</h1><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">&lt;uses-permission android:name=<span class="string">"android.permission.ACCESS_NETWORK_STATE"</span> /&gt;</div><div class="line">&lt;uses-permission android:name=<span class="string">"android.permission.INTERNET"</span>/&gt;</div></pre></td></tr></table></figure>
+<h1 id="初始化"><a href="#初始化" class="headerlink" title="初始化"></a>初始化</h1><p>在清单文件中application标签下添加name属性</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">android:name=<span class="string">".InitApplication"</span></div></pre></td></tr></table></figure>
+<p>初始化</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">package</span> com.example.kongqw.kqwspeechcompounddemo;</div><div class="line"></div><div class="line"><span class="keyword">import</span> android.app.Application;</div><div class="line"><span class="keyword">import</span> android.widget.Toast;</div><div class="line"></div><div class="line"><span class="keyword">import</span> com.iflytek.cloud.SpeechConstant;</div><div class="line"><span class="keyword">import</span> com.iflytek.cloud.SpeechUtility;</div><div class="line"></div><div class="line"><span class="comment">/**</span></div><div class="line"><span class="comment"> * Created by kongqw on 2015/8/29.</span></div><div class="line"><span class="comment"> */</span></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">InitApplication</span> <span class="keyword">extends</span> <span class="title">Application</span> </span>&#123;</div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">()</span> </span>&#123;</div><div class="line">        Toast.makeText(<span class="keyword">this</span>, <span class="string">"InitApplication"</span>, Toast.LENGTH_LONG).show();</div><div class="line">        <span class="comment">// 应用程序入口处调用,避免手机内存过小,杀死后台进程后通过历史intent进入Activity造成SpeechUtility对象为null</span></div><div class="line">        <span class="comment">// 如在Application中调用初始化，需要在Mainifest中注册该Applicaiton</span></div><div class="line">        <span class="comment">// 注意：此接口在非主进程调用会返回null对象，如需在非主进程使用语音功能，请增加参数：SpeechConstant.FORCE_LOGIN+"=true"</span></div><div class="line">        <span class="comment">// 参数间使用“,”分隔。</span></div><div class="line">        <span class="comment">// 设置你申请的应用appid</span></div><div class="line">        StringBuffer param = <span class="keyword">new</span> StringBuffer();</div><div class="line">        param.append(<span class="string">"appid=55d33f09"</span>);</div><div class="line">        param.append(<span class="string">","</span>);</div><div class="line">        param.append(SpeechConstant.ENGINE_MODE + <span class="string">"="</span> + SpeechConstant.MODE_MSC);</div><div class="line">        <span class="comment">// param.append(",");</span></div><div class="line">        <span class="comment">// param.append(SpeechConstant.FORCE_LOGIN + "=true");</span></div><div class="line">        SpeechUtility.createUtility(InitApplication.<span class="keyword">this</span>, param.toString());</div><div class="line"></div><div class="line">        <span class="keyword">super</span>.onCreate();</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h1 id="语音合成工具类"><a href="#语音合成工具类" class="headerlink" title="语音合成工具类"></a>语音合成工具类</h1><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div><div class="line">95</div><div class="line">96</div><div class="line">97</div><div class="line">98</div><div class="line">99</div><div class="line">100</div><div class="line">101</div><div class="line">102</div><div class="line">103</div><div class="line">104</div><div class="line">105</div><div class="line">106</div><div class="line">107</div><div class="line">108</div><div class="line">109</div><div class="line">110</div><div class="line">111</div><div class="line">112</div><div class="line">113</div><div class="line">114</div><div class="line">115</div><div class="line">116</div><div class="line">117</div><div class="line">118</div><div class="line">119</div><div class="line">120</div><div class="line">121</div><div class="line">122</div><div class="line">123</div><div class="line">124</div><div class="line">125</div><div class="line">126</div><div class="line">127</div><div class="line">128</div><div class="line">129</div><div class="line">130</div><div class="line">131</div><div class="line">132</div><div class="line">133</div><div class="line">134</div><div class="line">135</div><div class="line">136</div><div class="line">137</div><div class="line">138</div><div class="line">139</div><div class="line">140</div><div class="line">141</div><div class="line">142</div><div class="line">143</div><div class="line">144</div><div class="line">145</div><div class="line">146</div><div class="line">147</div><div class="line">148</div><div class="line">149</div><div class="line">150</div><div class="line">151</div><div class="line">152</div><div class="line">153</div><div class="line">154</div><div class="line">155</div><div class="line">156</div><div class="line">157</div><div class="line">158</div><div class="line">159</div><div class="line">160</div><div class="line">161</div><div class="line">162</div><div class="line">163</div><div class="line">164</div><div class="line">165</div><div class="line">166</div><div class="line">167</div><div class="line">168</div><div class="line">169</div><div class="line">170</div><div class="line">171</div><div class="line">172</div><div class="line">173</div><div class="line">174</div><div class="line">175</div><div class="line">176</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">package</span> com.example.kongqw.kqwspeechcompounddemo.engine;</div><div class="line"></div><div class="line"><span class="keyword">import</span> android.content.Context;</div><div class="line"><span class="keyword">import</span> android.os.Bundle;</div><div class="line"><span class="keyword">import</span> android.text.TextUtils;</div><div class="line"><span class="keyword">import</span> android.util.Log;</div><div class="line"><span class="keyword">import</span> android.widget.Toast;</div><div class="line"></div><div class="line"><span class="keyword">import</span> com.iflytek.cloud.ErrorCode;</div><div class="line"><span class="keyword">import</span> com.iflytek.cloud.InitListener;</div><div class="line"><span class="keyword">import</span> com.iflytek.cloud.SpeechConstant;</div><div class="line"><span class="keyword">import</span> com.iflytek.cloud.SpeechError;</div><div class="line"><span class="keyword">import</span> com.iflytek.cloud.SpeechSynthesizer;</div><div class="line"><span class="keyword">import</span> com.iflytek.cloud.SynthesizerListener;</div><div class="line"></div><div class="line"><span class="comment">/**</span></div><div class="line"><span class="comment"> * 语音合成的类 发音人明细http://bbs.xfyun.cn/forum.php?mod=viewthread&amp;tid=367</span></div><div class="line"><span class="comment"> *</span></div><div class="line"><span class="comment"> * <span class="doctag">@author</span> kongqw</span></div><div class="line"><span class="comment"> */</span></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">KqwSpeechCompound</span> </span>&#123;</div><div class="line">    <span class="comment">// Log标签</span></div><div class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String TAG = <span class="string">"KqwSpeechCompound"</span>;</div><div class="line">    <span class="comment">// 上下文</span></div><div class="line">    <span class="keyword">private</span> Context mContext;</div><div class="line">    <span class="comment">// 语音合成对象</span></div><div class="line">    <span class="keyword">private</span> <span class="keyword">static</span> SpeechSynthesizer mTts;</div><div class="line"></div><div class="line">    <span class="comment">/**</span></div><div class="line"><span class="comment">     * 发音人</span></div><div class="line"><span class="comment">     */</span></div><div class="line">    <span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">static</span> String[] COLOUD_VOICERS_ENTRIES = &#123;<span class="string">"小燕"</span>, <span class="string">"小宇"</span>, <span class="string">"凯瑟琳"</span>, <span class="string">"亨利"</span>, <span class="string">"玛丽"</span>, <span class="string">"小研"</span>, <span class="string">"小琪"</span>, <span class="string">"小峰"</span>, <span class="string">"小梅"</span>, <span class="string">"小莉"</span>, <span class="string">"小蓉"</span>, <span class="string">"小芸"</span>, <span class="string">"小坤"</span>, <span class="string">"小强 "</span>, <span class="string">"小莹"</span>,</div><div class="line">            <span class="string">"小新"</span>, <span class="string">"楠楠"</span>, <span class="string">"老孙"</span>,&#125;;</div><div class="line">    <span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">static</span> String[] COLOUD_VOICERS_VALUE = &#123;<span class="string">"xiaoyan"</span>, <span class="string">"xiaoyu"</span>, <span class="string">"catherine"</span>, <span class="string">"henry"</span>, <span class="string">"vimary"</span>, <span class="string">"vixy"</span>, <span class="string">"xiaoqi"</span>, <span class="string">"vixf"</span>, <span class="string">"xiaomei"</span>,</div><div class="line">            <span class="string">"xiaolin"</span>, <span class="string">"xiaorong"</span>, <span class="string">"xiaoqian"</span>, <span class="string">"xiaokun"</span>, <span class="string">"xiaoqiang"</span>, <span class="string">"vixying"</span>, <span class="string">"xiaoxin"</span>, <span class="string">"nannan"</span>, <span class="string">"vils"</span>,&#125;;</div><div class="line"></div><div class="line"></div><div class="line">    <span class="comment">/**</span></div><div class="line"><span class="comment">     * 构造方法</span></div><div class="line"><span class="comment">     *</span></div><div class="line"><span class="comment">     * <span class="doctag">@param</span> context</span></div><div class="line"><span class="comment">     */</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">KqwSpeechCompound</span><span class="params">(Context context)</span> </span>&#123;</div><div class="line">        <span class="comment">// 上下文</span></div><div class="line">        mContext = context;</div><div class="line">        <span class="comment">// 初始化合成对象</span></div><div class="line">        mTts = SpeechSynthesizer.createSynthesizer(mContext, <span class="keyword">new</span> InitListener() &#123;</div><div class="line">            <span class="meta">@Override</span></div><div class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onInit</span><span class="params">(<span class="keyword">int</span> code)</span> </span>&#123;</div><div class="line">                <span class="keyword">if</span> (code != ErrorCode.SUCCESS) &#123;</div><div class="line">                    Log.i(TAG, <span class="string">"初始化失败,错误码："</span> + code);</div><div class="line">                &#125;</div><div class="line">            &#125;</div><div class="line">        &#125;);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="comment">/**</span></div><div class="line"><span class="comment">     * 开始合成</span></div><div class="line"><span class="comment">     *</span></div><div class="line"><span class="comment">     * <span class="doctag">@param</span> text</span></div><div class="line"><span class="comment">     */</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">speaking</span><span class="params">(String text)</span> </span>&#123;</div><div class="line">        <span class="comment">// 非空判断</span></div><div class="line">        <span class="keyword">if</span> (TextUtils.isEmpty(text)) &#123;</div><div class="line">            <span class="keyword">return</span>;</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">int</span> code = mTts.startSpeaking(text, mTtsListener);</div><div class="line">        <span class="keyword">if</span> (code != ErrorCode.SUCCESS) &#123;</div><div class="line">            <span class="keyword">if</span> (code == ErrorCode.ERROR_COMPONENT_NOT_INSTALLED) &#123;</div><div class="line">                Toast.makeText(mContext, <span class="string">"没有安装语音+ code = "</span> + code, Toast.LENGTH_SHORT).show();</div><div class="line">            &#125; <span class="keyword">else</span> &#123;</div><div class="line">                Toast.makeText(mContext, <span class="string">"语音合成失败,错误码: "</span> + code, Toast.LENGTH_SHORT).show();</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line"></div><div class="line"></div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="comment">/*</span></div><div class="line"><span class="comment">     * 停止语音播报</span></div><div class="line"><span class="comment">     */</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">stopSpeaking</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="comment">// 对象非空并且正在说话</span></div><div class="line">        <span class="keyword">if</span> (<span class="keyword">null</span> != mTts &amp;&amp; mTts.isSpeaking()) &#123;</div><div class="line">            <span class="comment">// 停止说话</span></div><div class="line">            mTts.stopSpeaking();</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="comment">/**</span></div><div class="line"><span class="comment">     * 判断当前有没有说话</span></div><div class="line"><span class="comment">     *</span></div><div class="line"><span class="comment">     * <span class="doctag">@return</span></span></div><div class="line"><span class="comment">     */</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">boolean</span> <span class="title">isSpeaking</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">if</span> (<span class="keyword">null</span> != mTts) &#123;</div><div class="line">            <span class="keyword">return</span> mTts.isSpeaking();</div><div class="line">        &#125; <span class="keyword">else</span> &#123;</div><div class="line">            <span class="keyword">return</span> <span class="keyword">false</span>;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="comment">/**</span></div><div class="line"><span class="comment">     * 合成回调监听。</span></div><div class="line"><span class="comment">     */</span></div><div class="line">    <span class="keyword">private</span> SynthesizerListener mTtsListener = <span class="keyword">new</span> SynthesizerListener() &#123;</div><div class="line">        <span class="meta">@Override</span></div><div class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onSpeakBegin</span><span class="params">()</span> </span>&#123;</div><div class="line">            Log.i(TAG, <span class="string">"开始播放"</span>);</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        <span class="meta">@Override</span></div><div class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onSpeakPaused</span><span class="params">()</span> </span>&#123;</div><div class="line">            Log.i(TAG, <span class="string">"暂停播放"</span>);</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        <span class="meta">@Override</span></div><div class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onSpeakResumed</span><span class="params">()</span> </span>&#123;</div><div class="line">            Log.i(TAG, <span class="string">"继续播放"</span>);</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        <span class="meta">@Override</span></div><div class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onBufferProgress</span><span class="params">(<span class="keyword">int</span> percent, <span class="keyword">int</span> beginPos, <span class="keyword">int</span> endPos, String info)</span> </span>&#123;</div><div class="line">            <span class="comment">// TODO 缓冲的进度</span></div><div class="line">            Log.i(TAG, <span class="string">"缓冲 : "</span> + percent);</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        <span class="meta">@Override</span></div><div class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onSpeakProgress</span><span class="params">(<span class="keyword">int</span> percent, <span class="keyword">int</span> beginPos, <span class="keyword">int</span> endPos)</span> </span>&#123;</div><div class="line">            <span class="comment">// TODO 说话的进度</span></div><div class="line">            Log.i(TAG, <span class="string">"合成 : "</span> + percent);</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        <span class="meta">@Override</span></div><div class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onCompleted</span><span class="params">(SpeechError error)</span> </span>&#123;</div><div class="line">            <span class="keyword">if</span> (error == <span class="keyword">null</span>) &#123;</div><div class="line">                Log.i(TAG, <span class="string">"播放完成"</span>);</div><div class="line"></div><div class="line">            &#125; <span class="keyword">else</span> <span class="keyword">if</span> (error != <span class="keyword">null</span>) &#123;</div><div class="line">                Log.i(TAG, error.getPlainDescription(<span class="keyword">true</span>));</div><div class="line">            &#125;</div><div class="line"></div><div class="line">        &#125;</div><div class="line"></div><div class="line">        <span class="meta">@Override</span></div><div class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onEvent</span><span class="params">(<span class="keyword">int</span> eventType, <span class="keyword">int</span> arg1, <span class="keyword">int</span> arg2, Bundle obj)</span> </span>&#123;</div><div class="line"></div><div class="line">        &#125;</div><div class="line">    &#125;;</div><div class="line"></div><div class="line">    <span class="comment">/**</span></div><div class="line"><span class="comment">     * 参数设置</span></div><div class="line"><span class="comment">     *</span></div><div class="line"><span class="comment">     * <span class="doctag">@return</span></span></div><div class="line"><span class="comment">     */</span></div><div class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">setParam</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="comment">// 清空参数</span></div><div class="line">        mTts.setParameter(SpeechConstant.PARAMS, <span class="keyword">null</span>);</div><div class="line">        <span class="comment">// 引擎类型 网络</span></div><div class="line">        mTts.setParameter(SpeechConstant.ENGINE_TYPE, SpeechConstant.TYPE_CLOUD);</div><div class="line">        <span class="comment">// 设置发音人</span></div><div class="line">        mTts.setParameter(SpeechConstant.VOICE_NAME, COLOUD_VOICERS_VALUE[<span class="number">0</span>]);</div><div class="line">        <span class="comment">// 设置语速</span></div><div class="line">        mTts.setParameter(SpeechConstant.SPEED, <span class="string">"50"</span>);</div><div class="line">        <span class="comment">// 设置音调</span></div><div class="line">        mTts.setParameter(SpeechConstant.PITCH, <span class="string">"50"</span>);</div><div class="line">        <span class="comment">// 设置音量</span></div><div class="line">        mTts.setParameter(SpeechConstant.VOLUME, <span class="string">"100"</span>);</div><div class="line">        <span class="comment">// 设置播放器音频流类型</span></div><div class="line">        mTts.setParameter(SpeechConstant.STREAM_TYPE, <span class="string">"3"</span>);</div><div class="line"></div><div class="line">        <span class="comment">// mTts.setParameter(SpeechConstant.TTS_AUDIO_PATH, Environment.getExternalStorageDirectory() + "/KRobot/wavaudio.pcm");</span></div><div class="line">        <span class="comment">// 背景音乐  1有 0 无</span></div><div class="line">        <span class="comment">// mTts.setParameter("bgs", "1");</span></div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h1 id="测试类"><a href="#测试类" class="headerlink" title="测试类"></a>测试类</h1><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">package</span> com.example.kongqw.kqwspeechcompounddemo;</div><div class="line"></div><div class="line"><span class="keyword">import</span> android.app.Activity;</div><div class="line"><span class="keyword">import</span> android.support.v7.app.AppCompatActivity;</div><div class="line"><span class="keyword">import</span> android.os.Bundle;</div><div class="line"><span class="keyword">import</span> android.view.Menu;</div><div class="line"><span class="keyword">import</span> android.view.MenuItem;</div><div class="line"><span class="keyword">import</span> android.view.View;</div><div class="line"><span class="keyword">import</span> android.widget.EditText;</div><div class="line"><span class="keyword">import</span> android.widget.Toast;</div><div class="line"></div><div class="line"><span class="keyword">import</span> com.example.kongqw.kqwspeechcompounddemo.engine.KqwSpeechCompound;</div><div class="line"></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MainActivity</span> <span class="keyword">extends</span> <span class="title">Activity</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="keyword">private</span> EditText mEtText;</div><div class="line">    <span class="keyword">private</span> KqwSpeechCompound mKqwSpeechCompound;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">(Bundle savedInstanceState)</span> </span>&#123;</div><div class="line">        <span class="keyword">super</span>.onCreate(savedInstanceState);</div><div class="line">        setContentView(R.layout.activity_main);</div><div class="line"></div><div class="line">        mEtText = (EditText) findViewById(R.id.et_text);</div><div class="line"></div><div class="line">        <span class="comment">// 初始化语音合成对象</span></div><div class="line">        mKqwSpeechCompound = <span class="keyword">new</span> KqwSpeechCompound(<span class="keyword">this</span>);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="comment">/**</span></div><div class="line"><span class="comment">     * 开始合成</span></div><div class="line"><span class="comment">     *</span></div><div class="line"><span class="comment">     * <span class="doctag">@param</span> view</span></div><div class="line"><span class="comment">     */</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">start</span><span class="params">(View view)</span> </span>&#123;</div><div class="line">        Toast.makeText(<span class="keyword">this</span>, <span class="string">"开始合成 : "</span> + mEtText.getText().toString().trim(), Toast.LENGTH_SHORT).show();</div><div class="line">        mKqwSpeechCompound.speaking(mEtText.getText().toString().trim());</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h1 id="XML页面布局"><a href="#XML页面布局" class="headerlink" title="XML页面布局"></a>XML页面布局</h1><figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div></pre></td><td class="code"><pre><div class="line">&lt;RelativeLayout xmlns:android=<span class="string">"http://schemas.android.com/apk/res/android"</span></div><div class="line">    xmlns:tools=<span class="string">"http://schemas.android.com/tools"</span></div><div class="line">    android:layout_width=<span class="string">"match_parent"</span></div><div class="line">    android:layout_height=<span class="string">"match_parent"</span></div><div class="line">    android:paddingBottom=<span class="string">"@dimen/activity_vertical_margin"</span></div><div class="line">    android:paddingLeft=<span class="string">"@dimen/activity_horizontal_margin"</span></div><div class="line">    android:paddingRight=<span class="string">"@dimen/activity_horizontal_margin"</span></div><div class="line">    android:paddingTop=<span class="string">"@dimen/activity_vertical_margin"</span></div><div class="line">    tools:context=<span class="string">".MainActivity"</span>&gt;</div><div class="line"></div><div class="line">    &lt;EditText</div><div class="line">        android:id=<span class="string">"@+id/et_text"</span></div><div class="line">        android:layout_width=<span class="string">"match_parent"</span></div><div class="line">        android:layout_height=<span class="string">"wrap_content"</span></div><div class="line">        android:hint=<span class="string">"语音合成的内容"</span></div><div class="line">        android:textSize=<span class="string">"20dp"</span> /&gt;</div><div class="line"></div><div class="line">    &lt;Button</div><div class="line">        android:layout_width=<span class="string">"match_parent"</span></div><div class="line">        android:layout_height=<span class="string">"wrap_content"</span></div><div class="line">        android:layout_below=<span class="string">"@+id/et_text"</span></div><div class="line">        android:gravity=<span class="string">"center"</span></div><div class="line">        android:onClick=<span class="string">"start"</span></div><div class="line">        android:text=<span class="string">"语音合成"</span></div><div class="line">        android:textSize=<span class="string">"20dp"</span> /&gt;</div><div class="line">    </div><div class="line">&lt;/RelativeLayout&gt;</div></pre></td></tr></table></figure>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+  <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+    <div>坚持原创技术分享，您的支持将鼓励我继续创作！</div>
+    <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+      <span>赏</span>
+    </button>
+    <div id="QR" style="display: none;">
+      
+        <div id="wechat" style="display: inline-block">
+          <img id="wechat_qr" src="/images/wechat.jpeg" alt="kongqw WeChat Pay"/>
+          <p>微信打赏</p>
+        </div>
+      
+      
+        <div id="alipay" style="display: inline-block">
+          <img id="alipay_qr" src="/images/alipay.jpeg" alt="kongqw Alipay"/>
+          <p>支付宝打赏</p>
+        </div>
+      
+    </div>
+  </div>
+
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/语音/" rel="tag"># 语音</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2015/08/21/2015-08-21-科大讯飞语音识别/" rel="next" title="科大讯飞语音识别">
+                <i class="fa fa-chevron-left"></i> 科大讯飞语音识别
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2015/08/30/2015-08-30-科大讯飞语义识别/" rel="prev" title="科大讯飞语义识别">
+                科大讯飞语义识别 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.jpg"
+               alt="kongqw" />
+          <p class="site-author-name" itemprop="name">kongqw</p>
+           
+              <p class="site-description motion-element" itemprop="description">Android Developer</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives/">
+                <span class="site-state-item-count">51</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">4</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">23</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/kongqw" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://blog.csdn.net/q4878802" target="_blank" title="CSDN">
+                  
+                    <i class="fa fa-fw fa-home"></i>
+                  
+                  CSDN
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              Links
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://gank.io" title="干货集中营" target="_blank">干货集中营</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.xfyun.cn" title="讯飞开放平台" target="_blank">讯飞开放平台</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://www.easemob.com" title="环信" target="_blank">环信</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://tongji.baidu.com" title="百度统计" target="_blank">百度统计</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://kongqw.disqus.com/admin/" title="DISQUS评论" target="_blank">DISQUS评论</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://wallet.btc.com/" title="BTC Wallet" target="_blank">BTC Wallet</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://www.okcoin.cn/" title="OKCoin中国站" target="_blank">OKCoin中国站</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://www.okcoin.com/" title="OKCoin国际站" target="_blank">OKCoin国际站</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://btc.com/" title="BTC.com" target="_blank">BTC.com</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#效果图"><span class="nav-number">1.</span> <span class="nav-text">效果图</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#源码"><span class="nav-number">2.</span> <span class="nav-text">源码</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#下载SDK"><span class="nav-number">3.</span> <span class="nav-text">下载SDK</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-选择服务"><span class="nav-number">3.1.</span> <span class="nav-text">1. 选择服务</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-选择平台"><span class="nav-number">3.2.</span> <span class="nav-text">2. 选择平台</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-选择应用"><span class="nav-number">3.3.</span> <span class="nav-text">3. 选择应用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-下载SDK"><span class="nav-number">3.4.</span> <span class="nav-text">4. 下载SDK</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#说明"><span class="nav-number">4.</span> <span class="nav-text">说明</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#将jar包和so库导入Android-Studio工程"><span class="nav-number">5.</span> <span class="nav-text">将jar包和so库导入Android Studio工程</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#添加网络权限"><span class="nav-number">6.</span> <span class="nav-text">添加网络权限</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#初始化"><span class="nav-number">7.</span> <span class="nav-text">初始化</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#语音合成工具类"><span class="nav-number">8.</span> <span class="nav-text">语音合成工具类</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#测试类"><span class="nav-number">9.</span> <span class="nav-text">测试类</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#XML页面布局"><span class="nav-number">10.</span> <span class="nav-text">XML页面布局</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2015 - 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">kongqw</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.1"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.1"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://kongqw.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://yoursite.com/2015/08/29/2015-08-29-科大讯飞在线语音合成/';
+          this.page.identifier = '2015/08/29/2015-08-29-科大讯飞在线语音合成/';
+          this.page.title = '科大讯飞在线语音合成';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://kongqw.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
