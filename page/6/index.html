@@ -278,6 +278,336 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/08/21/2015-08-21-科大讯飞语音识别/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="kongqw">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="孔庆威的博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2015/08/21/2015-08-21-科大讯飞语音识别/" itemprop="url">科大讯飞语音识别</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-08-21T18:31:38+08:00">
+                2015-08-21
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/语音/" itemprop="url" rel="index">
+                    <span itemprop="name">语音</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2015/08/21/2015-08-21-科大讯飞语音识别/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2015/08/21/2015-08-21-科大讯飞语音识别/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <hr>
+<p>转载请说明出处！<br>作者：<a href="http://kongqw.github.io/about/index.html" target="_blank" rel="external">kqw攻城狮</a><br>出处：<a href="http://kongqw.github.io" target="_blank" rel="external">个人站</a> | <a href="http://blog.csdn.net/q4878802/" target="_blank" rel="external">CSDN</a></p>
+<hr>
+<h1 id="离线语音识别（语记）"><a href="#离线语音识别（语记）" class="headerlink" title="离线语音识别（语记）"></a>离线语音识别（语记）</h1><h2 id="效果图"><a href="#效果图" class="headerlink" title="效果图"></a>效果图</h2><p><img src="http://img.blog.csdn.net/20150821144538468" alt="效果图"></p>
+<h2 id="源码"><a href="#源码" class="headerlink" title="源码"></a>源码</h2><p>下载地址：<a href="http://download.csdn.net/detail/q4878802/9032149" target="_blank" rel="external">http://download.csdn.net/detail/q4878802/9032149</a></p>
+<h2 id="下载语记并安装离线资源"><a href="#下载语记并安装离线资源" class="headerlink" title="下载语记并安装离线资源"></a>下载语记并安装离线资源</h2><p><img src="http://img.blog.csdn.net/20150821144800352" alt="下载语记并安装离线资源"></p>
+<h2 id="集成"><a href="#集成" class="headerlink" title="集成"></a>集成</h2><h3 id="初始化"><a href="#初始化" class="headerlink" title="初始化"></a>初始化</h3><p>在清单文件中<strong>application</strong>标签下添加</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">android:name=<span class="string">"InitKqwSpeech"</span></div></pre></td></tr></table></figure>
+<p>初始化</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">package</span> com.example.kqwlocalspeechdemo;</div><div class="line"></div><div class="line"><span class="keyword">import</span> com.iflytek.cloud.SpeechConstant;</div><div class="line"><span class="keyword">import</span> com.iflytek.cloud.SpeechUtility;</div><div class="line"></div><div class="line"><span class="keyword">import</span> android.app.Application;</div><div class="line"></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">InitKqwSpeech</span> <span class="keyword">extends</span> <span class="title">Application</span> </span>&#123;</div><div class="line"></div><div class="line">	<span class="meta">@Override</span></div><div class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">()</span> </span>&#123;</div><div class="line">		<span class="comment">// 应用程序入口处调用,避免手机内存过小,杀死后台进程后通过历史intent进入Activity造成SpeechUtility对象为null</span></div><div class="line">		<span class="comment">// 如在Application中调用初始化，需要在Mainifest中注册该Applicaiton</span></div><div class="line">		<span class="comment">// 注意：此接口在非主进程调用会返回null对象，如需在非主进程使用语音功能，请增加参数：SpeechConstant.FORCE_LOGIN+"=true"</span></div><div class="line">		<span class="comment">// 参数间使用“,”分隔。</span></div><div class="line">		<span class="comment">// 设置你申请的应用appid</span></div><div class="line">		StringBuffer param = <span class="keyword">new</span> StringBuffer();</div><div class="line">		param.append(<span class="string">"appid=55d33f09"</span>);</div><div class="line">		param.append(<span class="string">","</span>);</div><div class="line">		param.append(SpeechConstant.ENGINE_MODE + <span class="string">"="</span> + SpeechConstant.MODE_MSC);</div><div class="line">		<span class="comment">// param.append(",");</span></div><div class="line">		<span class="comment">// param.append(SpeechConstant.FORCE_LOGIN + "=true");</span></div><div class="line">		SpeechUtility.createUtility(InitKqwSpeech.<span class="keyword">this</span>, param.toString());</div><div class="line"></div><div class="line">		<span class="keyword">super</span>.onCreate();</div><div class="line">	&#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="语音听写工具类"><a href="#语音听写工具类" class="headerlink" title="语音听写工具类"></a>语音听写工具类</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div><div class="line">95</div><div class="line">96</div><div class="line">97</div><div class="line">98</div><div class="line">99</div><div class="line">100</div><div class="line">101</div><div class="line">102</div><div class="line">103</div><div class="line">104</div><div class="line">105</div><div class="line">106</div><div class="line">107</div><div class="line">108</div><div class="line">109</div><div class="line">110</div><div class="line">111</div><div class="line">112</div><div class="line">113</div><div class="line">114</div><div class="line">115</div><div class="line">116</div><div class="line">117</div><div class="line">118</div><div class="line">119</div><div class="line">120</div><div class="line">121</div><div class="line">122</div><div class="line">123</div><div class="line">124</div><div class="line">125</div><div class="line">126</div><div class="line">127</div><div class="line">128</div><div class="line">129</div><div class="line">130</div><div class="line">131</div><div class="line">132</div><div class="line">133</div><div class="line">134</div><div class="line">135</div><div class="line">136</div><div class="line">137</div><div class="line">138</div><div class="line">139</div><div class="line">140</div><div class="line">141</div><div class="line">142</div><div class="line">143</div><div class="line">144</div><div class="line">145</div><div class="line">146</div><div class="line">147</div><div class="line">148</div><div class="line">149</div><div class="line">150</div><div class="line">151</div><div class="line">152</div><div class="line">153</div><div class="line">154</div><div class="line">155</div><div class="line">156</div><div class="line">157</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">package</span> com.example.kqwlocalspeechdemo.engine;</div><div class="line"></div><div class="line"><span class="keyword">import</span> android.content.Context;</div><div class="line"><span class="keyword">import</span> android.os.Bundle;</div><div class="line"><span class="keyword">import</span> android.util.Log;</div><div class="line"><span class="keyword">import</span> android.widget.Toast;</div><div class="line"></div><div class="line"><span class="keyword">import</span> com.example.kqwlocalspeechdemo.utils.JsonUtils;</div><div class="line"><span class="keyword">import</span> com.iflytek.cloud.ErrorCode;</div><div class="line"><span class="keyword">import</span> com.iflytek.cloud.InitListener;</div><div class="line"><span class="keyword">import</span> com.iflytek.cloud.RecognizerListener;</div><div class="line"><span class="keyword">import</span> com.iflytek.cloud.RecognizerResult;</div><div class="line"><span class="keyword">import</span> com.iflytek.cloud.SpeechConstant;</div><div class="line"><span class="keyword">import</span> com.iflytek.cloud.SpeechError;</div><div class="line"><span class="keyword">import</span> com.iflytek.cloud.SpeechRecognizer;</div><div class="line"></div><div class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">KqwSpeechRecognizer</span> </span>&#123;</div><div class="line">	<span class="comment">/**</span></div><div class="line"><span class="comment">	 * 初始化的回调</span></div><div class="line"><span class="comment">	 * </span></div><div class="line"><span class="comment">	 * <span class="doctag">@param</span> flag</span></div><div class="line"><span class="comment">	 *            true 初始化成功 false 初始化失败</span></div><div class="line"><span class="comment">	 */</span></div><div class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">void</span> <span class="title">initListener</span><span class="params">(<span class="keyword">boolean</span> flag)</span></span>;</div><div class="line"></div><div class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">void</span> <span class="title">resultData</span><span class="params">(String data)</span></span>;</div><div class="line"></div><div class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">void</span> <span class="title">speechLog</span><span class="params">(String log)</span></span>;</div><div class="line"></div><div class="line">	<span class="comment">// 语音听写对象</span></div><div class="line">	<span class="keyword">private</span> SpeechRecognizer mIat;</div><div class="line">	<span class="comment">// TAG标签</span></div><div class="line">	<span class="keyword">private</span> <span class="keyword">static</span> String TAG = <span class="string">"KqwSpeechRecognizer"</span>;</div><div class="line">	<span class="comment">// 上下文</span></div><div class="line">	<span class="keyword">private</span> <span class="keyword">static</span> Context mContext;	</div><div class="line"></div><div class="line">	<span class="comment">// SharedPreferences</span></div><div class="line">	<span class="comment">// private SharedPreferences mSharedPreferences;</span></div><div class="line"></div><div class="line">	<span class="function"><span class="keyword">public</span> <span class="title">KqwSpeechRecognizer</span><span class="params">(Context context)</span> </span>&#123;</div><div class="line">		<span class="comment">// 获取上下文</span></div><div class="line">		mContext = context;</div><div class="line">		<span class="comment">// 初始化识别对象</span></div><div class="line">		mIat = SpeechRecognizer.createRecognizer(context, <span class="keyword">new</span> InitListener() &#123;</div><div class="line"></div><div class="line">			<span class="meta">@Override</span></div><div class="line">			<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onInit</span><span class="params">(<span class="keyword">int</span> code)</span> </span>&#123;</div><div class="line">				Log.d(TAG, <span class="string">"SpeechRecognizer init() code = "</span> + code);</div><div class="line">				<span class="keyword">if</span> (code != ErrorCode.SUCCESS) &#123;</div><div class="line">					initListener(<span class="keyword">false</span>);</div><div class="line">					Toast.makeText(mContext, <span class="string">"初始化失败,错误码："</span> + code, Toast.LENGTH_SHORT).show();</div><div class="line">				&#125; <span class="keyword">else</span> &#123;</div><div class="line">					initListener(<span class="keyword">true</span>);</div><div class="line">				&#125;</div><div class="line">			&#125;</div><div class="line">		&#125;);</div><div class="line">	&#125;</div><div class="line"></div><div class="line">	<span class="comment">/**</span></div><div class="line"><span class="comment">	 * 开始录音</span></div><div class="line"><span class="comment">	 */</span></div><div class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">startListening</span><span class="params">()</span> </span>&#123;</div><div class="line">		<span class="comment">// 设置参数</span></div><div class="line">		setParam();</div><div class="line">		<span class="comment">// 不显示听写对话框</span></div><div class="line">		<span class="keyword">int</span> ret = mIat.startListening(recognizerListener);</div><div class="line">		<span class="keyword">if</span> (ret != ErrorCode.SUCCESS) &#123;</div><div class="line">			Toast.makeText(mContext, <span class="string">"听写失败,错误码："</span> + ret, Toast.LENGTH_SHORT).show();</div><div class="line">		&#125;</div><div class="line">	&#125;</div><div class="line"></div><div class="line">	<span class="comment">/**</span></div><div class="line"><span class="comment">	 * 停止录音并获取录入的文字</span></div><div class="line"><span class="comment">	 */</span></div><div class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">cancel</span><span class="params">()</span> </span>&#123;</div><div class="line">		<span class="keyword">if</span> (<span class="keyword">null</span> != mIat) &#123;</div><div class="line">			<span class="comment">// mIat.cancel();</span></div><div class="line">			mIat.stopListening();</div><div class="line">		&#125;</div><div class="line">	&#125;</div><div class="line"></div><div class="line">	<span class="comment">/**</span></div><div class="line"><span class="comment">	 * 听写监听器。</span></div><div class="line"><span class="comment">	 */</span></div><div class="line">	<span class="keyword">private</span> RecognizerListener recognizerListener = <span class="keyword">new</span> RecognizerListener() &#123;</div><div class="line"></div><div class="line">		StringBuffer resultText;</div><div class="line"></div><div class="line">		<span class="meta">@Override</span></div><div class="line">		<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onBeginOfSpeech</span><span class="params">()</span> </span>&#123;</div><div class="line">			speechLog(<span class="string">"开始说话"</span>);</div><div class="line">			Log.i(TAG, <span class="string">"开始说话"</span>);</div><div class="line">			resultText = <span class="keyword">new</span> StringBuffer();</div><div class="line">		&#125;</div><div class="line"></div><div class="line">		<span class="meta">@Override</span></div><div class="line">		<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onError</span><span class="params">(SpeechError error)</span> </span>&#123;</div><div class="line">			Log.i(TAG, error.getPlainDescription(<span class="keyword">true</span>));</div><div class="line">		&#125;</div><div class="line"></div><div class="line">		<span class="meta">@Override</span></div><div class="line">		<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onEndOfSpeech</span><span class="params">()</span> </span>&#123;</div><div class="line">			speechLog(<span class="string">"结束说话"</span>);</div><div class="line">			Log.i(TAG, <span class="string">"结束说话"</span>);</div><div class="line">		&#125;</div><div class="line"></div><div class="line">		<span class="meta">@Override</span></div><div class="line">		<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onResult</span><span class="params">(RecognizerResult results, <span class="keyword">boolean</span> isLast)</span> </span>&#123;</div><div class="line">			Log.d(TAG, results.getResultString());</div><div class="line">			String text = JsonUtils.parseIatResult(results.getResultString());</div><div class="line">			resultText.append(text);</div><div class="line">			<span class="keyword">if</span> (isLast) &#123;</div><div class="line">				<span class="comment">// 最后的结果</span></div><div class="line">				resultData(resultText.toString().trim());</div><div class="line">			&#125;</div><div class="line">		&#125;</div><div class="line"></div><div class="line">		<span class="meta">@Override</span></div><div class="line">		<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onVolumeChanged</span><span class="params">(<span class="keyword">int</span> volume, <span class="keyword">byte</span>[] data)</span> </span>&#123;</div><div class="line">			speechLog(<span class="string">"当前正在说话，音量大小："</span> + volume);</div><div class="line">			Log.i(TAG, <span class="string">"当前正在说话，音量大小："</span> + volume);</div><div class="line">		&#125;</div><div class="line"></div><div class="line">		<span class="meta">@Override</span></div><div class="line">		<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onEvent</span><span class="params">(<span class="keyword">int</span> eventType, <span class="keyword">int</span> arg1, <span class="keyword">int</span> arg2, Bundle obj)</span> </span>&#123;</div><div class="line">		&#125;</div><div class="line"></div><div class="line">	&#125;;</div><div class="line"></div><div class="line">	<span class="comment">/**</span></div><div class="line"><span class="comment">	 * 参数设置</span></div><div class="line"><span class="comment">	 * </span></div><div class="line"><span class="comment">	 * <span class="doctag">@param</span> param</span></div><div class="line"><span class="comment">	 * <span class="doctag">@return</span></span></div><div class="line"><span class="comment">	 */</span></div><div class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setParam</span><span class="params">()</span> </span>&#123;</div><div class="line">		<span class="comment">// 清空参数</span></div><div class="line">		mIat.setParameter(SpeechConstant.PARAMS, <span class="keyword">null</span>);</div><div class="line">		<span class="comment">// 设置听写引擎</span></div><div class="line">		mIat.setParameter(SpeechConstant.ENGINE_TYPE, SpeechConstant.TYPE_CLOUD);</div><div class="line">		<span class="comment">// 设置返回结果格式</span></div><div class="line">		mIat.setParameter(SpeechConstant.RESULT_TYPE, <span class="string">"json"</span>);</div><div class="line">		<span class="comment">// 设置语言</span></div><div class="line">		mIat.setParameter(SpeechConstant.LANGUAGE, <span class="string">"zh_cn"</span>);</div><div class="line">		<span class="comment">// 设置语言区域</span></div><div class="line">		mIat.setParameter(SpeechConstant.ACCENT, <span class="string">"zh_cn"</span>);</div><div class="line">		<span class="comment">// 设置语音前端点</span></div><div class="line">		mIat.setParameter(SpeechConstant.VAD_BOS, <span class="string">"4000"</span>);</div><div class="line">		<span class="comment">// 设置语音后端点</span></div><div class="line">		mIat.setParameter(SpeechConstant.VAD_EOS, <span class="string">"1000"</span>);</div><div class="line">		<span class="comment">// 设置标点符号</span></div><div class="line">		mIat.setParameter(SpeechConstant.ASR_PTT, <span class="string">"1"</span>);</div><div class="line">		<span class="comment">// 设置音频保存路径</span></div><div class="line">		<span class="comment">// mIat.setParameter(SpeechConstant.ASR_AUDIO_PATH,</span></div><div class="line">		<span class="comment">// Environment.getExternalStorageDirectory() + "/iflytek/wavaudio.pcm");</span></div><div class="line">	&#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="工具类"><a href="#工具类" class="headerlink" title="工具类"></a>工具类</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">package</span> com.example.kqwlocalspeechdemo.utils;</div><div class="line"></div><div class="line"><span class="keyword">import</span> org.json.JSONArray;</div><div class="line"><span class="keyword">import</span> org.json.JSONObject;</div><div class="line"><span class="keyword">import</span> org.json.JSONTokener;</div><div class="line"></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">JsonUtils</span> </span>&#123;</div><div class="line"></div><div class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> String <span class="title">parseIatResult</span><span class="params">(String json)</span> </span>&#123;</div><div class="line">		StringBuffer ret = <span class="keyword">new</span> StringBuffer();</div><div class="line">		<span class="keyword">try</span> &#123;</div><div class="line">			JSONTokener tokener = <span class="keyword">new</span> JSONTokener(json);</div><div class="line">			JSONObject joResult = <span class="keyword">new</span> JSONObject(tokener);</div><div class="line"></div><div class="line">			JSONArray words = joResult.getJSONArray(<span class="string">"ws"</span>);</div><div class="line">			<span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; words.length(); i++) &#123;</div><div class="line">				<span class="comment">// 转写结果词，默认使用第一个结果</span></div><div class="line">				JSONArray items = words.getJSONObject(i).getJSONArray(<span class="string">"cw"</span>);</div><div class="line">				JSONObject obj = items.getJSONObject(<span class="number">0</span>);</div><div class="line">				ret.append(obj.getString(<span class="string">"w"</span>));</div><div class="line">				<span class="comment">// 如果需要多候选结果，解析数组其他字段</span></div><div class="line">				<span class="comment">// for(int j = 0; j &lt; items.length(); j++)</span></div><div class="line">				<span class="comment">// &#123;</span></div><div class="line">				<span class="comment">// JSONObject obj = items.getJSONObject(j);</span></div><div class="line">				<span class="comment">// ret.append(obj.getString("w"));</span></div><div class="line">				<span class="comment">// &#125;</span></div><div class="line">			&#125;</div><div class="line">		&#125; <span class="keyword">catch</span> (Exception e) &#123;</div><div class="line">			e.printStackTrace();</div><div class="line">		&#125;</div><div class="line">		<span class="keyword">return</span> ret.toString();</div><div class="line">	&#125;</div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="测试类"><a href="#测试类" class="headerlink" title="测试类"></a>测试类</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">package</span> com.example.kqwlocalspeechdemo;</div><div class="line"></div><div class="line"><span class="keyword">import</span> com.example.kqwlocalspeechdemo.engine.KqwSpeechRecognizer;</div><div class="line"></div><div class="line"><span class="keyword">import</span> android.app.Activity;</div><div class="line"><span class="keyword">import</span> android.os.Bundle;</div><div class="line"><span class="keyword">import</span> android.view.View;</div><div class="line"><span class="keyword">import</span> android.widget.TextView;</div><div class="line"><span class="keyword">import</span> android.widget.Toast;</div><div class="line"></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MainActivity</span> <span class="keyword">extends</span> <span class="title">Activity</span> </span>&#123;</div><div class="line"></div><div class="line">	<span class="keyword">private</span> TextView mTvResult;</div><div class="line">	<span class="keyword">private</span> TextView mTvLog;</div><div class="line">	<span class="keyword">private</span> KqwSpeechRecognizer mKqwSpeechRecognizer;</div><div class="line"></div><div class="line">	<span class="meta">@Override</span></div><div class="line">	<span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">(Bundle savedInstanceState)</span> </span>&#123;</div><div class="line">		<span class="keyword">super</span>.onCreate(savedInstanceState);</div><div class="line">		setContentView(R.layout.activity_main);</div><div class="line"></div><div class="line">		mTvResult = (TextView) findViewById(R.id.tv_result);</div><div class="line">		mTvLog = (TextView) findViewById(R.id.tv_log);</div><div class="line"></div><div class="line">		<span class="comment">// 初始化语音听写识别器</span></div><div class="line">		mKqwSpeechRecognizer = <span class="keyword">new</span> KqwSpeechRecognizer(<span class="keyword">this</span>) &#123;</div><div class="line"></div><div class="line">			<span class="meta">@Override</span></div><div class="line">			<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">speechLog</span><span class="params">(String log)</span> </span>&#123;</div><div class="line">				mTvLog.setText(log);</div><div class="line">			&#125;</div><div class="line"></div><div class="line">			<span class="meta">@Override</span></div><div class="line">			<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">resultData</span><span class="params">(String data)</span> </span>&#123;</div><div class="line">				mTvResult.setText(data);</div><div class="line">			&#125;</div><div class="line"></div><div class="line">			<span class="meta">@Override</span></div><div class="line">			<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">initListener</span><span class="params">(<span class="keyword">boolean</span> flag)</span> </span>&#123;</div><div class="line">				<span class="keyword">if</span>(flag)&#123;</div><div class="line">					Toast.makeText(MainActivity.<span class="keyword">this</span>, <span class="string">"初始化成功"</span>, Toast.LENGTH_SHORT).show();</div><div class="line">				&#125; <span class="keyword">else</span> &#123;</div><div class="line">					Toast.makeText(MainActivity.<span class="keyword">this</span>, <span class="string">"初始化失败"</span>, Toast.LENGTH_SHORT).show();</div><div class="line">				&#125;</div><div class="line">			&#125;</div><div class="line">		&#125;;</div><div class="line">	&#125;</div><div class="line"></div><div class="line">	<span class="comment">/**</span></div><div class="line"><span class="comment">	 * 开始识别按钮</span></div><div class="line"><span class="comment">	 * </span></div><div class="line"><span class="comment">	 * <span class="doctag">@param</span> view</span></div><div class="line"><span class="comment">	 */</span></div><div class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">start</span><span class="params">(View view)</span> </span>&#123;</div><div class="line">		mTvResult.setText(<span class="keyword">null</span>);</div><div class="line">		<span class="comment">// 开始识别</span></div><div class="line">		mKqwSpeechRecognizer.startListening();</div><div class="line">	&#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="页面布局"><a href="#页面布局" class="headerlink" title="页面布局"></a>页面布局</h3><figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div></pre></td><td class="code"><pre><div class="line">&lt;RelativeLayout xmlns:android=<span class="string">"http://schemas.android.com/apk/res/android"</span></div><div class="line">    xmlns:tools=<span class="string">"http://schemas.android.com/tools"</span></div><div class="line">    android:layout_width=<span class="string">"match_parent"</span></div><div class="line">    android:layout_height=<span class="string">"match_parent"</span></div><div class="line">    android:paddingBottom=<span class="string">"@dimen/activity_vertical_margin"</span></div><div class="line">    android:paddingLeft=<span class="string">"@dimen/activity_horizontal_margin"</span></div><div class="line">    android:paddingRight=<span class="string">"@dimen/activity_horizontal_margin"</span></div><div class="line">    android:paddingTop=<span class="string">"@dimen/activity_vertical_margin"</span></div><div class="line">    tools:context=<span class="string">"com.example.kqwlocalspeechdemo.MainActivity"</span> &gt;</div><div class="line"></div><div class="line">    &lt;Button</div><div class="line">        android:id=<span class="string">"@+id/bt_start"</span></div><div class="line">        android:layout_width=<span class="string">"match_parent"</span></div><div class="line">        android:layout_height=<span class="string">"wrap_content"</span></div><div class="line">        android:layout_alignParentBottom=<span class="string">"true"</span></div><div class="line">        android:onClick=<span class="string">"start"</span></div><div class="line">        android:text=<span class="string">"开始录音"</span> /&gt;</div><div class="line"></div><div class="line">    &lt;TextView</div><div class="line">        android:id=<span class="string">"@+id/tv_log"</span></div><div class="line">        android:layout_width=<span class="string">"match_parent"</span></div><div class="line">        android:layout_height=<span class="string">"wrap_content"</span></div><div class="line">        android:layout_above=<span class="string">"@id/bt_start"</span></div><div class="line">        android:gravity=<span class="string">"center"</span></div><div class="line">        android:text=<span class="string">"录音信息"</span> /&gt;</div><div class="line"></div><div class="line">    &lt;ScrollView</div><div class="line">        android:layout_width=<span class="string">"match_parent"</span></div><div class="line">        android:layout_height=<span class="string">"match_parent"</span></div><div class="line">        android:layout_above=<span class="string">"@id/tv_log"</span> &gt;</div><div class="line"></div><div class="line">        &lt;TextView</div><div class="line">            android:id=<span class="string">"@+id/tv_result"</span></div><div class="line">            android:layout_width=<span class="string">"match_parent"</span></div><div class="line">            android:layout_height=<span class="string">"wrap_content"</span></div><div class="line">            android:text=<span class="string">"返回结果"</span> /&gt;</div><div class="line">    &lt;/ScrollView&gt;</div><div class="line"></div><div class="line">&lt;/RelativeLayout&gt;</div></pre></td></tr></table></figure>
+<h1 id="在线语音识别"><a href="#在线语音识别" class="headerlink" title="在线语音识别"></a>在线语音识别</h1><p>在线语音听写和<a href="http://blog.csdn.net/q4878802/article/details/47834601" target="_blank" rel="external">离线语音听写</a>基本一样，只要修改一下识别引擎即可。（就可以不用语记了）</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 设置听写引擎</span></div><div class="line">mIat.setParameter(SpeechConstant.ENGINE_TYPE, SpeechConstant.TYPE_CLOUD);</div></pre></td></tr></table></figure>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/08/20/2015-08-20-科大讯飞离线命令词+语义识别/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="kongqw">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="孔庆威的博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2015/08/20/2015-08-20-科大讯飞离线命令词+语义识别/" itemprop="url">科大讯飞离线命令词+语义识别</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-08-20T18:46:11+08:00">
+                2015-08-20
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/语音/" itemprop="url" rel="index">
+                    <span itemprop="name">语音</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2015/08/20/2015-08-20-科大讯飞离线命令词+语义识别/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2015/08/20/2015-08-20-科大讯飞离线命令词+语义识别/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <hr>
+<p>转载请说明出处！<br>作者：<a href="http://kongqw.github.io/about/index.html" target="_blank" rel="external">kqw攻城狮</a><br>出处：<a href="http://kongqw.github.io" target="_blank" rel="external">个人站</a> | <a href="http://blog.csdn.net/q4878802/" target="_blank" rel="external">CSDN</a></p>
+<hr>
+<h1 id="离线命令词-语义识别"><a href="#离线命令词-语义识别" class="headerlink" title="离线命令词+语义识别"></a>离线命令词+语义识别</h1><p>意思就是先走离线命令词识别，如果离线命令词识别没有识别到结果，那么就再走语义接口，如果已开通对应场景，则转为语义，如果没有开通对应场景，则将语音转为文字</p>
+<h1 id="效果图"><a href="#效果图" class="headerlink" title="效果图"></a>效果图</h1><ul>
+<li><strong>说的话满足本地构建的语法—-离线命令词识别</strong></li>
+</ul>
+<p><img src="http://img.blog.csdn.net/20150820135122158" alt="效果图"></p>
+<ul>
+<li><strong>说的话离线命令词无法识别，走语义识别并且满足语义场景—-将语音转为语义</strong></li>
+</ul>
+<p><img src="http://img.blog.csdn.net/20150820135140691" alt="效果图"></p>
+<ul>
+<li><strong>说话既不满足离线命令词识别也不满足语义开通的场景—-将语音转为文字</strong></li>
+</ul>
+<p><img src="http://img.blog.csdn.net/20150820135152206" alt="效果图"></p>
+<p>程序和<strong>离线命令词识别</strong>基本一样</p>
+<p><strong>离线命令词识别地址：<a href="http://blog.csdn.net/q4878802/article/details/47780485" target="_blank" rel="external">http://blog.csdn.net/q4878802/article/details/47780485</a></strong></p>
+<p>只要改一个参数，将识别<strong>引擎改为混合模式</strong>即可</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">mAsr.setParameter(SpeechConstant.ENGINE_TYPE, SpeechConstant.TYPE_MIX);</div></pre></td></tr></table></figure>
+<p>因为使用的混合模式，当本地命令词没有识别到结果的时候会走在线语义（语义只有在线），所以，我们<strong>必须要先开通语义服务</strong></p>
+<h1 id="程序流程"><a href="#程序流程" class="headerlink" title="程序流程"></a>程序流程</h1><p><img src="http://img.blog.csdn.net/20150820134211964" alt="流程图"></p>
+<h1 id="最后"><a href="#最后" class="headerlink" title="最后"></a>最后</h1><ol>
+<li>如果你直接用我的Demo，我用的是测试版的离线包，只有35天的试用期，而且装机量只有3个，如果大家都用，很可能是不能正常运行的</li>
+<li>如果是参考我的demo自己写一个，千万不要忘记替换appid和资源文件。</li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/08/19/2015-08-19-科大讯飞语音唤醒/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -664,7 +994,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">52</span>
+                <span class="site-state-item-count">54</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -686,7 +1016,7 @@
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">24</span>
+                <span class="site-state-item-count">25</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>

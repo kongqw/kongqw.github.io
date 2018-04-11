@@ -278,6 +278,329 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/03/02/2017-03-02-Gradle常用技巧/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="kongqw">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="孔庆威的博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2017/03/02/2017-03-02-Gradle常用技巧/" itemprop="url">Gradle常用技巧</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-03-02T14:46:09+08:00">
+                2017-03-02
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2017/03/02/2017-03-02-Gradle常用技巧/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2017/03/02/2017-03-02-Gradle常用技巧/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <hr>
+<p>转载请说明出处！<br>作者：<a href="http://kongqw.github.io/about/index.html" target="_blank" rel="external">kqw攻城狮</a><br>出处：<a href="http://kongqw.com/2017/03/02/2017-03-02-Gradle常用技巧/" target="_blank" rel="external">个人站</a> | <a href="http://blog.csdn.net/q4878802/article/details/59486052" target="_blank" rel="external">CSDN</a></p>
+<hr>
+<h1 id="Gradle"><a href="#Gradle" class="headerlink" title="Gradle"></a>Gradle</h1><p><a href="http://google.github.io/android-gradle-dsl/current/index.html" target="_blank" rel="external">http://google.github.io/android-gradle-dsl/current/index.html</a></p>
+<p><a href="https://docs.gradle.org/current/userguide/java_plugin.html" target="_blank" rel="external">https://docs.gradle.org/current/userguide/java_plugin.html</a></p>
+<h2 id="打包多个版本"><a href="#打包多个版本" class="headerlink" title="打包多个版本"></a>打包多个版本</h2><p>开发过程中我们经常需要打包多个版本的apk，最为常见的，一个是release版本，一个是debug版本，他们可能使用的api也有所区别，手动改起来总是很麻烦。<br>我们可以通过Gradle，配置多个版本，他们有各自的参数来区分不同的版本。如下，在 <code>app/build.gradle</code> 系统默认会给我生成release版本，我们可以手动自己添加一个版本，我这里命名为<code>debug</code>，分别添加了三种类型的参数。</p>
+<figure class="highlight gradle"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div></pre></td><td class="code"><pre><div class="line">apply plugin: <span class="string">'com.android.application'</span></div><div class="line"></div><div class="line">android &#123;</div><div class="line">    ……</div><div class="line">    buildTypes &#123;</div><div class="line">        release &#123;</div><div class="line">            ……</div><div class="line">            buildConfigField(<span class="string">"boolean"</span>, <span class="string">"isDebug"</span>, <span class="string">"false"</span>)</div><div class="line">        &#125;</div><div class="line">        debug &#123;</div><div class="line">            <span class="comment">// 添加了boolean类型的参数</span></div><div class="line">            buildConfigField(<span class="string">"boolean"</span>, <span class="string">"isDebug"</span>, <span class="string">"true"</span>)</div><div class="line">            <span class="comment">// 添加了String类型的参数</span></div><div class="line">            buildConfigField(<span class="string">"String"</span>, <span class="string">"coder"</span>, <span class="string">"\"kongqw\""</span>)</div><div class="line">            <span class="comment">// 添加了int类型的参数</span></div><div class="line">            buildConfigField(<span class="string">"int"</span>, <span class="string">"age"</span>, <span class="string">"26"</span>)</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line">……</div><div class="line"></div><div class="line"><span class="keyword">dependencies</span> &#123;</div><div class="line">   ……</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>添加完成后Rebuild，会在 <code>BuildConfig</code> 下看到我们添加的参数</p>
+<p><img src="http://img.blog.csdn.net/20170302112738333?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvcTQ4Nzg4MDI=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt="P1"></p>
+<p>因为是静态变量，取值时直接用类名点变量名即可</p>
+<p><img src="http://img.blog.csdn.net/20170302112754865?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvcTQ4Nzg4MDI=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt="P2"></p>
+<p>上述属于在Java代码中添加字段，同样的，Gradle也支持添加xml属性，类似这样</p>
+<figure class="highlight gradle"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line">apply plugin: <span class="string">'com.android.application'</span></div><div class="line"></div><div class="line">android &#123;</div><div class="line">    ……</div><div class="line">    defaultConfig &#123;</div><div class="line">        ……</div><div class="line">    &#125;</div><div class="line">    buildTypes &#123;</div><div class="line">        release &#123;</div><div class="line">            ……</div><div class="line">        &#125;</div><div class="line">        debug &#123;</div><div class="line">            ……</div><div class="line">            resValue(<span class="string">"bool"</span>, <span class="string">"is_debug"</span>, <span class="string">"true"</span>)</div><div class="line">            resValue(<span class="string">"string"</span>, <span class="string">"coder"</span>, <span class="string">"\"kongqw\""</span>)</div><div class="line">            resValue(<span class="string">"integer"</span>, <span class="string">"age"</span>, <span class="string">"26"</span>)</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">dependencies</span> &#123;</div><div class="line">    ……</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>添加完以后Rebuild，会在<code>generated.xml</code> 下生产如下字段</p>
+<p><img src="http://img.blog.csdn.net/20170302112812772?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvcTQ4Nzg4MDI=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt="P3"></p>
+<p>但是要避免和<code>string.xml</code>文件里的字段重复</p>
+<p>在xml中使用<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">android:text="@string/coder"</div></pre></td></tr></table></figure></p>
+<p>或者再Java中使用<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">String coder = getString(R.string.coder);</div></pre></td></tr></table></figure></p>
+<h2 id="添加工程build时间"><a href="#添加工程build时间" class="headerlink" title="添加工程build时间"></a>添加工程build时间</h2><p>有时候，测试和产品总是会拿着手机跑过来问你，“有没有更新？”、“帮我看一下我装的是不是最新的版本？”，总是很烦，我们可以利用Gradle，获取到工程的Build时间，在测试版本打印出来，可以为工程师节省不少时间。</p>
+<p>Gradle支持直接添加方法</p>
+<figure class="highlight gradle"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div></pre></td><td class="code"><pre><div class="line">apply plugin: <span class="string">'com.android.application'</span></div><div class="line"></div><div class="line">android &#123;</div><div class="line">    ……</div><div class="line">    defaultConfig &#123;</div><div class="line">        ……</div><div class="line">        resValue(<span class="string">"string"</span>, <span class="string">"build_time"</span>, getDate())</div><div class="line">        <span class="comment">// BuildTime</span></div><div class="line">        buildConfigField(<span class="string">"String"</span>, <span class="string">"buildTime"</span>, <span class="string">"\""</span> + getDate() + <span class="string">"\""</span>)</div><div class="line">    &#125;</div><div class="line">    buildTypes &#123;</div><div class="line">        release &#123;</div><div class="line">            ……</div><div class="line">        &#125;</div><div class="line">        debug &#123;</div><div class="line">            ……</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">def</span> getDate() &#123;</div><div class="line">    <span class="keyword">return</span> <span class="keyword">new</span> Date().format(<span class="string">"yyyy-MM-dd HH:mm:ss"</span>)</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">dependencies</span> &#123;</div><div class="line">    ……</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>判断的时候调用<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">BuildConfig.buildTime</div></pre></td></tr></table></figure></p>
+<p>或者<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">getString(R.string.build_time)</div></pre></td></tr></table></figure></p>
+<p><img src="http://img.blog.csdn.net/20170302112832366?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvcTQ4Nzg4MDI=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt="P4"></p>
+<h2 id="不同版本包名不同"><a href="#不同版本包名不同" class="headerlink" title="不同版本包名不同"></a>不同版本包名不同</h2><p>我们都知道，相同包名，不同签名，在一台手机上是无法同时安装的。前面我们配置了两个不同的版本，release版本肯定是用正式签名，debug版本我们通常都会使用测试签名。那么问题来了，测试人员如果已经在手机上安装了上线的版本，再装测试版，就会有冲突，必须要卸载一个，那么最好的办法就是修改测试版包名。这样包名不同，两个版本同时安装，也不会有冲突。</p>
+<p>同样的，Gradle依然可以轻松的帮我们做到。</p>
+<figure class="highlight gradle"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line">apply plugin: <span class="string">'com.android.application'</span></div><div class="line"></div><div class="line">android &#123;</div><div class="line">    ……</div><div class="line">    defaultConfig &#123;</div><div class="line">        ……</div><div class="line">    &#125;</div><div class="line">    buildTypes &#123;</div><div class="line">        release &#123;</div><div class="line">            ……</div><div class="line">        &#125;</div><div class="line">        debug &#123;</div><div class="line">            ……</div><div class="line">            applicationIdSuffix <span class="string">".debug"</span></div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">dependencies</span> &#123;</div><div class="line">    ……</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>可以看到我们在 debug 版本添加了<code>applicationIdSuffix</code>，其值为 <code>.debug</code>，顾名思义，是debug版本在包名后面添加<code>.debug</code>后缀。</p>
+<h2 id="多渠道打包"><a href="#多渠道打包" class="headerlink" title="多渠道打包"></a>多渠道打包</h2><p>多渠道打包，打包多个市场的apk，用来统计。</p>
+<p>首先在<code>AndroidManifest</code>文件添加<code>meta-data</code></p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line">&lt;?xml version="1.0" encoding="utf-8"?&gt;</div><div class="line"><span class="tag">&lt;<span class="name">manifest</span> ……&gt;</span></div><div class="line"></div><div class="line">    <span class="tag">&lt;<span class="name">application</span></span></div><div class="line"><span class="tag">        ……&gt;</span></div><div class="line"></div><div class="line">        <span class="tag">&lt;<span class="name">meta-data</span></span></div><div class="line"><span class="tag">            <span class="attr">android:name</span>=<span class="string">"PRODUCT"</span></span></div><div class="line"><span class="tag">            <span class="attr">android:value</span>=<span class="string">"$&#123;CHANNEL_VALUE&#125;"</span>/&gt;</span></div><div class="line"></div><div class="line">        <span class="tag">&lt;<span class="name">activity</span> ……&gt;</span></div><div class="line">            ……</div><div class="line">        <span class="tag">&lt;/<span class="name">activity</span>&gt;</span></div><div class="line">    <span class="tag">&lt;/<span class="name">application</span>&gt;</span></div><div class="line"></div><div class="line"><span class="tag">&lt;/<span class="name">manifest</span>&gt;</span></div></pre></td></tr></table></figure>
+<p>在<code>app/build.gradle</code>添加<code>productFlavors</code>，如下所示，添加 <code>XIAO_MI</code>和<code>GOOGLE_PLAY</code>两个渠道</p>
+<figure class="highlight gradle"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div></pre></td><td class="code"><pre><div class="line">apply plugin: <span class="string">'com.android.application'</span></div><div class="line"></div><div class="line">android &#123;</div><div class="line">    ……</div><div class="line">    defaultConfig &#123;</div><div class="line">        ……</div><div class="line">    &#125;</div><div class="line">    buildTypes &#123;</div><div class="line">        release &#123;</div><div class="line">            ……</div><div class="line">        &#125;</div><div class="line">        debug &#123;</div><div class="line">            ……</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    productFlavors &#123;</div><div class="line">        xiaomi &#123;</div><div class="line">            manifestPlaceholders = [CHANNEL_VALUE: <span class="string">"XIAO_MI"</span>]</div><div class="line">        &#125;</div><div class="line">        googlePlay &#123;</div><div class="line">            manifestPlaceholders = [CHANNEL_VALUE: <span class="string">"GOOGLE_PLAY"</span>]</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">dependencies</span> &#123;</div><div class="line">    ……</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>获取渠道</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">try</span> &#123;</div><div class="line">    ApplicationInfo applicationInfo = getPackageManager().getApplicationInfo(getPackageName(), PackageManager.GET_META_DATA);</div><div class="line">    String channel = applicationInfo.metaData.getString(<span class="string">"PRODUCT"</span>);</div><div class="line">    Log.i(TAG, <span class="string">"onCreate: 渠道 ："</span> + channel);</div><div class="line">&#125; <span class="keyword">catch</span> (PackageManager.NameNotFoundException e) &#123;</div><div class="line">    e.printStackTrace();</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/02/16/2017-02-16-打造简洁高效的动态权限管理器/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="kongqw">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="孔庆威的博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2017/02/16/2017-02-16-打造简洁高效的动态权限管理器/" itemprop="url">打造简洁高效的动态权限管理器</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-02-16T10:50:45+08:00">
+                2017-02-16
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/开源/" itemprop="url" rel="index">
+                    <span itemprop="name">开源</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2017/02/16/2017-02-16-打造简洁高效的动态权限管理器/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2017/02/16/2017-02-16-打造简洁高效的动态权限管理器/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <hr>
+<p>转载请说明出处！<br>作者：<a href="http://kongqw.github.io/about/index.html" target="_blank" rel="external">kqw攻城狮</a><br>出处：<a href="http://kongqw.com/2017/02/16/2017-02-16-打造简洁高效的动态权限管理器/" target="_blank" rel="external">个人站</a> | <a href="http://blog.csdn.net/q4878802/article/details/55254158" target="_blank" rel="external">CSDN</a></p>
+<hr>
+<p>效果图</p>
+<p><img src="http://img.blog.csdn.net/20170216120006799?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvcTQ4Nzg4MDI=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt="这里写图片描述"></p>
+<p>GitHub地址：<a href="https://github.com/kongqw/PermissionsManager" target="_blank" rel="external">PermissionsManager</a> </p>
+<p>随着Android 6.0的普及，动态权限的重要性也开始时慢慢体现出来。为了更好的保护用户隐私，Android 6.0要求在进行敏感操作之前，必须要向用户请示申请权限。</p>
+<p>如何使用，在之前的文章里也已经介绍过了，但是用起来比较麻烦。<a href="http://blog.csdn.net/q4878802/article/details/50419004?locationNum=1&amp;fps=1" target="_blank" rel="external">Android6.0动态获取权限</a> </p>
+<p>我希望可以封装一下，使用之前创建一个动态权限的管理对象，他有两个回调来告诉我权限申请成功或者失败，像这样：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">mPermissionsManager = <span class="keyword">new</span> PermissionsManager(<span class="keyword">this</span>) &#123;</div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">authorized</span><span class="params">(<span class="keyword">int</span> requestCode)</span> </span>&#123;</div><div class="line">        <span class="comment">// TODO 权限通过</span></div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">noAuthorization</span><span class="params">(<span class="keyword">int</span> requestCode, String[] lacksPermissions)</span> </span>&#123;</div><div class="line">        <span class="comment">// TODO 有权限没有通过</span></div><div class="line">    &#125;</div><div class="line">&#125;;</div></pre></td></tr></table></figure>
+<p>使用的时候，可以直接调用一个方法，把要请示的权限传进去就可以进行校验，像这样：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 检查权限</span></div><div class="line">mPermissionsManager.checkPermissions(<span class="string">"请求码"</span>, <span class="string">"要校验的权限"</span>);</div></pre></td></tr></table></figure>
+<p>于是乎，下面封装的动态权限管理器就来了：</p>
+<h2 id="动态权限管理器"><a href="#动态权限管理器" class="headerlink" title="动态权限管理器"></a>动态权限管理器</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">package</span> com.kongqw.permissionslibrary;</div><div class="line"></div><div class="line"><span class="keyword">import</span> android.app.Activity;</div><div class="line"><span class="keyword">import</span> android.content.Context;</div><div class="line"><span class="keyword">import</span> android.content.Intent;</div><div class="line"><span class="keyword">import</span> android.content.pm.PackageManager;</div><div class="line"><span class="keyword">import</span> android.net.Uri;</div><div class="line"><span class="keyword">import</span> android.provider.Settings;</div><div class="line"><span class="keyword">import</span> android.support.annotation.NonNull;</div><div class="line"><span class="keyword">import</span> android.support.v4.app.ActivityCompat;</div><div class="line"><span class="keyword">import</span> android.support.v4.content.ContextCompat;</div><div class="line"></div><div class="line"><span class="keyword">import</span> java.util.ArrayList;</div><div class="line"></div><div class="line"><span class="comment">/**</span></div><div class="line"><span class="comment"> * Created by kongqingwei on 2017/2/15.</span></div><div class="line"><span class="comment"> * 检查权限的类</span></div><div class="line"><span class="comment"> */</span></div><div class="line"></div><div class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">PermissionsManager</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String PACKAGE_URL_SCHEME = <span class="string">"package:"</span>;</div><div class="line">    <span class="keyword">private</span> Activity mTargetActivity;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">void</span> <span class="title">authorized</span><span class="params">(<span class="keyword">int</span> requestCode)</span></span>;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">void</span> <span class="title">noAuthorization</span><span class="params">(<span class="keyword">int</span> requestCode, String[] lacksPermissions)</span></span>;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">PermissionsManager</span><span class="params">(Activity targetActivity)</span> </span>&#123;</div><div class="line">        mTargetActivity = targetActivity;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="comment">/**</span></div><div class="line"><span class="comment">     * 检查权限</span></div><div class="line"><span class="comment">     *</span></div><div class="line"><span class="comment">     * <span class="doctag">@param</span> requestCode 请求码</span></div><div class="line"><span class="comment">     * <span class="doctag">@param</span> permissions 准备校验的权限</span></div><div class="line"><span class="comment">     */</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">checkPermissions</span><span class="params">(<span class="keyword">int</span> requestCode, String... permissions)</span> </span>&#123;</div><div class="line"></div><div class="line">        ArrayList&lt;String&gt; lacks = <span class="keyword">new</span> ArrayList&lt;&gt;();</div><div class="line">        <span class="keyword">for</span> (String permission : permissions) &#123;</div><div class="line">            <span class="keyword">if</span> (ContextCompat.checkSelfPermission(mTargetActivity.getApplicationContext(), permission) == PackageManager.PERMISSION_DENIED) &#123;</div><div class="line">                lacks.add(permission);</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        <span class="keyword">if</span> (!lacks.isEmpty()) &#123;</div><div class="line">            <span class="comment">// 有权限没有授权</span></div><div class="line">            String[] lacksPermissions = <span class="keyword">new</span> String[lacks.size()];</div><div class="line">            lacksPermissions = lacks.toArray(lacksPermissions);</div><div class="line">            <span class="comment">//申请CAMERA权限</span></div><div class="line">            ActivityCompat.requestPermissions(mTargetActivity, lacksPermissions, requestCode);</div><div class="line">        &#125; <span class="keyword">else</span> &#123;</div><div class="line">            <span class="comment">// 授权</span></div><div class="line">            authorized(requestCode);</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="comment">/**</span></div><div class="line"><span class="comment">     * 复查权限</span></div><div class="line"><span class="comment">     * &lt;p&gt;</span></div><div class="line"><span class="comment">     * 调用checkPermissions方法后，会提示用户对权限的申请做出选择，选择以后（同意或拒绝）</span></div><div class="line"><span class="comment">     * TargetActivity会回调onRequestPermissionsResult方法，</span></div><div class="line"><span class="comment">     * 在onRequestPermissionsResult回调方法里，我们调用此方法来复查权限，检查用户的选择是否通过了权限申请</span></div><div class="line"><span class="comment">     *</span></div><div class="line"><span class="comment">     * <span class="doctag">@param</span> requestCode  请求码</span></div><div class="line"><span class="comment">     * <span class="doctag">@param</span> permissions  权限</span></div><div class="line"><span class="comment">     * <span class="doctag">@param</span> grantResults 授权结果</span></div><div class="line"><span class="comment">     */</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">recheckPermissions</span><span class="params">(<span class="keyword">int</span> requestCode, @NonNull String[] permissions, @NonNull <span class="keyword">int</span>[] grantResults)</span> </span>&#123;</div><div class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> grantResult : grantResults) &#123;</div><div class="line">            <span class="keyword">if</span> (grantResult == PackageManager.PERMISSION_DENIED) &#123;</div><div class="line">                <span class="comment">// 未授权</span></div><div class="line">                noAuthorization(requestCode, permissions);</div><div class="line">                <span class="keyword">return</span>;</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">        <span class="comment">// 授权</span></div><div class="line">        authorized(requestCode);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="comment">/**</span></div><div class="line"><span class="comment">     * 进入应用设置</span></div><div class="line"><span class="comment">     *</span></div><div class="line"><span class="comment">     * <span class="doctag">@param</span> context context</span></div><div class="line"><span class="comment">     */</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">startAppSettings</span><span class="params">(Context context)</span> </span>&#123;</div><div class="line">        Intent intent = <span class="keyword">new</span> Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);</div><div class="line">        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);</div><div class="line">        intent.setData(Uri.parse(PACKAGE_URL_SCHEME + context.getPackageName()));</div><div class="line">        context.startActivity(intent);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="应用"><a href="#应用" class="headerlink" title="应用"></a>应用</h2><p>使用起来的逻辑也比较清晰简单，一共3步：</p>
+<h3 id="1-初始化权限管理器"><a href="#1-初始化权限管理器" class="headerlink" title="1. 初始化权限管理器"></a>1. 初始化权限管理器</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 初始化</span></div><div class="line">mPermissionsManager = <span class="keyword">new</span> PermissionsManager(<span class="keyword">this</span>) &#123;</div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">authorized</span><span class="params">(<span class="keyword">int</span> requestCode)</span> </span>&#123;</div><div class="line">        Toast.makeText(getApplicationContext(), requestCode + <span class="string">" ： 全部权限通过"</span>, Toast.LENGTH_SHORT).show();</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">noAuthorization</span><span class="params">(<span class="keyword">int</span> requestCode, String[] lacksPermissions)</span> </span>&#123;</div><div class="line">        Toast.makeText(getApplicationContext(), requestCode + <span class="string">" ： 有权限没有通过！需要授权"</span>, Toast.LENGTH_SHORT).show();</div><div class="line">        <span class="keyword">for</span> (String permission : lacksPermissions) &#123;</div><div class="line">            Log.i(TAG, <span class="string">"noAuthorization: "</span> + permission);</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;;</div></pre></td></tr></table></figure>
+<h3 id="2-检查权限"><a href="#2-检查权限" class="headerlink" title="2. 检查权限"></a>2. 检查权限</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 要校验的权限</span></div><div class="line">String[] PERMISSIONS = <span class="keyword">new</span> String[]&#123;Manifest.permission.RECORD_AUDIO, Manifest.permission.CAMERA&#125;;</div><div class="line"><span class="comment">// 检查权限</span></div><div class="line">mPermissionsManager.checkPermissions(<span class="number">0</span>, PERMISSIONS);</div></pre></td></tr></table></figure>
+<h3 id="3-复查权限"><a href="#3-复查权限" class="headerlink" title="3. 复查权限"></a>3. 复查权限</h3><p>用户对权限申请的提示做出选择以后，要重写TargetActivity的<code>onRequestPermissionsResult</code>方法来复查权限，检查权限是否通过。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@Override</span></div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onRequestPermissionsResult</span><span class="params">(<span class="keyword">int</span> requestCode, @NonNull String[] permissions, @NonNull <span class="keyword">int</span>[] grantResults)</span> </span>&#123;</div><div class="line">    <span class="comment">// 用户做出选择以后复查权限，判断是否通过了权限申请</span></div><div class="line">    mPermissionsManager.recheckPermissions(requestCode, permissions, grantResults);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>进入应用设置页面</p>
+<p>最后，权限没有通过，是不能使用的，如果一定要用，一般要提示用户缺少权限，到应用设置页面去吧权限打开，再回来使用。<br>对话框就不写了，进入到应用的设置页面可以直接调用<code>PermissionsManager</code>里的<code>startAppSettings</code>方法，进入到该应用的设置页面，修改权限</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">PermissionsManager.startAppSettings(getApplicationContext());</div></pre></td></tr></table></figure>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/12/13/2016-12-13-Android自定义View绘图基础/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1689,342 +2012,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/08/26/2016-08-26-Android左右声道的控制/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="kongqw">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="孔庆威的博客">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2016/08/26/2016-08-26-Android左右声道的控制/" itemprop="url">Android左右声道的控制</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-08-26T15:36:50+08:00">
-                2016-08-26
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-              <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-                <a href="/2016/08/26/2016-08-26-Android左右声道的控制/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count"
-                        data-disqus-identifier="2016/08/26/2016-08-26-Android左右声道的控制/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <hr>
-<p>转载请说明出处！<br>作者：<a href="http://kongqw.github.io/about/index.html" target="_blank" rel="external">kqw攻城狮</a><br>出处：<a href="http://kongqw.github.io" target="_blank" rel="external">个人站</a> | <a href="http://blog.csdn.net/q4878802/" target="_blank" rel="external">CSDN</a></p>
-<hr>
-<h1 id="效果图"><a href="#效果图" class="headerlink" title="效果图"></a>效果图</h1><p><img src="http://img.blog.csdn.net/20160826164630772" alt="效果图"></p>
-<h1 id="源码"><a href="#源码" class="headerlink" title="源码"></a>源码</h1><p><a href="https://github.com/kongqw/AndroidSoundManagerDemo" target="_blank" rel="external">AndroidSoundManagerDemo</a></p>
-<hr>
-<p>我这里主要是用到了<a href="https://developer.android.com/reference/android/media/AudioTrack.html" target="_blank" rel="external">AudioTrack</a>实现的左右声道的控制，手机一般都只有两个声道，即左声道和右声道，我们在输出的时候可以选择单声道，也可以选择双声道（立体声）。</p>
-<p>查看了<code>AudioTrack</code>的API，提供了<code>play()</code>、<code>pause()</code>、<code>stop()</code>、<code>write()</code>等一系列的方法。<br>通过<code>write()</code>方法，可以实现将音频数据发送出去（播放出来）。</p>
-<h1 id="AudioTrack对象的构造"><a href="#AudioTrack对象的构造" class="headerlink" title="AudioTrack对象的构造"></a>AudioTrack对象的构造</h1><p>有三个构造方法</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">AudioTrack (<span class="keyword">int</span> streamType, <span class="keyword">int</span> sampleRateInHz, <span class="keyword">int</span> channelConfig, <span class="keyword">int</span> audioFormat, <span class="keyword">int</span> bufferSizeInBytes, <span class="keyword">int</span> mode)</div><div class="line">AudioTrack (<span class="keyword">int</span> streamType, <span class="keyword">int</span> sampleRateInHz, <span class="keyword">int</span> channelConfig, <span class="keyword">int</span> audioFormat, <span class="keyword">int</span> bufferSizeInBytes, <span class="keyword">int</span> mode, <span class="keyword">int</span> sessionId)</div><div class="line">AudioTrack (AudioAttributes attributes, AudioFormat format, <span class="keyword">int</span> bufferSizeInBytes, <span class="keyword">int</span> mode, <span class="keyword">int</span> sessionId)</div></pre></td></tr></table></figure>
-<p>主要参数有如下几个</p>
-<ul>
-<li><p>streamType：以什么形式播放</p>
-<ul>
-<li>STREAM_VOICE_CALL</li>
-<li>STREAM_SYSTEM</li>
-<li>STREAM_RING</li>
-<li>STREAM_MUSIC</li>
-<li>STREAM_ALARM</li>
-<li>STREAM_NOTIFICATION</li>
-</ul>
-</li>
-<li><p>sampleRateInHz：采样率</p>
-</li>
-<li><p>channelConfig：声道</p>
-<ul>
-<li>AudioFormat.CHANNEL_OUT_MONO：输出单声道音频数据</li>
-<li>AudioFormat.CHANNEL_OUT_STEREO：输出双声道音频数据（立体声）</li>
-</ul>
-</li>
-<li><p>audioFormat：音频数据格式</p>
-</li>
-<li><p>mode：缓冲模式</p>
-<ul>
-<li>MODE_STATIC：一次性将音频载入以后再播放</li>
-<li>MODE_STREAM：以流的形式，加载一点就播放一点</li>
-</ul>
-</li>
-</ul>
-<p>把channelConfig的相关参数都看了一遍，没发现有可以指定向某声道发送数据的，只能通过<code>AudioFormat.CHANNEL_OUT_MONO</code>和<code>AudioFormat.CHANNEL_OUT_STEREO</code>选择是输出单声道的音频数据还是双声道的音频数据。</p>
-<h1 id="左右声道控制"><a href="#左右声道控制" class="headerlink" title="左右声道控制"></a>左右声道控制</h1><p>构造的时候不能选择指定声道输出音频，但是有这样一个方法</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">setStereoVolume(<span class="keyword">float</span> leftGain, <span class="keyword">float</span> rightGain)</div></pre></td></tr></table></figure>
-<p>可以通过把某一个声道的音量设置到最小，达到只向某个声道输出音频的效果。<br>我自己也有点”呵呵“，但是也没有发现还有别的方法可以实现这样的效果。</p>
-<blockquote>
-<p>这个方法还有一点小问题，在个别手机上，即使将某个声道的声音设置到了最小，也还是会有一点声音，这个我也还没有搞清楚为什么，个人猜测可能和手机硬件有关系。</p>
-</blockquote>
-<h1 id="封装"><a href="#封装" class="headerlink" title="封装"></a>封装</h1><p>我这里的缓冲模式使用的<code>MODE_STREAM</code>的形式，以流的形式播放，因为这个逻辑要稍微复杂一点，尤其是暂停以后再继续播放的位置。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div><div class="line">95</div><div class="line">96</div><div class="line">97</div><div class="line">98</div><div class="line">99</div><div class="line">100</div><div class="line">101</div><div class="line">102</div><div class="line">103</div><div class="line">104</div><div class="line">105</div><div class="line">106</div><div class="line">107</div><div class="line">108</div><div class="line">109</div><div class="line">110</div><div class="line">111</div><div class="line">112</div><div class="line">113</div><div class="line">114</div><div class="line">115</div><div class="line">116</div><div class="line">117</div><div class="line">118</div><div class="line">119</div><div class="line">120</div><div class="line">121</div><div class="line">122</div><div class="line">123</div><div class="line">124</div><div class="line">125</div><div class="line">126</div><div class="line">127</div><div class="line">128</div><div class="line">129</div><div class="line">130</div><div class="line">131</div><div class="line">132</div><div class="line">133</div><div class="line">134</div><div class="line">135</div><div class="line">136</div><div class="line">137</div><div class="line">138</div><div class="line">139</div><div class="line">140</div><div class="line">141</div><div class="line">142</div><div class="line">143</div><div class="line">144</div><div class="line">145</div><div class="line">146</div><div class="line">147</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">package</span> kong.qingwei.androidsoundmanagerdemo;</div><div class="line"></div><div class="line"><span class="keyword">import</span> android.app.Activity;</div><div class="line"><span class="keyword">import</span> android.media.AudioFormat;</div><div class="line"><span class="keyword">import</span> android.media.AudioManager;</div><div class="line"><span class="keyword">import</span> android.media.AudioTrack;</div><div class="line"><span class="keyword">import</span> android.util.Log;</div><div class="line"></div><div class="line"><span class="keyword">import</span> java.io.ByteArrayOutputStream;</div><div class="line"><span class="keyword">import</span> java.io.IOException;</div><div class="line"><span class="keyword">import</span> java.io.InputStream;</div><div class="line"></div><div class="line"><span class="comment">/**</span></div><div class="line"><span class="comment"> * Created by kqw on 2016/8/26.</span></div><div class="line"><span class="comment"> * 播放音乐的线程</span></div><div class="line"><span class="comment"> */</span></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">PlayThread</span> <span class="keyword">extends</span> <span class="title">Thread</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="comment">// 采样率</span></div><div class="line">    <span class="keyword">private</span> <span class="keyword">int</span> mSampleRateInHz = <span class="number">16000</span>;</div><div class="line">    <span class="comment">// 单声道</span></div><div class="line">    <span class="keyword">private</span> <span class="keyword">int</span> mChannelConfig = AudioFormat.CHANNEL_OUT_MONO;</div><div class="line">    <span class="comment">// 双声道（立体声）</span></div><div class="line">    <span class="comment">// private int mChannelConfig = AudioFormat.CHANNEL_OUT_STEREO;</span></div><div class="line"></div><div class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String TAG = <span class="string">"PlayThread"</span>;</div><div class="line">    <span class="keyword">private</span> Activity mActivity;</div><div class="line">    <span class="keyword">private</span> AudioTrack mAudioTrack;</div><div class="line">    <span class="keyword">private</span> <span class="keyword">byte</span>[] data;</div><div class="line">    <span class="keyword">private</span> String mFileName;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">PlayThread</span><span class="params">(Activity activity, String fileName)</span> </span>&#123;</div><div class="line">        mActivity = activity;</div><div class="line">        mFileName = fileName;</div><div class="line"></div><div class="line">        <span class="keyword">int</span> bufferSize = AudioTrack.getMinBufferSize(mSampleRateInHz, mChannelConfig, AudioFormat.ENCODING_PCM_16BIT);</div><div class="line">        mAudioTrack = <span class="keyword">new</span> AudioTrack(</div><div class="line">                AudioManager.STREAM_MUSIC,</div><div class="line">                mSampleRateInHz,</div><div class="line">                mChannelConfig,</div><div class="line">                AudioFormat.ENCODING_PCM_16BIT,</div><div class="line">                bufferSize,</div><div class="line">                AudioTrack.MODE_STREAM);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">super</span>.run();</div><div class="line">        <span class="keyword">try</span> &#123;</div><div class="line">            <span class="keyword">if</span> (<span class="keyword">null</span> != mAudioTrack)</div><div class="line">                mAudioTrack.play();</div><div class="line"></div><div class="line">            ByteArrayOutputStream byteArrayOutputStream = <span class="keyword">new</span> ByteArrayOutputStream();</div><div class="line">            InputStream inputStream = mActivity.getResources().getAssets().open(mFileName);</div><div class="line"></div><div class="line">            <span class="comment">// 缓冲区</span></div><div class="line">            <span class="keyword">byte</span>[] buffer = <span class="keyword">new</span> <span class="keyword">byte</span>[<span class="number">1024</span>];</div><div class="line">            <span class="comment">// 播放进度</span></div><div class="line">            <span class="keyword">int</span> playIndex = <span class="number">0</span>;</div><div class="line">            <span class="comment">// 是否缓冲完成</span></div><div class="line">            <span class="keyword">boolean</span> isLoaded = <span class="keyword">false</span>;</div><div class="line">            <span class="comment">// 缓冲 + 播放</span></div><div class="line">            <span class="keyword">while</span> (<span class="keyword">null</span> != mAudioTrack &amp;&amp; AudioTrack.PLAYSTATE_STOPPED != mAudioTrack.getPlayState()) &#123;</div><div class="line">                <span class="comment">// 字符长度</span></div><div class="line">                <span class="keyword">int</span> len;</div><div class="line">                <span class="keyword">if</span> (-<span class="number">1</span> != (len = inputStream.read(buffer))) &#123;</div><div class="line">                    byteArrayOutputStream.write(buffer, <span class="number">0</span>, len);</div><div class="line">                    data = byteArrayOutputStream.toByteArray();</div><div class="line">                    Log.i(TAG, <span class="string">"run: 已缓冲 : "</span> + data.length);</div><div class="line">                &#125; <span class="keyword">else</span> &#123;</div><div class="line">                    <span class="comment">// 缓冲完成</span></div><div class="line">                    isLoaded = <span class="keyword">true</span>;</div><div class="line">                &#125;</div><div class="line"></div><div class="line">                <span class="keyword">if</span> (AudioTrack.PLAYSTATE_PAUSED == mAudioTrack.getPlayState()) &#123;</div><div class="line">                    <span class="comment">// TODO 已经暂停</span></div><div class="line">                &#125;</div><div class="line">                <span class="keyword">if</span> (AudioTrack.PLAYSTATE_PLAYING == mAudioTrack.getPlayState()) &#123;</div><div class="line">                    Log.i(TAG, <span class="string">"run: 开始从 "</span> + playIndex + <span class="string">" 播放"</span>);</div><div class="line">                    playIndex += mAudioTrack.write(data, playIndex, data.length - playIndex);</div><div class="line">                    Log.i(TAG, <span class="string">"run: 播放到了 : "</span> + playIndex);</div><div class="line">                    <span class="keyword">if</span> (isLoaded &amp;&amp; playIndex == data.length) &#123;</div><div class="line">                        Log.i(TAG, <span class="string">"run: 播放完了"</span>);</div><div class="line">                        mAudioTrack.stop();</div><div class="line">                    &#125;</div><div class="line"></div><div class="line">                    <span class="keyword">if</span> (playIndex &lt; <span class="number">0</span>) &#123;</div><div class="line">                        Log.i(TAG, <span class="string">"run: 播放出错"</span>);</div><div class="line">                        mAudioTrack.stop();</div><div class="line">                        <span class="keyword">break</span>;</div><div class="line">                    &#125;</div><div class="line">                &#125;</div><div class="line">            &#125;</div><div class="line">            Log.i(TAG, <span class="string">"run: play end"</span>);</div><div class="line">        &#125; <span class="keyword">catch</span> (IOException e) &#123;</div><div class="line">            e.printStackTrace();</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="comment">/**</span></div><div class="line"><span class="comment">     * 设置左右声道平衡</span></div><div class="line"><span class="comment">     *</span></div><div class="line"><span class="comment">     * <span class="doctag">@param</span> max     最大值</span></div><div class="line"><span class="comment">     * <span class="doctag">@param</span> balance 当前值</span></div><div class="line"><span class="comment">     */</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setBalance</span><span class="params">(<span class="keyword">int</span> max, <span class="keyword">int</span> balance)</span> </span>&#123;</div><div class="line">        <span class="keyword">float</span> b = (<span class="keyword">float</span>) balance / (<span class="keyword">float</span>) max;</div><div class="line">        Log.i(TAG, <span class="string">"setBalance: b = "</span> + b);</div><div class="line">        <span class="keyword">if</span> (<span class="keyword">null</span> != mAudioTrack)</div><div class="line">            mAudioTrack.setStereoVolume(<span class="number">1</span> - b, b);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="comment">/**</span></div><div class="line"><span class="comment">     * 设置左右声道是否可用</span></div><div class="line"><span class="comment">     *</span></div><div class="line"><span class="comment">     * <span class="doctag">@param</span> left  左声道</span></div><div class="line"><span class="comment">     * <span class="doctag">@param</span> right 右声道</span></div><div class="line"><span class="comment">     */</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setChannel</span><span class="params">(<span class="keyword">boolean</span> left, <span class="keyword">boolean</span> right)</span> </span>&#123;</div><div class="line">        <span class="keyword">if</span> (<span class="keyword">null</span> != mAudioTrack) &#123;</div><div class="line">            mAudioTrack.setStereoVolume(left ? <span class="number">1</span> : <span class="number">0</span>, right ? <span class="number">1</span> : <span class="number">0</span>);</div><div class="line">            mAudioTrack.play();</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">pause</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">if</span> (<span class="keyword">null</span> != mAudioTrack)</div><div class="line">            mAudioTrack.pause();</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">play</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">if</span> (<span class="keyword">null</span> != mAudioTrack)</div><div class="line">            mAudioTrack.play();</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">stopp</span><span class="params">()</span> </span>&#123;</div><div class="line">        releaseAudioTrack();</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">releaseAudioTrack</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">if</span> (<span class="keyword">null</span> != mAudioTrack) &#123;</div><div class="line">            mAudioTrack.stop();</div><div class="line">            mAudioTrack.release();</div><div class="line">            mAudioTrack = <span class="keyword">null</span>;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h1 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h1><h2 id="从头开始播放"><a href="#从头开始播放" class="headerlink" title="从头开始播放"></a>从头开始播放</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">mPlayThread = <span class="keyword">new</span> PlayThread(<span class="keyword">this</span>, <span class="string">"tts1.pcm"</span>);</div><div class="line">mPlayThread.start();</div></pre></td></tr></table></figure>
-<h2 id="暂停"><a href="#暂停" class="headerlink" title="暂停"></a>暂停</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">mPlayThread.pause();</div></pre></td></tr></table></figure>
-<h2 id="暂停后继续播放"><a href="#暂停后继续播放" class="headerlink" title="暂停后继续播放"></a>暂停后继续播放</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">mPlayThread.play();</div></pre></td></tr></table></figure>
-<h2 id="停止播放"><a href="#停止播放" class="headerlink" title="停止播放"></a>停止播放</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">mPlayThread.stopp();</div><div class="line">mPlayThread = <span class="keyword">null</span>;</div></pre></td></tr></table></figure>
-<h2 id="左右声道控制-1"><a href="#左右声道控制-1" class="headerlink" title="左右声道控制"></a>左右声道控制</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 禁用左声道（右声道同理）</span></div><div class="line">mPlayThread.setChannel(<span class="keyword">false</span>, <span class="keyword">true</span>);</div></pre></td></tr></table></figure>
-<h1 id="向左右声道单独输出不同的音频数据"><a href="#向左右声道单独输出不同的音频数据" class="headerlink" title="向左右声道单独输出不同的音频数据"></a>向左右声道单独输出不同的音频数据</h1><p>也是一个很”呵呵“的做法，但是依然还没有找到更好的方法。<br>构造两个<code>AudioTrack</code>对象，分别输出两个音频，一个禁用左声道，一个禁用右声道，达到预期效果。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">mChannelLeftPlayer = <span class="keyword">new</span> PlayThread(<span class="keyword">this</span>, <span class="string">"tts1.pcm"</span>);</div><div class="line">mChannelRightPlayer = <span class="keyword">new</span> PlayThread(<span class="keyword">this</span>, <span class="string">"tts2.pcm"</span>);</div><div class="line"></div><div class="line">mChannelLeftPlayer.setChannel(<span class="keyword">true</span>, <span class="keyword">false</span>);</div><div class="line">mChannelRightPlayer.setChannel(<span class="keyword">false</span>, <span class="keyword">true</span>);</div><div class="line"></div><div class="line">mChannelLeftPlayer.start();</div><div class="line">mChannelRightPlayer.start();</div></pre></td></tr></table></figure>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/08/22/2016-08-22-环信即时通讯在Android平台的部署/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="kongqw">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="孔庆威的博客">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2016/08/22/2016-08-22-环信即时通讯在Android平台的部署/" itemprop="url">环信即时通讯在Android平台的部署</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-08-22T18:36:12+08:00">
-                2016-08-22
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/IM/" itemprop="url" rel="index">
-                    <span itemprop="name">IM</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-              <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-                <a href="/2016/08/22/2016-08-22-环信即时通讯在Android平台的部署/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count"
-                        data-disqus-identifier="2016/08/22/2016-08-22-环信即时通讯在Android平台的部署/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <hr>
-<p>转载请说明出处！<br>作者：<a href="http://kongqw.github.io/about/index.html" target="_blank" rel="external">kqw攻城狮</a><br>出处：<a href="http://kongqw.github.io" target="_blank" rel="external">个人站</a> | <a href="http://blog.csdn.net/q4878802/" target="_blank" rel="external">CSDN</a></p>
-<hr>
-<h1 id="官网"><a href="#官网" class="headerlink" title="官网"></a>官网</h1><p><a href="http://www.easemob.com/" target="_blank" rel="external">环信</a></p>
-<p><a href="http://www.easemob.com/download" target="_blank" rel="external">下载SDK</a></p>
-<h1 id="创建一个工程"><a href="#创建一个工程" class="headerlink" title="创建一个工程"></a>创建一个工程</h1><p>如果想要封装性好一点，也可以在工程里再创建一个环信的Library，然后将SDK里的<code>jar</code>和<code>.so</code>，都导入到工程</p>
-<p><img src="http://img.blog.csdn.net/20160822185314139" alt="导入SDK"></p>
-<h1 id="清单文件"><a href="#清单文件" class="headerlink" title="清单文件"></a>清单文件</h1><p>下面是环信Library库里面的清单文件，包含了权限的设置、APPKEY的设置和服务的声明等。</p>
-<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div></pre></td><td class="code"><pre><div class="line">&lt;manifest xmlns:android=<span class="string">"http://schemas.android.com/apk/res/android"</span></div><div class="line">    <span class="keyword">package</span>=<span class="string">"……"</span>&gt;</div><div class="line"></div><div class="line">    &lt;uses-permission android:name=<span class="string">"android.permission.VIBRATE"</span> /&gt;</div><div class="line">    &lt;uses-permission android:name=<span class="string">"android.permission.INTERNET"</span> /&gt;</div><div class="line">    &lt;uses-permission android:name=<span class="string">"android.permission.RECORD_AUDIO"</span> /&gt;</div><div class="line">    &lt;uses-permission android:name=<span class="string">"android.permission.CAMERA"</span> /&gt;</div><div class="line">    &lt;uses-permission android:name=<span class="string">"android.permission.ACCESS_NETWORK_STATE"</span> /&gt;</div><div class="line">    &lt;uses-permission android:name=<span class="string">"android.permission.WRITE_EXTERNAL_STORAGE"</span> /&gt;</div><div class="line">    &lt;uses-permission android:name=<span class="string">"android.permission.MOUNT_UNMOUNT_FILESYSTEMS"</span> /&gt;</div><div class="line">    &lt;uses-permission android:name=<span class="string">"android.permission.ACCESS_FINE_LOCATION"</span> /&gt;</div><div class="line">    &lt;uses-permission android:name=<span class="string">"android.permission.GET_TASKS"</span> /&gt;</div><div class="line">    &lt;uses-permission android:name=<span class="string">"android.permission.ACCESS_WIFI_STATE"</span> /&gt;</div><div class="line">    &lt;uses-permission android:name=<span class="string">"android.permission.CHANGE_WIFI_STATE"</span> /&gt;</div><div class="line">    &lt;uses-permission android:name=<span class="string">"android.permission.WAKE_LOCK"</span> /&gt;</div><div class="line">    &lt;uses-permission android:name=<span class="string">"android.permission.MODIFY_AUDIO_SETTINGS"</span> /&gt;</div><div class="line">    &lt;uses-permission android:name=<span class="string">"android.permission.READ_PHONE_STATE"</span> /&gt;</div><div class="line">    &lt;uses-permission android:name=<span class="string">"android.permission.RECEIVE_BOOT_COMPLETED"</span> /&gt;</div><div class="line">    &lt;uses-permission android:name=<span class="string">"android.permission.USE_CREDENTIALS"</span> /&gt;</div><div class="line">    &lt;uses-permission android:name=<span class="string">"com.android.launcher.permission.READ_SETTINGS"</span> /&gt;</div><div class="line">    &lt;uses-permission android:name=<span class="string">"android.permission.BROADCAST_STICKY"</span> /&gt;</div><div class="line">    &lt;uses-permission android:name=<span class="string">"android.permission.WRITE_SETTINGS"</span> /&gt;</div><div class="line">    &lt;uses-permission android:name=<span class="string">"android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS"</span> /&gt;</div><div class="line"></div><div class="line"></div><div class="line">    &lt;application</div><div class="line">        android:allowBackup=<span class="string">"true"</span></div><div class="line">        android:label=<span class="string">"@string/app_name"</span></div><div class="line">        android:supportsRtl=<span class="string">"true"</span>&gt;</div><div class="line"></div><div class="line">        &lt;!-- 设置环信应用的AppKey --&gt;</div><div class="line">        &lt;meta-data</div><div class="line">            android:name=<span class="string">"EASEMOB_APPKEY"</span></div><div class="line">            android:value=<span class="string">"你的APPKEY"</span> /&gt;</div><div class="line">        &lt;!-- 声明SDK所需的service SDK核心功能--&gt;</div><div class="line">        &lt;service</div><div class="line">            android:name=<span class="string">"com.hyphenate.chat.EMChatService"</span></div><div class="line">            android:exported=<span class="string">"true"</span> /&gt;</div><div class="line">        &lt;!-- 声明SDK所需的receiver --&gt;</div><div class="line">        &lt;receiver android:name=<span class="string">"com.hyphenate.chat.EMMonitorReceiver"</span>&gt;</div><div class="line">            &lt;intent-filter&gt;</div><div class="line">                &lt;action android:name=<span class="string">"android.intent.action.PACKAGE_REMOVED"</span> /&gt;</div><div class="line">                &lt;data android:scheme=<span class="string">"package"</span> /&gt;</div><div class="line">            &lt;/intent-filter&gt;</div><div class="line">            &lt;!-- 可选filter --&gt;</div><div class="line">            &lt;intent-filter&gt;</div><div class="line">                &lt;action android:name=<span class="string">"android.intent.action.BOOT_COMPLETED"</span> /&gt;</div><div class="line">                &lt;action android:name=<span class="string">"android.intent.action.USER_PRESENT"</span> /&gt;</div><div class="line">            &lt;/intent-filter&gt;</div><div class="line">        &lt;/receiver&gt;</div><div class="line"></div><div class="line">    &lt;/application&gt;</div><div class="line"></div><div class="line">&lt;/manifest&gt;</div></pre></td></tr></table></figure>
-<h1 id="初始化"><a href="#初始化" class="headerlink" title="初始化"></a>初始化</h1><p>创建一个<code>InitApplication</code>类，继承<code>Application</code>，用来初始化应用的一些信息。</p>
-<p>在主工程的清单文件下声明</p>
-<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">&lt;?xml version=<span class="string">"1.0"</span> encoding=<span class="string">"utf-8"</span>?&gt;</div><div class="line">&lt;manifest xmlns:android=<span class="string">"http://schemas.android.com/apk/res/android"</span></div><div class="line">    <span class="keyword">package</span>=<span class="string">"……"</span>&gt;</div><div class="line"></div><div class="line">    &lt;application</div><div class="line">        android:name=<span class="string">".InitApplication"</span></div><div class="line">        ……&gt;</div><div class="line">        ……</div><div class="line">    &lt;/application&gt;</div><div class="line"></div><div class="line">&lt;/manifest&gt;</div></pre></td></tr></table></figure>
-<p>初始化</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">package</span> ……;</div><div class="line"></div><div class="line"><span class="keyword">import</span> android.app.Application;</div><div class="line"><span class="keyword">import</span> android.widget.Toast;</div><div class="line"></div><div class="line"><span class="keyword">import</span> com.hyphenate.chat.EMClient;</div><div class="line"><span class="keyword">import</span> com.hyphenate.chat.EMOptions;</div><div class="line"></div><div class="line"><span class="comment">/**</span></div><div class="line"><span class="comment"> * Created by kqw on 2016/8/22.</span></div><div class="line"><span class="comment"> * 初始化应用</span></div><div class="line"><span class="comment"> */</span></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">InitApplication</span> <span class="keyword">extends</span> <span class="title">Application</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">super</span>.onCreate();</div><div class="line"></div><div class="line">        EMOptions options = <span class="keyword">new</span> EMOptions();</div><div class="line">        <span class="comment">// 默认添加好友时，是不需要验证的，改成需要验证</span></div><div class="line">        options.setAcceptInvitationAlways(<span class="keyword">false</span>);</div><div class="line">        <span class="comment">// 初始化</span></div><div class="line">        EMClient.getInstance().init(<span class="keyword">this</span>, options);</div><div class="line">        <span class="comment">// 在做打包混淆时，关闭debug模式，避免消耗不必要的资源</span></div><div class="line">        EMClient.getInstance().setDebugMode(<span class="keyword">true</span>);</div><div class="line"></div><div class="line">        Toast.makeText(<span class="keyword">this</span>, <span class="string">"已经初始化"</span>, Toast.LENGTH_SHORT).show();</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>部署完成</p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
@@ -2074,7 +2061,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">52</span>
+                <span class="site-state-item-count">54</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -2096,7 +2083,7 @@
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">24</span>
+                <span class="site-state-item-count">25</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>

@@ -278,6 +278,358 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/04/03/2018-04-03-【Kotlin】关于Android事件传递的整理/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="kongqw">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="孔庆威的博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/04/03/2018-04-03-【Kotlin】关于Android事件传递的整理/" itemprop="url">【Kotlin】关于Android事件传递的整理</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-04-03T15:11:52+08:00">
+                2018-04-03
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2018/04/03/2018-04-03-【Kotlin】关于Android事件传递的整理/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2018/04/03/2018-04-03-【Kotlin】关于Android事件传递的整理/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="【Kotlin】关于Android事件传递的整理"><a href="#【Kotlin】关于Android事件传递的整理" class="headerlink" title="【Kotlin】关于Android事件传递的整理"></a>【Kotlin】关于Android事件传递的整理</h1><p>关于事件传递的流程，已经有很多大神介绍过了，我在使用的过程中，也遇到了一些问题，在此整理一下，相信有不少同学也有遇到我这样的问题。</p>
+<h2 id="问题一：为什么我的onTouchEvent方法只响应了MotionEvent-ACTION-DOWN动作"><a href="#问题一：为什么我的onTouchEvent方法只响应了MotionEvent-ACTION-DOWN动作" class="headerlink" title="问题一：为什么我的onTouchEvent方法只响应了MotionEvent.ACTION_DOWN动作"></a>问题一：为什么我的<code>onTouchEvent</code>方法只响应了<code>MotionEvent.ACTION_DOWN</code>动作</h2><p>百度或者Google一搜有一大把这样问题。其根本原因是你的<code>MotionEvent.ACTION_DOWN</code>行为没有被消费掉（没有<code>return true</code>）,<code>onTouchEvent</code>默认<code>MotionEvent.ACTION_DOWN</code>为一个触摸事件的开始，如果<code>MotionEvent.ACTION_DOWN</code>没有做处理，则后面一系列行为将都不被响应。</p>
+<p>举一个例子，有一个嵌套布局</p>
+<ul>
+<li>A : ViewGroup</li>
+<li>B : ViewGroup</li>
+<li>C : View</li>
+</ul>
+<blockquote>
+<p>注意，只有<code>ViewGroup</code>有<code>onInterceptTouchEvent</code>方法，View是没有<code>onInterceptTouchEvent</code>方法的，因为<code>View</code>不能再有子View，不涉及到事件传递</p>
+</blockquote>
+<p><img src="https://img-blog.csdn.net/20180403122110568?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3E0ODc4ODAy/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="ViewA-&gt;ViewB-&gt;ViewC"></p>
+<p>当我们手指触摸C控件的时候，事件的传递过程为</p>
+<ol>
+<li>A - dispatchTouchEvent</li>
+<li>A - onInterceptTouchEvent</li>
+<li>B - dispatchTouchEvent</li>
+<li>B - onInterceptTouchEvent</li>
+<li>C - dispatchTouchEvent</li>
+<li>C - onTouchEvent</li>
+<li>B - onTouchEvent</li>
+<li>A - onTouchEvent</li>
+</ol>
+<blockquote>
+<p>以上为 dispatchTouchEvent、onInterceptTouchEvent、onTouchEvent 均未重写的情况</p>
+</blockquote>
+<p>默认情况下，你的<code>ACTION_DOWN</code>是没有被消费掉的，<code>super.onTouchEvent(event)</code>会返回<code>false</code>，比较常见的，有不少人会问，我手指触摸了C控件，但是为什么<code>ACTION_MOVE</code>和<code>ACTION_UP</code>没有响应呢，如果想要监听<code>ACTION_MOVE</code>和<code>ACTION_UP</code>，我们只需要重写<code>C</code>的<code>onTouchEvent</code>方法，在接收到<code>MotionEvent.ACTION_DOWN</code>的时候返回<code>true</code>，就代表这个触摸事件交给<code>C</code>处理了。</p>
+<p>那么事件传递的过程将变成：</p>
+<ol>
+<li>A - dispatchTouchEvent</li>
+<li>A - onInterceptTouchEvent</li>
+<li>B - dispatchTouchEvent</li>
+<li>B - onInterceptTouchEvent</li>
+<li>C - dispatchTouchEvent</li>
+<li>C - onTouchEvent</li>
+</ol>
+<p>就没有B、A 的<code>onTouchEvent</code>方法什么事了</p>
+<h2 id="问题二：手指在C控件上按下，我想要横着滑动的时候交给控件C处理，竖着滑动的时候交给B处理该如何实现"><a href="#问题二：手指在C控件上按下，我想要横着滑动的时候交给控件C处理，竖着滑动的时候交给B处理该如何实现" class="headerlink" title="问题二：手指在C控件上按下，我想要横着滑动的时候交给控件C处理，竖着滑动的时候交给B处理该如何实现"></a>问题二：手指在C控件上按下，我想要横着滑动的时候交给控件C处理，竖着滑动的时候交给B处理该如何实现</h2><p>这里就涉及到事件的拦截处理，就轮到<code>onInterceptTouchEvent</code>方法大显身手的时候了。</p>
+<p>首先聊一聊思路，我们都知道，事件的分发是由外到内的，即当我们在<code>C</code>控件上按下的时候，事件是先传到<code>A</code>上，<code>A</code>传给<code>B</code>，<code>B</code>再传给<code>C</code>（A -&gt; B -&gt; C）。事件处理是由内到外的，即<code>C</code>先处理，处理完再交给<code>B</code>，<code>B</code>处理完再交给<code>A</code>（C -&gt; B -&gt; A）。当前的需求涉及到B和C来处理滑动状态，那么，我们就可以在滑动事件分发到<code>B</code>的时候判断一下，当前的滑动是横向滑动的还是纵向滑动的：</p>
+<ol>
+<li>如果是横向滑动的，那么<code>onInterceptTouchEvent</code>方法不做拦截，允许事件传到<code>C</code>，<code>C</code>接收到事件后，在<code>onTouchEvent</code>中将事件消费掉，这样<code>B</code>就不需要进行处理（不会接收到onTouchEvent的响应）。</li>
+<li>如果是纵向滑动的，那么<code>onInterceptTouchEvent</code>就可以返回<code>true</code>，将事件拦截下来（不需要交给C处理，C就不会收的onTouchEvent的响应），<code>B</code>自己在<code>onTouchEvent</code>中将事件消费掉。</li>
+</ol>
+<h2 id="举个栗子"><a href="#举个栗子" class="headerlink" title="举个栗子"></a>举个栗子</h2><p>现在我们想实现这样一个功能，在页面上下滑动可以翻页，在控件上左右滑动可以拦截翻页动作</p>
+<p><img src="https://img-blog.csdn.net/20180403122659514?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3E0ODc4ODAy/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="这里写图片描述"></p>
+<p>思路:</p>
+<p>首先要写布局，自定义个 View 继承 <code>ViewGroup</code>, 然后开始我们的xml布局</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">com.kongqw.view.ScrollViewPager</span></span></div><div class="line"><span class="tag">    <span class="attr">android:layout_width</span>=<span class="string">"match_parent"</span></span></div><div class="line"><span class="tag">    <span class="attr">android:layout_height</span>=<span class="string">"match_parent"</span>&gt;</span></div><div class="line"></div><div class="line">    <span class="tag">&lt;<span class="name">RelativeLayout</span></span></div><div class="line"><span class="tag">        <span class="attr">android:layout_width</span>=<span class="string">"match_parent"</span></span></div><div class="line"><span class="tag">        <span class="attr">android:layout_height</span>=<span class="string">"match_parent"</span></span></div><div class="line"><span class="tag">        <span class="attr">android:background</span>=<span class="string">"#FFEEEEEE"</span>&gt;</span></div><div class="line"></div><div class="line">        <span class="tag">&lt;<span class="name">TextView</span></span></div><div class="line"><span class="tag">            <span class="attr">android:id</span>=<span class="string">"@+id/tv1"</span></span></div><div class="line"><span class="tag">            <span class="attr">android:layout_width</span>=<span class="string">"wrap_content"</span></span></div><div class="line"><span class="tag">            <span class="attr">android:layout_height</span>=<span class="string">"wrap_content"</span></span></div><div class="line"><span class="tag">            <span class="attr">android:layout_centerInParent</span>=<span class="string">"true"</span></span></div><div class="line"><span class="tag">            <span class="attr">android:gravity</span>=<span class="string">"center"</span></span></div><div class="line"><span class="tag">            <span class="attr">android:text</span>=<span class="string">"我是第 0 页内容"</span></span></div><div class="line"><span class="tag">            <span class="attr">android:textSize</span>=<span class="string">"20sp"</span> /&gt;</span></div><div class="line"></div><div class="line">        <span class="tag">&lt;<span class="name">ImageView</span></span></div><div class="line"><span class="tag">            <span class="attr">android:layout_width</span>=<span class="string">"wrap_content"</span></span></div><div class="line"><span class="tag">            <span class="attr">android:layout_height</span>=<span class="string">"wrap_content"</span></span></div><div class="line"><span class="tag">            <span class="attr">android:layout_above</span>=<span class="string">"@id/tv1"</span></span></div><div class="line"><span class="tag">            <span class="attr">android:layout_centerInParent</span>=<span class="string">"true"</span></span></div><div class="line"><span class="tag">            <span class="attr">android:src</span>=<span class="string">"@mipmap/ic_launcher"</span> /&gt;</span></div><div class="line"></div><div class="line">    <span class="tag">&lt;/<span class="name">RelativeLayout</span>&gt;</span></div><div class="line"></div><div class="line">    <span class="tag">&lt;<span class="name">RelativeLayout</span></span></div><div class="line"><span class="tag">        <span class="attr">android:layout_width</span>=<span class="string">"match_parent"</span></span></div><div class="line"><span class="tag">        <span class="attr">android:layout_height</span>=<span class="string">"match_parent"</span></span></div><div class="line"><span class="tag">        <span class="attr">android:background</span>=<span class="string">"#FFBBBBBB"</span>&gt;</span></div><div class="line"></div><div class="line">        <span class="tag">&lt;<span class="name">Button</span></span></div><div class="line"><span class="tag">            <span class="attr">android:id</span>=<span class="string">"@+id/btn_test"</span></span></div><div class="line"><span class="tag">            <span class="attr">android:layout_width</span>=<span class="string">"wrap_content"</span></span></div><div class="line"><span class="tag">            <span class="attr">android:layout_height</span>=<span class="string">"wrap_content"</span></span></div><div class="line"><span class="tag">            <span class="attr">android:layout_centerInParent</span>=<span class="string">"true"</span></span></div><div class="line"><span class="tag">            <span class="attr">android:gravity</span>=<span class="string">"center"</span></span></div><div class="line"><span class="tag">            <span class="attr">android:text</span>=<span class="string">"我是第 1 页内容"</span></span></div><div class="line"><span class="tag">            <span class="attr">android:textSize</span>=<span class="string">"20sp"</span> /&gt;</span></div><div class="line"></div><div class="line">    <span class="tag">&lt;/<span class="name">RelativeLayout</span>&gt;</span></div><div class="line"></div><div class="line">    <span class="tag">&lt;<span class="name">RelativeLayout</span></span></div><div class="line"><span class="tag">        <span class="attr">android:layout_width</span>=<span class="string">"match_parent"</span></span></div><div class="line"><span class="tag">        <span class="attr">android:layout_height</span>=<span class="string">"match_parent"</span></span></div><div class="line"><span class="tag">        <span class="attr">android:background</span>=<span class="string">"#FF999999"</span>&gt;</span></div><div class="line"></div><div class="line">        <span class="tag">&lt;<span class="name">TextView</span></span></div><div class="line"><span class="tag">            <span class="attr">android:layout_width</span>=<span class="string">"wrap_content"</span></span></div><div class="line"><span class="tag">            <span class="attr">android:layout_height</span>=<span class="string">"wrap_content"</span></span></div><div class="line"><span class="tag">            <span class="attr">android:gravity</span>=<span class="string">"center"</span></span></div><div class="line"><span class="tag">            <span class="attr">android:text</span>=<span class="string">"我是第 2 页内容"</span></span></div><div class="line"><span class="tag">            <span class="attr">android:textSize</span>=<span class="string">"20sp"</span> /&gt;</span></div><div class="line"></div><div class="line">        <span class="tag">&lt;<span class="name">SeekBar</span></span></div><div class="line"><span class="tag">            <span class="attr">android:layout_width</span>=<span class="string">"match_parent"</span></span></div><div class="line"><span class="tag">            <span class="attr">android:layout_height</span>=<span class="string">"wrap_content"</span></span></div><div class="line"><span class="tag">            <span class="attr">android:layout_centerInParent</span>=<span class="string">"true"</span></span></div><div class="line"><span class="tag">            <span class="attr">android:background</span>=<span class="string">"#FF888888"</span> /&gt;</span></div><div class="line"></div><div class="line">    <span class="tag">&lt;/<span class="name">RelativeLayout</span>&gt;</span></div><div class="line"></div><div class="line">    <span class="tag">&lt;<span class="name">TextView</span></span></div><div class="line"><span class="tag">        <span class="attr">android:layout_width</span>=<span class="string">"match_parent"</span></span></div><div class="line"><span class="tag">        <span class="attr">android:layout_height</span>=<span class="string">"match_parent"</span></span></div><div class="line"><span class="tag">        <span class="attr">android:background</span>=<span class="string">"#FF777777"</span></span></div><div class="line"><span class="tag">        <span class="attr">android:gravity</span>=<span class="string">"center"</span></span></div><div class="line"><span class="tag">        <span class="attr">android:text</span>=<span class="string">"我是第 3 页内容"</span></span></div><div class="line"><span class="tag">        <span class="attr">android:textSize</span>=<span class="string">"20sp"</span> /&gt;</span></div><div class="line"></div><div class="line"><span class="tag">&lt;/<span class="name">com.kongqw.view.ScrollViewPager</span>&gt;</span></div></pre></td></tr></table></figure>
+<p>写完布局我们要重写<code>onMeasure</code>和<code>onLayout</code>方法，开始对布局测量、排布。<br>我们这里是纵向排布。</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line"><span class="comment"> * 测量</span></div><div class="line"><span class="comment"> */</span></div><div class="line"><span class="keyword">override</span> <span class="function"><span class="keyword">fun</span> <span class="title">onMeasure</span><span class="params">(widthMeasureSpec: <span class="type">Int</span>, heightMeasureSpec: <span class="type">Int</span>)</span></span> &#123;</div><div class="line">    <span class="keyword">super</span>.onMeasure(widthMeasureSpec, heightMeasureSpec)</div><div class="line">    <span class="keyword">for</span> (index <span class="keyword">in</span> <span class="number">0</span> until childCount) &#123;</div><div class="line">        measureChild(getChildAt(index), widthMeasureSpec, heightMeasureSpec)</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">/**</span></div><div class="line"><span class="comment"> * 布局  纵向布局</span></div><div class="line"><span class="comment"> */</span></div><div class="line"><span class="keyword">override</span> <span class="function"><span class="keyword">fun</span> <span class="title">onLayout</span><span class="params">(changed: <span class="type">Boolean</span>, l: <span class="type">Int</span>, t: <span class="type">Int</span>, r: <span class="type">Int</span>, b: <span class="type">Int</span>)</span></span> &#123;</div><div class="line">    <span class="keyword">var</span> top = <span class="number">0</span></div><div class="line">    <span class="keyword">var</span> bottom = <span class="number">0</span></div><div class="line">    <span class="keyword">for</span> (index <span class="keyword">in</span> <span class="number">0</span> until childCount) &#123;</div><div class="line">        <span class="keyword">val</span> childView = getChildAt(index)</div><div class="line">        bottom = top + childView.measuredHeight</div><div class="line">        childView.layout(<span class="number">0</span>, top, childView.measuredWidth, bottom)</div><div class="line">        top = bottom</div><div class="line">    &#125;</div><div class="line">    mBottomBorder = bottom</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>写到这里运行程序，应该是可以看得到第一个页面了，但是滑动没有任何反应，我们需要重写<code>onTouchEvent</code>方法，让View可以根据手指的滑动而滚动，这里需要监听event的<code>ACTION_DOWN</code>、<code>ACTION_MOVE</code>、<code>ACTION_UP</code>、<code>ACTION_CANCEL</code>状态，通过<code>ACTION_MOVE</code>记录手指每次纵向移动的距离，在监听到<code>ACTION_UP</code>、<code>ACTION_CANCEL</code>的时候，判断滑动位置，然后滚动到哪个页面。这样，一个简单的页面滑动就实现了。</p>
+<h3 id="scrollBy、scrollTo"><a href="#scrollBy、scrollTo" class="headerlink" title="scrollBy、scrollTo"></a>scrollBy、scrollTo</h3><p>提到滚动，就不得不提到两个方法，<code>scrollBy</code>和<code>scrollTo</code>,值得注意的是，通常我们一种面向对象的思想，想让谁滚动，谁就调用自己的scroll就行了，但是，这里的<code>scrollBy</code>和<code>scrollTo</code>针对的是自己子View的运动，说白话了，就是老爸要管理儿子运动的。<br><code>scrollBy</code>是控制一次滚动多少，<code>scrollTo</code>是控制滚动到哪里。</p>
+<p>我们这里自定义了ScrollViewPager，页面内容都写在ScrollViewPager内部，所以，我们控制滚动，就是在控制ScrollViewPager内部的子View滚动，所以，直接调用<code>scrollBy</code>和<code>scrollTo</code>即可。</p>
+<h3 id="Scroller"><a href="#Scroller" class="headerlink" title="Scroller"></a>Scroller</h3><p>现在滑动没有问题了，但是手指一松开，View 会瞬间移动到指定位置，体验不太好，我们想要View的滚动有一个顺滑的过程，这就又不得不再提到一个<code>Scroller</code>类，他可以帮助我们完成动画的平缓过度。</p>
+<p>通过<code>Scroller</code>的<code>startScroll</code>来初始化运动的起始位置、结束位置和运动时间，然后调用<code>invalidate()</code>开始处理，这里会一直回调<code>View</code>的<code>computeScroll</code>方法，是一个空方法，需要我们自己在这里自己依据<code>Scroller</code>的<code>computeScrollOffset()</code>判断移动是否完成，然后调用<code>scrollTo</code>来完成平滑移动处理。</p>
+<p>到这里，View就可以实现上下滑动，并平滑过渡了，接下来来处理事件的分发问题。<br>我们想要实现的目标是，当我们上下滑动的时候，可以滚动页面，要将事件拦截。<br>当我们在子控件上左右滑动的时候，可以将事件先交给子控件处理。那么我们就可以重写<code>ScrollViewPager</code>的<code>onInterceptTouchEvent</code>方法，在<code>ACTION_MOVE</code>的时候判断滑动方向，如果是上下滑动，则返回true，将事件拦截即可。</p>
+<p>下面是自定义<code>ScrollViewPager</code>源码（Kotlin代码）：</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div><div class="line">95</div><div class="line">96</div><div class="line">97</div><div class="line">98</div><div class="line">99</div><div class="line">100</div><div class="line">101</div><div class="line">102</div><div class="line">103</div><div class="line">104</div><div class="line">105</div><div class="line">106</div><div class="line">107</div><div class="line">108</div><div class="line">109</div><div class="line">110</div><div class="line">111</div><div class="line">112</div><div class="line">113</div><div class="line">114</div><div class="line">115</div><div class="line">116</div><div class="line">117</div><div class="line">118</div><div class="line">119</div><div class="line">120</div><div class="line">121</div><div class="line">122</div><div class="line">123</div><div class="line">124</div><div class="line">125</div><div class="line">126</div><div class="line">127</div><div class="line">128</div><div class="line">129</div><div class="line">130</div><div class="line">131</div><div class="line">132</div><div class="line">133</div><div class="line">134</div><div class="line">135</div><div class="line">136</div><div class="line">137</div><div class="line">138</div><div class="line">139</div><div class="line">140</div><div class="line">141</div><div class="line">142</div><div class="line">143</div><div class="line">144</div><div class="line">145</div><div class="line">146</div><div class="line">147</div><div class="line">148</div><div class="line">149</div><div class="line">150</div><div class="line">151</div><div class="line">152</div><div class="line">153</div><div class="line">154</div><div class="line">155</div><div class="line">156</div><div class="line">157</div><div class="line">158</div><div class="line">159</div><div class="line">160</div><div class="line">161</div><div class="line">162</div><div class="line">163</div><div class="line">164</div><div class="line">165</div><div class="line">166</div><div class="line">167</div><div class="line">168</div><div class="line">169</div><div class="line">170</div><div class="line">171</div><div class="line">172</div><div class="line">173</div><div class="line">174</div><div class="line">175</div><div class="line">176</div><div class="line">177</div><div class="line">178</div><div class="line">179</div><div class="line">180</div><div class="line">181</div><div class="line">182</div><div class="line">183</div><div class="line">184</div><div class="line">185</div><div class="line">186</div><div class="line">187</div><div class="line">188</div><div class="line">189</div><div class="line">190</div><div class="line">191</div><div class="line">192</div><div class="line">193</div><div class="line">194</div><div class="line">195</div><div class="line">196</div><div class="line">197</div><div class="line">198</div><div class="line">199</div><div class="line">200</div><div class="line">201</div><div class="line">202</div><div class="line">203</div><div class="line">204</div><div class="line">205</div><div class="line">206</div><div class="line">207</div><div class="line">208</div><div class="line">209</div><div class="line">210</div><div class="line">211</div><div class="line">212</div><div class="line">213</div><div class="line">214</div><div class="line">215</div><div class="line">216</div><div class="line">217</div><div class="line">218</div><div class="line">219</div><div class="line">220</div><div class="line">221</div><div class="line">222</div><div class="line">223</div><div class="line">224</div><div class="line">225</div><div class="line">226</div><div class="line">227</div><div class="line">228</div><div class="line">229</div><div class="line">230</div><div class="line">231</div><div class="line">232</div><div class="line">233</div><div class="line">234</div><div class="line">235</div><div class="line">236</div><div class="line">237</div><div class="line">238</div><div class="line">239</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">package</span> com.kongqw.view.ScrollViewPager</div><div class="line"></div><div class="line"><span class="keyword">import</span> android.<span class="keyword">annotation</span>.SuppressLint</div><div class="line"><span class="keyword">import</span> android.content.Context</div><div class="line"><span class="keyword">import</span> android.util.AttributeSet</div><div class="line"><span class="keyword">import</span> android.util.Log</div><div class="line"><span class="keyword">import</span> android.view.MotionEvent</div><div class="line"><span class="keyword">import</span> android.view.ViewConfiguration</div><div class="line"><span class="keyword">import</span> android.view.ViewGroup</div><div class="line"><span class="keyword">import</span> android.widget.Scroller</div><div class="line"></div><div class="line"><span class="comment">/**</span></div><div class="line"><span class="comment"> * Created by Kongqw on 2018/3/29.</span></div><div class="line"><span class="comment"> * ScrollViewPager</span></div><div class="line"><span class="comment"> */</span></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">ScrollViewPager</span></span>(context: Context?, attrs: AttributeSet?) : ViewGroup(context, attrs) &#123;</div><div class="line"></div><div class="line">    <span class="comment">/**</span></div><div class="line"><span class="comment">     * 手指按下位置</span></div><div class="line"><span class="comment">     */</span></div><div class="line">    <span class="keyword">private</span> <span class="keyword">var</span> mDownX = <span class="number">0.0</span>F</div><div class="line">    <span class="keyword">private</span> <span class="keyword">var</span> mDownY = <span class="number">0.0</span>F</div><div class="line"></div><div class="line">    <span class="comment">/**</span></div><div class="line"><span class="comment">     * 手指移动后的位置</span></div><div class="line"><span class="comment">     */</span></div><div class="line">    <span class="keyword">private</span> <span class="keyword">var</span> mMoveX = <span class="number">0.0</span>F</div><div class="line">    <span class="keyword">private</span> <span class="keyword">var</span> mMoveY = <span class="number">0.0</span>F</div><div class="line"></div><div class="line">    <span class="comment">/**</span></div><div class="line"><span class="comment">     * 手指最后移动位置</span></div><div class="line"><span class="comment">     */</span></div><div class="line">    <span class="keyword">private</span> <span class="keyword">var</span> mLastX = <span class="number">0.0</span>F</div><div class="line">    <span class="keyword">private</span> <span class="keyword">var</span> mLastY = <span class="number">0.0</span>F</div><div class="line"></div><div class="line">    <span class="comment">/**</span></div><div class="line"><span class="comment">     * View 上边界</span></div><div class="line"><span class="comment">     */</span></div><div class="line">    <span class="keyword">private</span> <span class="keyword">val</span> mTopBorder = <span class="number">0</span></div><div class="line"></div><div class="line">    <span class="comment">/**</span></div><div class="line"><span class="comment">     * View 下边界</span></div><div class="line"><span class="comment">     */</span></div><div class="line">    <span class="keyword">private</span> <span class="keyword">var</span> mBottomBorder = <span class="number">0</span></div><div class="line"></div><div class="line">    <span class="comment">/**</span></div><div class="line"><span class="comment">     * 滑动处理</span></div><div class="line"><span class="comment">     */</span></div><div class="line">    <span class="keyword">private</span> <span class="keyword">val</span> mScroller: Scroller = Scroller(context)</div><div class="line"></div><div class="line">    <span class="comment">/**</span></div><div class="line"><span class="comment">     * 事件是否拦截</span></div><div class="line"><span class="comment">     */</span></div><div class="line">    <span class="keyword">private</span> <span class="keyword">var</span> isIntercept = <span class="literal">false</span></div><div class="line"></div><div class="line">    <span class="comment">/**</span></div><div class="line"><span class="comment">     * 最小移动单位</span></div><div class="line"><span class="comment">     */</span></div><div class="line">    <span class="keyword">private</span> <span class="keyword">val</span> mScaledtouchslop = ViewConfiguration.<span class="keyword">get</span>(context).scaledTouchSlop</div><div class="line"></div><div class="line">    <span class="keyword">companion</span> <span class="keyword">object</span> &#123;</div><div class="line">        <span class="keyword">private</span> <span class="keyword">val</span> TAG: String = ScrollViewPager::<span class="class"><span class="keyword">class</span>.<span class="title">java</span>.<span class="title">simpleName</span></span></div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="comment">/**</span></div><div class="line"><span class="comment">     * 测量</span></div><div class="line"><span class="comment">     */</span></div><div class="line">    <span class="keyword">override</span> <span class="function"><span class="keyword">fun</span> <span class="title">onMeasure</span><span class="params">(widthMeasureSpec: <span class="type">Int</span>, heightMeasureSpec: <span class="type">Int</span>)</span></span> &#123;</div><div class="line">        <span class="keyword">super</span>.onMeasure(widthMeasureSpec, heightMeasureSpec)</div><div class="line">        <span class="keyword">for</span> (index <span class="keyword">in</span> <span class="number">0</span> until childCount) &#123;</div><div class="line">            Log.i(TAG, <span class="string">"测量第 <span class="variable">$index</span> 个控件大小"</span>)</div><div class="line">            measureChild(getChildAt(index), widthMeasureSpec, heightMeasureSpec)</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="comment">/**</span></div><div class="line"><span class="comment">     * 布局  纵向布局</span></div><div class="line"><span class="comment">     */</span></div><div class="line">    <span class="keyword">override</span> <span class="function"><span class="keyword">fun</span> <span class="title">onLayout</span><span class="params">(changed: <span class="type">Boolean</span>, l: <span class="type">Int</span>, t: <span class="type">Int</span>, r: <span class="type">Int</span>, b: <span class="type">Int</span>)</span></span> &#123;</div><div class="line">        <span class="keyword">var</span> top = <span class="number">0</span></div><div class="line">        <span class="keyword">var</span> bottom = <span class="number">0</span></div><div class="line">        <span class="keyword">for</span> (index <span class="keyword">in</span> <span class="number">0</span> until childCount) &#123;</div><div class="line">            <span class="keyword">val</span> childView = getChildAt(index)</div><div class="line">            bottom = top + childView.measuredHeight</div><div class="line">            Log.i(TAG, <span class="string">"布局第几个View [0, <span class="subst">$&#123;top&#125;</span>, <span class="subst">$&#123;childView.measuredWidth&#125;</span>, <span class="subst">$&#123;bottom&#125;</span>]"</span>)</div><div class="line">            childView.layout(<span class="number">0</span>, top, childView.measuredWidth, bottom)</div><div class="line">            top = bottom</div><div class="line">        &#125;</div><div class="line">        mBottomBorder = bottom</div><div class="line">        Log.i(TAG, <span class="string">"View 高度 <span class="variable">$height</span>"</span>)</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="keyword">override</span> <span class="function"><span class="keyword">fun</span> <span class="title">onInterceptTouchEvent</span><span class="params">(ev: <span class="type">MotionEvent</span>?)</span></span>: <span class="built_in">Boolean</span> &#123;</div><div class="line"></div><div class="line">        <span class="keyword">val</span> touchX = ev?.rawX</div><div class="line">        <span class="keyword">val</span> touchY = ev?.rawY</div><div class="line"></div><div class="line">        <span class="keyword">when</span> (ev?.action) &#123;</div><div class="line"></div><div class="line">            MotionEvent.ACTION_DOWN -&gt; &#123;</div><div class="line">                mDownX = touchX!!</div><div class="line">                mDownY = touchY!!</div><div class="line">                isIntercept = <span class="literal">false</span></div><div class="line">            &#125;</div><div class="line">            MotionEvent.ACTION_MOVE -&gt; &#123;</div><div class="line">                mMoveX = touchX!!</div><div class="line">                mMoveY = touchY!!</div><div class="line">                <span class="keyword">val</span> dx = Math.abs(mMoveX - mDownX)</div><div class="line">                <span class="keyword">val</span> dy = Math.abs(mMoveY - mDownY)</div><div class="line"><span class="comment">//                if(dy &gt; dx)&#123;</span></div><div class="line"><span class="comment">//                    isIntercept = true</span></div><div class="line"><span class="comment">//                &#125;</span></div><div class="line">                isIntercept = (dy &gt; dx)</div><div class="line">            &#125;</div><div class="line">            MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -&gt; &#123;</div><div class="line">                isIntercept = <span class="literal">false</span></div><div class="line">            &#125;</div><div class="line"></div><div class="line">        &#125;</div><div class="line"></div><div class="line">        mLastX = touchX!!</div><div class="line">        mLastY = touchY!!</div><div class="line"></div><div class="line">        <span class="keyword">return</span> isIntercept</div><div class="line">        <span class="comment">// return super.onInterceptTouchEvent(ev)</span></div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@SuppressLint(<span class="meta-string">"ClickableViewAccessibility"</span>)</span></div><div class="line">    <span class="keyword">override</span> <span class="function"><span class="keyword">fun</span> <span class="title">onTouchEvent</span><span class="params">(event: <span class="type">MotionEvent</span>?)</span></span>: <span class="built_in">Boolean</span> &#123;</div><div class="line"></div><div class="line">        <span class="keyword">val</span> touchY = event?.rawY</div><div class="line"></div><div class="line">        <span class="keyword">when</span> (event?.action) &#123;</div><div class="line">            MotionEvent.ACTION_DOWN -&gt; &#123;</div><div class="line">                Log.i(TAG, <span class="string">"ACTION_DOWN"</span>)</div><div class="line">                <span class="comment">// 获取手指按下的位置</span></div><div class="line">                mDownY = touchY!!</div><div class="line">                <span class="keyword">return</span> <span class="literal">true</span></div><div class="line">            &#125;</div><div class="line">            MotionEvent.ACTION_MOVE -&gt; &#123;</div><div class="line">                Log.i(TAG, <span class="string">"ACTION_MOVE"</span>)</div><div class="line">                <span class="comment">// 获取手指移动后的位置</span></div><div class="line">                mMoveY = touchY!!</div><div class="line">                <span class="comment">// 计算手指在Y轴移动距离</span></div><div class="line">                <span class="comment">// val dY = Math.abs(mLastY - mDownY)</span></div><div class="line">                <span class="keyword">val</span> dY = mLastY - mMoveY</div><div class="line"></div><div class="line"></div><div class="line">                <span class="keyword">when</span> &#123;</div><div class="line">                    scrollY &lt; mTopBorder -&gt; &#123;</div><div class="line">                        <span class="comment">// 向下已经划出上边界</span></div><div class="line">                        Log.i(TAG, <span class="string">"向下已经划出上边界"</span>)</div><div class="line">                        scrollBy(<span class="number">0</span>, dY.toInt() / <span class="number">5</span>)</div><div class="line">                    &#125;</div><div class="line"></div><div class="line">                    scrollY + height &gt; mBottomBorder -&gt; &#123;</div><div class="line">                        <span class="comment">// 向上已经划出下边界</span></div><div class="line">                        Log.i(TAG, <span class="string">"向上已经划出下边界"</span>)</div><div class="line">                        scrollBy(<span class="number">0</span>, dY.toInt() / <span class="number">5</span>)</div><div class="line">                    &#125;</div><div class="line"></div><div class="line">                    <span class="keyword">else</span> -&gt; &#123;</div><div class="line">                        <span class="comment">// 移动</span></div><div class="line">                        scrollBy(<span class="number">0</span>, dY.toInt())</div><div class="line">                    &#125;</div><div class="line">                &#125;</div><div class="line"></div><div class="line">                <span class="comment">// 刷新页面</span></div><div class="line">                invalidate()</div><div class="line"></div><div class="line">                mLastY = mMoveY</div><div class="line"></div><div class="line">            &#125;</div><div class="line">            MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -&gt; &#123;</div><div class="line">                Log.i(TAG, <span class="string">"ACTION_UP  View 纵向滑动了 <span class="variable">$scrollY</span>"</span>)</div><div class="line"></div><div class="line">                <span class="keyword">when</span> &#123;</div><div class="line">                    scrollY &lt;= mTopBorder -&gt; &#123;</div><div class="line">                        <span class="comment">// 向下已经划出上边界</span></div><div class="line">                        Log.i(TAG, <span class="string">"向下已经划出上边界"</span>)</div><div class="line">                        mScroller.startScroll(<span class="number">0</span>, scrollY, <span class="number">0</span>, -scrollY)</div><div class="line">                        invalidate()</div><div class="line">                    &#125;</div><div class="line"></div><div class="line">                    scrollY + height &gt;= mBottomBorder -&gt; &#123;</div><div class="line">                        <span class="comment">// 向上已经划出下边界</span></div><div class="line">                        Log.i(TAG, <span class="string">"向上已经划出下边界"</span>)</div><div class="line">                        <span class="keyword">val</span> dy = mBottomBorder - scrollY - height</div><div class="line">                        mScroller.startScroll(<span class="number">0</span>, scrollY, <span class="number">0</span>, dy)</div><div class="line">                        invalidate()</div><div class="line">                    &#125;</div><div class="line"></div><div class="line">                    <span class="keyword">else</span> -&gt; &#123;</div><div class="line">                        <span class="comment">// 移动</span></div><div class="line">                        <span class="keyword">val</span> page = computePageByScrollY(scrollY)</div><div class="line">                        Log.i(TAG, <span class="string">"滑动到第 <span class="variable">$page</span> 页"</span>)</div><div class="line">                        mScroller.startScroll(<span class="number">0</span>, scrollY, <span class="number">0</span>, height * page - scrollY)</div><div class="line">                        invalidate()</div><div class="line">                    &#125;</div><div class="line">                &#125;</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        mLastY = touchY!!</div><div class="line"></div><div class="line">        <span class="keyword">return</span> <span class="keyword">super</span>.onTouchEvent(event)</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="keyword">override</span> <span class="function"><span class="keyword">fun</span> <span class="title">setOnTouchListener</span><span class="params">(l: <span class="type">OnTouchListener</span>?)</span></span> &#123;</div><div class="line">        <span class="keyword">super</span>.setOnTouchListener(l)</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="comment">/**</span></div><div class="line"><span class="comment">     * 重写平滑移动处理逻辑</span></div><div class="line"><span class="comment">     */</span></div><div class="line">    <span class="keyword">override</span> <span class="function"><span class="keyword">fun</span> <span class="title">computeScroll</span><span class="params">()</span></span> &#123;</div><div class="line">        <span class="keyword">super</span>.computeScroll()</div><div class="line">        <span class="keyword">if</span> (mScroller.computeScrollOffset()) &#123;</div><div class="line">            <span class="comment">// 滑动还没有结束</span></div><div class="line">            scrollTo(mScroller.currX, mScroller.currY)</div><div class="line">            invalidate()</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="comment">/**</span></div><div class="line"><span class="comment">     * 根据Y轴滑动距离判断应该显示哪一页</span></div><div class="line"><span class="comment">     */</span></div><div class="line">    <span class="keyword">private</span> <span class="function"><span class="keyword">fun</span> <span class="title">computePageByScrollY</span><span class="params">(scrollY: <span class="type">Int</span> = <span class="number">0</span>)</span></span>: <span class="built_in">Int</span> &#123;</div><div class="line">        <span class="keyword">val</span> v = scrollY / (height / <span class="number">2</span>)</div><div class="line">        Log.i(TAG, <span class="string">"computePageByScrollY  scrollY = <span class="variable">$scrollY</span>   v = <span class="variable">$v</span>"</span>)</div><div class="line">        <span class="keyword">return</span> <span class="keyword">when</span> (v) &#123;</div><div class="line">            <span class="number">0</span> -&gt; <span class="number">0</span></div><div class="line">            <span class="number">1</span>, <span class="number">2</span> -&gt; <span class="number">1</span></div><div class="line">            <span class="number">3</span>, <span class="number">4</span> -&gt; <span class="number">2</span></div><div class="line">            <span class="number">5</span>, <span class="number">6</span>, <span class="number">7</span> -&gt; <span class="number">3</span></div><div class="line">            <span class="keyword">else</span> -&gt; <span class="number">0</span></div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/03/07/2018-03-07-从Java到Kotlin——方法/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="kongqw">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="孔庆威的博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/03/07/2018-03-07-从Java到Kotlin——方法/" itemprop="url">从Java到Kotlin——方法</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-03-07T15:22:31+08:00">
+                2018-03-07
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2018/03/07/2018-03-07-从Java到Kotlin——方法/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2018/03/07/2018-03-07-从Java到Kotlin——方法/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="无参数、无返回值"><a href="#无参数、无返回值" class="headerlink" title="无参数、无返回值"></a>无参数、无返回值</h1><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">fun</span> <span class="title">hello</span><span class="params">()</span></span> &#123;</div><div class="line">    println(<span class="string">"Hello, World!"</span>)</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<blockquote>
+<p>Java</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">hello</span><span class="params">()</span> </span>&#123;</div><div class="line">  System.out.print(<span class="string">"Hello, World!"</span>);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</blockquote>
+<h1 id="带参数、无返回值"><a href="#带参数、无返回值" class="headerlink" title="带参数、无返回值"></a>带参数、无返回值</h1><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">fun</span> <span class="title">hello</span><span class="params">(name: <span class="type">String</span>)</span></span> &#123;</div><div class="line">    println(<span class="string">"Hello, <span class="variable">$name</span>!"</span>)</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<blockquote>
+<p>Java</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">hello</span><span class="params">(String name)</span></span>&#123;</div><div class="line">  System.out.print(<span class="string">"Hello, "</span> + name + <span class="string">"!"</span>);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</blockquote>
+<h2 id="参数带有默认值"><a href="#参数带有默认值" class="headerlink" title="参数带有默认值"></a>参数带有默认值</h2><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">fun</span> <span class="title">hello</span><span class="params">(name: <span class="type">String</span> = <span class="string">"World"</span>)</span></span> &#123;</div><div class="line">    println(<span class="string">"Hello, <span class="variable">$name</span>!"</span>)</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<blockquote>
+<p>Java</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">hello</span><span class="params">(String name)</span> </span>&#123;</div><div class="line">  <span class="keyword">if</span> (name == <span class="keyword">null</span>) &#123;</div><div class="line">    name = <span class="string">"World"</span>;</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  System.out.print(<span class="string">"Hello, "</span> + name + <span class="string">"!"</span>);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</blockquote>
+<h1 id="带返回值"><a href="#带返回值" class="headerlink" title="带返回值"></a>带返回值</h1><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">fun</span> <span class="title">hasItems</span><span class="params">()</span></span> : <span class="built_in">Boolean</span> &#123;</div><div class="line">    <span class="keyword">return</span> <span class="literal">true</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<blockquote>
+<p>Java</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">hasItems</span><span class="params">()</span> </span>&#123;</div><div class="line">  <span class="keyword">return</span> <span class="keyword">true</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</blockquote>
+<h2 id="简写"><a href="#简写" class="headerlink" title="简写"></a>简写</h2><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">fun</span> <span class="title">cube</span><span class="params">(x: <span class="type">Double</span>)</span></span> : <span class="built_in">Double</span> = x * x * x</div></pre></td></tr></table></figure>
+<blockquote>
+<p>Java</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">double</span> <span class="title">cube</span><span class="params">(<span class="keyword">double</span> x)</span> </span>&#123;</div><div class="line">  <span class="keyword">return</span> x * x * x;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</blockquote>
+<h1 id="传入数组"><a href="#传入数组" class="headerlink" title="传入数组"></a>传入数组</h1><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">fun</span> <span class="title">sum</span><span class="params">(<span class="keyword">vararg</span> x: <span class="type">Int</span>)</span></span> &#123; &#125;</div></pre></td></tr></table></figure>
+<blockquote>
+<p>Java</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">sum</span><span class="params">(<span class="keyword">int</span>... numbers)</span> </span>&#123; &#125;</div></pre></td></tr></table></figure>
+</blockquote>
+<h1 id="主函数-Main方法"><a href="#主函数-Main方法" class="headerlink" title="主函数/Main方法"></a>主函数/Main方法</h1><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">fun</span> <span class="title">main</span><span class="params">(args: <span class="type">Array</span>&lt;<span class="type">String</span>&gt;)</span></span> &#123; &#125;</div></pre></td></tr></table></figure>
+<blockquote>
+<p>Java</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MyClass</span> </span>&#123;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span></span>&#123; &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</blockquote>
+<h1 id="多个参数"><a href="#多个参数" class="headerlink" title="多个参数"></a>多个参数</h1><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">fun</span> <span class="title">main</span><span class="params">(args: <span class="type">Array</span>&lt;<span class="type">String</span>&gt;)</span></span> &#123;</div><div class="line">  openFile(<span class="string">"file.txt"</span>, readOnly = <span class="literal">true</span>)</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">fun</span> <span class="title">openFile</span><span class="params">(filename: <span class="type">String</span>, readOnly: <span class="type">Boolean</span>)</span></span> : File &#123; &#125;</div></pre></td></tr></table></figure>
+<blockquote>
+<p>Java</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[]args)</span></span>&#123;</div><div class="line">  openFile(<span class="string">"file.txt"</span>, <span class="keyword">true</span>);</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> File <span class="title">openFile</span><span class="params">(String filename, <span class="keyword">boolean</span> readOnly)</span> </span>&#123; &#125;</div></pre></td></tr></table></figure>
+</blockquote>
+<h1 id="可选参数"><a href="#可选参数" class="headerlink" title="可选参数"></a>可选参数</h1><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">fun</span> <span class="title">main</span><span class="params">(args: <span class="type">Array</span>&lt;<span class="type">String</span>&gt;)</span></span> &#123;</div><div class="line">  createFile(<span class="string">"file.txt"</span>)</div><div class="line"></div><div class="line">  createFile(<span class="string">"file.txt"</span>, <span class="literal">true</span>)</div><div class="line">  createFile(<span class="string">"file.txt"</span>, appendDate = <span class="literal">true</span>)</div><div class="line"></div><div class="line">  createFile(<span class="string">"file.txt"</span>, <span class="literal">true</span>, <span class="literal">false</span>)</div><div class="line">  createFile(<span class="string">"file.txt"</span>, appendDate = <span class="literal">true</span>, executable = <span class="literal">true</span>)</div><div class="line"></div><div class="line">  createFile(<span class="string">"file.txt"</span>, executable = <span class="literal">true</span>)</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">fun</span> <span class="title">createFile</span><span class="params">(filename: <span class="type">String</span>, appendDate: <span class="type">Boolean</span> = <span class="literal">false</span>, executable: <span class="type">Boolean</span> = <span class="literal">false</span>)</span></span>: File &#123; &#125;</div></pre></td></tr></table></figure>
+<blockquote>
+<p>Java</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[]args)</span></span>&#123;</div><div class="line">  createFile(<span class="string">"file.txt"</span>);</div><div class="line"></div><div class="line">  createFile(<span class="string">"file.txt"</span>, <span class="keyword">true</span>);</div><div class="line"></div><div class="line">  createFile(<span class="string">"file.txt"</span>, <span class="keyword">true</span>, <span class="keyword">false</span>);</div><div class="line"></div><div class="line">  createExecutableFile(<span class="string">"file.txt"</span>);</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> File <span class="title">createFile</span><span class="params">(String filename)</span> </span>&#123; &#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> File <span class="title">createFile</span><span class="params">(String filename, <span class="keyword">boolean</span> appendDate)</span> </span>&#123; &#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> File <span class="title">createFile</span><span class="params">(String filename, <span class="keyword">boolean</span> appendDate, <span class="keyword">boolean</span> executable)</span> </span>&#123; &#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> File <span class="title">createExecutableFile</span><span class="params">(String filename)</span> </span>&#123; &#125;</div></pre></td></tr></table></figure>
+</blockquote>
+<h1 id="泛型"><a href="#泛型" class="headerlink" title="泛型"></a>泛型</h1><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">fun</span> <span class="title">init</span><span class="params">()</span></span> &#123;</div><div class="line">  <span class="keyword">val</span> module = createList&lt;String&gt;(<span class="string">"net"</span>)</div><div class="line">  <span class="keyword">val</span> moduleInferred = createList(<span class="string">"net"</span>)</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">fun</span> <span class="type">&lt;T&gt;</span> <span class="title">createList</span><span class="params">(item: <span class="type">T</span>)</span></span>: List&lt;T&gt; &#123; &#125;</div></pre></td></tr></table></figure>
+<blockquote>
+<p>Java</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">init</span><span class="params">()</span> </span>&#123;</div><div class="line">  List&lt;String&gt; moduleInferred = createList(<span class="string">"net"</span>);</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">public</span> &lt;T&gt; <span class="function">List&lt;T&gt; <span class="title">createList</span><span class="params">(T item)</span> </span>&#123; &#125;</div></pre></td></tr></table></figure>
+</blockquote>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/02/27/2018-02-27-从Java到Kotlin——基础语法/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1563,329 +1915,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/03/02/2017-03-02-Gradle常用技巧/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="kongqw">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="孔庆威的博客">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2017/03/02/2017-03-02-Gradle常用技巧/" itemprop="url">Gradle常用技巧</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-03-02T14:46:09+08:00">
-                2017-03-02
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-              <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-                <a href="/2017/03/02/2017-03-02-Gradle常用技巧/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count"
-                        data-disqus-identifier="2017/03/02/2017-03-02-Gradle常用技巧/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <hr>
-<p>转载请说明出处！<br>作者：<a href="http://kongqw.github.io/about/index.html" target="_blank" rel="external">kqw攻城狮</a><br>出处：<a href="http://kongqw.com/2017/03/02/2017-03-02-Gradle常用技巧/" target="_blank" rel="external">个人站</a> | <a href="http://blog.csdn.net/q4878802/article/details/59486052" target="_blank" rel="external">CSDN</a></p>
-<hr>
-<h1 id="Gradle"><a href="#Gradle" class="headerlink" title="Gradle"></a>Gradle</h1><p><a href="http://google.github.io/android-gradle-dsl/current/index.html" target="_blank" rel="external">http://google.github.io/android-gradle-dsl/current/index.html</a></p>
-<p><a href="https://docs.gradle.org/current/userguide/java_plugin.html" target="_blank" rel="external">https://docs.gradle.org/current/userguide/java_plugin.html</a></p>
-<h2 id="打包多个版本"><a href="#打包多个版本" class="headerlink" title="打包多个版本"></a>打包多个版本</h2><p>开发过程中我们经常需要打包多个版本的apk，最为常见的，一个是release版本，一个是debug版本，他们可能使用的api也有所区别，手动改起来总是很麻烦。<br>我们可以通过Gradle，配置多个版本，他们有各自的参数来区分不同的版本。如下，在 <code>app/build.gradle</code> 系统默认会给我生成release版本，我们可以手动自己添加一个版本，我这里命名为<code>debug</code>，分别添加了三种类型的参数。</p>
-<figure class="highlight gradle"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div></pre></td><td class="code"><pre><div class="line">apply plugin: <span class="string">'com.android.application'</span></div><div class="line"></div><div class="line">android &#123;</div><div class="line">    ……</div><div class="line">    buildTypes &#123;</div><div class="line">        release &#123;</div><div class="line">            ……</div><div class="line">            buildConfigField(<span class="string">"boolean"</span>, <span class="string">"isDebug"</span>, <span class="string">"false"</span>)</div><div class="line">        &#125;</div><div class="line">        debug &#123;</div><div class="line">            <span class="comment">// 添加了boolean类型的参数</span></div><div class="line">            buildConfigField(<span class="string">"boolean"</span>, <span class="string">"isDebug"</span>, <span class="string">"true"</span>)</div><div class="line">            <span class="comment">// 添加了String类型的参数</span></div><div class="line">            buildConfigField(<span class="string">"String"</span>, <span class="string">"coder"</span>, <span class="string">"\"kongqw\""</span>)</div><div class="line">            <span class="comment">// 添加了int类型的参数</span></div><div class="line">            buildConfigField(<span class="string">"int"</span>, <span class="string">"age"</span>, <span class="string">"26"</span>)</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line">……</div><div class="line"></div><div class="line"><span class="keyword">dependencies</span> &#123;</div><div class="line">   ……</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>添加完成后Rebuild，会在 <code>BuildConfig</code> 下看到我们添加的参数</p>
-<p><img src="http://img.blog.csdn.net/20170302112738333?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvcTQ4Nzg4MDI=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt="P1"></p>
-<p>因为是静态变量，取值时直接用类名点变量名即可</p>
-<p><img src="http://img.blog.csdn.net/20170302112754865?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvcTQ4Nzg4MDI=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt="P2"></p>
-<p>上述属于在Java代码中添加字段，同样的，Gradle也支持添加xml属性，类似这样</p>
-<figure class="highlight gradle"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line">apply plugin: <span class="string">'com.android.application'</span></div><div class="line"></div><div class="line">android &#123;</div><div class="line">    ……</div><div class="line">    defaultConfig &#123;</div><div class="line">        ……</div><div class="line">    &#125;</div><div class="line">    buildTypes &#123;</div><div class="line">        release &#123;</div><div class="line">            ……</div><div class="line">        &#125;</div><div class="line">        debug &#123;</div><div class="line">            ……</div><div class="line">            resValue(<span class="string">"bool"</span>, <span class="string">"is_debug"</span>, <span class="string">"true"</span>)</div><div class="line">            resValue(<span class="string">"string"</span>, <span class="string">"coder"</span>, <span class="string">"\"kongqw\""</span>)</div><div class="line">            resValue(<span class="string">"integer"</span>, <span class="string">"age"</span>, <span class="string">"26"</span>)</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">dependencies</span> &#123;</div><div class="line">    ……</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>添加完以后Rebuild，会在<code>generated.xml</code> 下生产如下字段</p>
-<p><img src="http://img.blog.csdn.net/20170302112812772?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvcTQ4Nzg4MDI=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt="P3"></p>
-<p>但是要避免和<code>string.xml</code>文件里的字段重复</p>
-<p>在xml中使用<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">android:text="@string/coder"</div></pre></td></tr></table></figure></p>
-<p>或者再Java中使用<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">String coder = getString(R.string.coder);</div></pre></td></tr></table></figure></p>
-<h2 id="添加工程build时间"><a href="#添加工程build时间" class="headerlink" title="添加工程build时间"></a>添加工程build时间</h2><p>有时候，测试和产品总是会拿着手机跑过来问你，“有没有更新？”、“帮我看一下我装的是不是最新的版本？”，总是很烦，我们可以利用Gradle，获取到工程的Build时间，在测试版本打印出来，可以为工程师节省不少时间。</p>
-<p>Gradle支持直接添加方法</p>
-<figure class="highlight gradle"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div></pre></td><td class="code"><pre><div class="line">apply plugin: <span class="string">'com.android.application'</span></div><div class="line"></div><div class="line">android &#123;</div><div class="line">    ……</div><div class="line">    defaultConfig &#123;</div><div class="line">        ……</div><div class="line">        resValue(<span class="string">"string"</span>, <span class="string">"build_time"</span>, getDate())</div><div class="line">        <span class="comment">// BuildTime</span></div><div class="line">        buildConfigField(<span class="string">"String"</span>, <span class="string">"buildTime"</span>, <span class="string">"\""</span> + getDate() + <span class="string">"\""</span>)</div><div class="line">    &#125;</div><div class="line">    buildTypes &#123;</div><div class="line">        release &#123;</div><div class="line">            ……</div><div class="line">        &#125;</div><div class="line">        debug &#123;</div><div class="line">            ……</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">def</span> getDate() &#123;</div><div class="line">    <span class="keyword">return</span> <span class="keyword">new</span> Date().format(<span class="string">"yyyy-MM-dd HH:mm:ss"</span>)</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">dependencies</span> &#123;</div><div class="line">    ……</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>判断的时候调用<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">BuildConfig.buildTime</div></pre></td></tr></table></figure></p>
-<p>或者<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">getString(R.string.build_time)</div></pre></td></tr></table></figure></p>
-<p><img src="http://img.blog.csdn.net/20170302112832366?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvcTQ4Nzg4MDI=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt="P4"></p>
-<h2 id="不同版本包名不同"><a href="#不同版本包名不同" class="headerlink" title="不同版本包名不同"></a>不同版本包名不同</h2><p>我们都知道，相同包名，不同签名，在一台手机上是无法同时安装的。前面我们配置了两个不同的版本，release版本肯定是用正式签名，debug版本我们通常都会使用测试签名。那么问题来了，测试人员如果已经在手机上安装了上线的版本，再装测试版，就会有冲突，必须要卸载一个，那么最好的办法就是修改测试版包名。这样包名不同，两个版本同时安装，也不会有冲突。</p>
-<p>同样的，Gradle依然可以轻松的帮我们做到。</p>
-<figure class="highlight gradle"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line">apply plugin: <span class="string">'com.android.application'</span></div><div class="line"></div><div class="line">android &#123;</div><div class="line">    ……</div><div class="line">    defaultConfig &#123;</div><div class="line">        ……</div><div class="line">    &#125;</div><div class="line">    buildTypes &#123;</div><div class="line">        release &#123;</div><div class="line">            ……</div><div class="line">        &#125;</div><div class="line">        debug &#123;</div><div class="line">            ……</div><div class="line">            applicationIdSuffix <span class="string">".debug"</span></div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">dependencies</span> &#123;</div><div class="line">    ……</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>可以看到我们在 debug 版本添加了<code>applicationIdSuffix</code>，其值为 <code>.debug</code>，顾名思义，是debug版本在包名后面添加<code>.debug</code>后缀。</p>
-<h2 id="多渠道打包"><a href="#多渠道打包" class="headerlink" title="多渠道打包"></a>多渠道打包</h2><p>多渠道打包，打包多个市场的apk，用来统计。</p>
-<p>首先在<code>AndroidManifest</code>文件添加<code>meta-data</code></p>
-<figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line">&lt;?xml version="1.0" encoding="utf-8"?&gt;</div><div class="line"><span class="tag">&lt;<span class="name">manifest</span> ……&gt;</span></div><div class="line"></div><div class="line">    <span class="tag">&lt;<span class="name">application</span></span></div><div class="line"><span class="tag">        ……&gt;</span></div><div class="line"></div><div class="line">        <span class="tag">&lt;<span class="name">meta-data</span></span></div><div class="line"><span class="tag">            <span class="attr">android:name</span>=<span class="string">"PRODUCT"</span></span></div><div class="line"><span class="tag">            <span class="attr">android:value</span>=<span class="string">"$&#123;CHANNEL_VALUE&#125;"</span>/&gt;</span></div><div class="line"></div><div class="line">        <span class="tag">&lt;<span class="name">activity</span> ……&gt;</span></div><div class="line">            ……</div><div class="line">        <span class="tag">&lt;/<span class="name">activity</span>&gt;</span></div><div class="line">    <span class="tag">&lt;/<span class="name">application</span>&gt;</span></div><div class="line"></div><div class="line"><span class="tag">&lt;/<span class="name">manifest</span>&gt;</span></div></pre></td></tr></table></figure>
-<p>在<code>app/build.gradle</code>添加<code>productFlavors</code>，如下所示，添加 <code>XIAO_MI</code>和<code>GOOGLE_PLAY</code>两个渠道</p>
-<figure class="highlight gradle"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div></pre></td><td class="code"><pre><div class="line">apply plugin: <span class="string">'com.android.application'</span></div><div class="line"></div><div class="line">android &#123;</div><div class="line">    ……</div><div class="line">    defaultConfig &#123;</div><div class="line">        ……</div><div class="line">    &#125;</div><div class="line">    buildTypes &#123;</div><div class="line">        release &#123;</div><div class="line">            ……</div><div class="line">        &#125;</div><div class="line">        debug &#123;</div><div class="line">            ……</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    productFlavors &#123;</div><div class="line">        xiaomi &#123;</div><div class="line">            manifestPlaceholders = [CHANNEL_VALUE: <span class="string">"XIAO_MI"</span>]</div><div class="line">        &#125;</div><div class="line">        googlePlay &#123;</div><div class="line">            manifestPlaceholders = [CHANNEL_VALUE: <span class="string">"GOOGLE_PLAY"</span>]</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">dependencies</span> &#123;</div><div class="line">    ……</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>获取渠道</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">try</span> &#123;</div><div class="line">    ApplicationInfo applicationInfo = getPackageManager().getApplicationInfo(getPackageName(), PackageManager.GET_META_DATA);</div><div class="line">    String channel = applicationInfo.metaData.getString(<span class="string">"PRODUCT"</span>);</div><div class="line">    Log.i(TAG, <span class="string">"onCreate: 渠道 ："</span> + channel);</div><div class="line">&#125; <span class="keyword">catch</span> (PackageManager.NameNotFoundException e) &#123;</div><div class="line">    e.printStackTrace();</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/02/16/2017-02-16-打造简洁高效的动态权限管理器/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="kongqw">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="孔庆威的博客">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2017/02/16/2017-02-16-打造简洁高效的动态权限管理器/" itemprop="url">打造简洁高效的动态权限管理器</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-02-16T10:50:45+08:00">
-                2017-02-16
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/开源/" itemprop="url" rel="index">
-                    <span itemprop="name">开源</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-              <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-                <a href="/2017/02/16/2017-02-16-打造简洁高效的动态权限管理器/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count"
-                        data-disqus-identifier="2017/02/16/2017-02-16-打造简洁高效的动态权限管理器/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <hr>
-<p>转载请说明出处！<br>作者：<a href="http://kongqw.github.io/about/index.html" target="_blank" rel="external">kqw攻城狮</a><br>出处：<a href="http://kongqw.com/2017/02/16/2017-02-16-打造简洁高效的动态权限管理器/" target="_blank" rel="external">个人站</a> | <a href="http://blog.csdn.net/q4878802/article/details/55254158" target="_blank" rel="external">CSDN</a></p>
-<hr>
-<p>效果图</p>
-<p><img src="http://img.blog.csdn.net/20170216120006799?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvcTQ4Nzg4MDI=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt="这里写图片描述"></p>
-<p>GitHub地址：<a href="https://github.com/kongqw/PermissionsManager" target="_blank" rel="external">PermissionsManager</a> </p>
-<p>随着Android 6.0的普及，动态权限的重要性也开始时慢慢体现出来。为了更好的保护用户隐私，Android 6.0要求在进行敏感操作之前，必须要向用户请示申请权限。</p>
-<p>如何使用，在之前的文章里也已经介绍过了，但是用起来比较麻烦。<a href="http://blog.csdn.net/q4878802/article/details/50419004?locationNum=1&amp;fps=1" target="_blank" rel="external">Android6.0动态获取权限</a> </p>
-<p>我希望可以封装一下，使用之前创建一个动态权限的管理对象，他有两个回调来告诉我权限申请成功或者失败，像这样：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">mPermissionsManager = <span class="keyword">new</span> PermissionsManager(<span class="keyword">this</span>) &#123;</div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">authorized</span><span class="params">(<span class="keyword">int</span> requestCode)</span> </span>&#123;</div><div class="line">        <span class="comment">// TODO 权限通过</span></div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">noAuthorization</span><span class="params">(<span class="keyword">int</span> requestCode, String[] lacksPermissions)</span> </span>&#123;</div><div class="line">        <span class="comment">// TODO 有权限没有通过</span></div><div class="line">    &#125;</div><div class="line">&#125;;</div></pre></td></tr></table></figure>
-<p>使用的时候，可以直接调用一个方法，把要请示的权限传进去就可以进行校验，像这样：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 检查权限</span></div><div class="line">mPermissionsManager.checkPermissions(<span class="string">"请求码"</span>, <span class="string">"要校验的权限"</span>);</div></pre></td></tr></table></figure>
-<p>于是乎，下面封装的动态权限管理器就来了：</p>
-<h2 id="动态权限管理器"><a href="#动态权限管理器" class="headerlink" title="动态权限管理器"></a>动态权限管理器</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">package</span> com.kongqw.permissionslibrary;</div><div class="line"></div><div class="line"><span class="keyword">import</span> android.app.Activity;</div><div class="line"><span class="keyword">import</span> android.content.Context;</div><div class="line"><span class="keyword">import</span> android.content.Intent;</div><div class="line"><span class="keyword">import</span> android.content.pm.PackageManager;</div><div class="line"><span class="keyword">import</span> android.net.Uri;</div><div class="line"><span class="keyword">import</span> android.provider.Settings;</div><div class="line"><span class="keyword">import</span> android.support.annotation.NonNull;</div><div class="line"><span class="keyword">import</span> android.support.v4.app.ActivityCompat;</div><div class="line"><span class="keyword">import</span> android.support.v4.content.ContextCompat;</div><div class="line"></div><div class="line"><span class="keyword">import</span> java.util.ArrayList;</div><div class="line"></div><div class="line"><span class="comment">/**</span></div><div class="line"><span class="comment"> * Created by kongqingwei on 2017/2/15.</span></div><div class="line"><span class="comment"> * 检查权限的类</span></div><div class="line"><span class="comment"> */</span></div><div class="line"></div><div class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">PermissionsManager</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String PACKAGE_URL_SCHEME = <span class="string">"package:"</span>;</div><div class="line">    <span class="keyword">private</span> Activity mTargetActivity;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">void</span> <span class="title">authorized</span><span class="params">(<span class="keyword">int</span> requestCode)</span></span>;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">void</span> <span class="title">noAuthorization</span><span class="params">(<span class="keyword">int</span> requestCode, String[] lacksPermissions)</span></span>;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">PermissionsManager</span><span class="params">(Activity targetActivity)</span> </span>&#123;</div><div class="line">        mTargetActivity = targetActivity;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="comment">/**</span></div><div class="line"><span class="comment">     * 检查权限</span></div><div class="line"><span class="comment">     *</span></div><div class="line"><span class="comment">     * <span class="doctag">@param</span> requestCode 请求码</span></div><div class="line"><span class="comment">     * <span class="doctag">@param</span> permissions 准备校验的权限</span></div><div class="line"><span class="comment">     */</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">checkPermissions</span><span class="params">(<span class="keyword">int</span> requestCode, String... permissions)</span> </span>&#123;</div><div class="line"></div><div class="line">        ArrayList&lt;String&gt; lacks = <span class="keyword">new</span> ArrayList&lt;&gt;();</div><div class="line">        <span class="keyword">for</span> (String permission : permissions) &#123;</div><div class="line">            <span class="keyword">if</span> (ContextCompat.checkSelfPermission(mTargetActivity.getApplicationContext(), permission) == PackageManager.PERMISSION_DENIED) &#123;</div><div class="line">                lacks.add(permission);</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        <span class="keyword">if</span> (!lacks.isEmpty()) &#123;</div><div class="line">            <span class="comment">// 有权限没有授权</span></div><div class="line">            String[] lacksPermissions = <span class="keyword">new</span> String[lacks.size()];</div><div class="line">            lacksPermissions = lacks.toArray(lacksPermissions);</div><div class="line">            <span class="comment">//申请CAMERA权限</span></div><div class="line">            ActivityCompat.requestPermissions(mTargetActivity, lacksPermissions, requestCode);</div><div class="line">        &#125; <span class="keyword">else</span> &#123;</div><div class="line">            <span class="comment">// 授权</span></div><div class="line">            authorized(requestCode);</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="comment">/**</span></div><div class="line"><span class="comment">     * 复查权限</span></div><div class="line"><span class="comment">     * &lt;p&gt;</span></div><div class="line"><span class="comment">     * 调用checkPermissions方法后，会提示用户对权限的申请做出选择，选择以后（同意或拒绝）</span></div><div class="line"><span class="comment">     * TargetActivity会回调onRequestPermissionsResult方法，</span></div><div class="line"><span class="comment">     * 在onRequestPermissionsResult回调方法里，我们调用此方法来复查权限，检查用户的选择是否通过了权限申请</span></div><div class="line"><span class="comment">     *</span></div><div class="line"><span class="comment">     * <span class="doctag">@param</span> requestCode  请求码</span></div><div class="line"><span class="comment">     * <span class="doctag">@param</span> permissions  权限</span></div><div class="line"><span class="comment">     * <span class="doctag">@param</span> grantResults 授权结果</span></div><div class="line"><span class="comment">     */</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">recheckPermissions</span><span class="params">(<span class="keyword">int</span> requestCode, @NonNull String[] permissions, @NonNull <span class="keyword">int</span>[] grantResults)</span> </span>&#123;</div><div class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> grantResult : grantResults) &#123;</div><div class="line">            <span class="keyword">if</span> (grantResult == PackageManager.PERMISSION_DENIED) &#123;</div><div class="line">                <span class="comment">// 未授权</span></div><div class="line">                noAuthorization(requestCode, permissions);</div><div class="line">                <span class="keyword">return</span>;</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">        <span class="comment">// 授权</span></div><div class="line">        authorized(requestCode);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="comment">/**</span></div><div class="line"><span class="comment">     * 进入应用设置</span></div><div class="line"><span class="comment">     *</span></div><div class="line"><span class="comment">     * <span class="doctag">@param</span> context context</span></div><div class="line"><span class="comment">     */</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">startAppSettings</span><span class="params">(Context context)</span> </span>&#123;</div><div class="line">        Intent intent = <span class="keyword">new</span> Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);</div><div class="line">        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);</div><div class="line">        intent.setData(Uri.parse(PACKAGE_URL_SCHEME + context.getPackageName()));</div><div class="line">        context.startActivity(intent);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h2 id="应用"><a href="#应用" class="headerlink" title="应用"></a>应用</h2><p>使用起来的逻辑也比较清晰简单，一共3步：</p>
-<h3 id="1-初始化权限管理器"><a href="#1-初始化权限管理器" class="headerlink" title="1. 初始化权限管理器"></a>1. 初始化权限管理器</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 初始化</span></div><div class="line">mPermissionsManager = <span class="keyword">new</span> PermissionsManager(<span class="keyword">this</span>) &#123;</div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">authorized</span><span class="params">(<span class="keyword">int</span> requestCode)</span> </span>&#123;</div><div class="line">        Toast.makeText(getApplicationContext(), requestCode + <span class="string">" ： 全部权限通过"</span>, Toast.LENGTH_SHORT).show();</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">noAuthorization</span><span class="params">(<span class="keyword">int</span> requestCode, String[] lacksPermissions)</span> </span>&#123;</div><div class="line">        Toast.makeText(getApplicationContext(), requestCode + <span class="string">" ： 有权限没有通过！需要授权"</span>, Toast.LENGTH_SHORT).show();</div><div class="line">        <span class="keyword">for</span> (String permission : lacksPermissions) &#123;</div><div class="line">            Log.i(TAG, <span class="string">"noAuthorization: "</span> + permission);</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;;</div></pre></td></tr></table></figure>
-<h3 id="2-检查权限"><a href="#2-检查权限" class="headerlink" title="2. 检查权限"></a>2. 检查权限</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 要校验的权限</span></div><div class="line">String[] PERMISSIONS = <span class="keyword">new</span> String[]&#123;Manifest.permission.RECORD_AUDIO, Manifest.permission.CAMERA&#125;;</div><div class="line"><span class="comment">// 检查权限</span></div><div class="line">mPermissionsManager.checkPermissions(<span class="number">0</span>, PERMISSIONS);</div></pre></td></tr></table></figure>
-<h3 id="3-复查权限"><a href="#3-复查权限" class="headerlink" title="3. 复查权限"></a>3. 复查权限</h3><p>用户对权限申请的提示做出选择以后，要重写TargetActivity的<code>onRequestPermissionsResult</code>方法来复查权限，检查权限是否通过。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@Override</span></div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onRequestPermissionsResult</span><span class="params">(<span class="keyword">int</span> requestCode, @NonNull String[] permissions, @NonNull <span class="keyword">int</span>[] grantResults)</span> </span>&#123;</div><div class="line">    <span class="comment">// 用户做出选择以后复查权限，判断是否通过了权限申请</span></div><div class="line">    mPermissionsManager.recheckPermissions(requestCode, permissions, grantResults);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>进入应用设置页面</p>
-<p>最后，权限没有通过，是不能使用的，如果一定要用，一般要提示用户缺少权限，到应用设置页面去吧权限打开，再回来使用。<br>对话框就不写了，进入到应用的设置页面可以直接调用<code>PermissionsManager</code>里的<code>startAppSettings</code>方法，进入到该应用的设置页面，修改权限</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">PermissionsManager.startAppSettings(getApplicationContext());</div></pre></td></tr></table></figure>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
@@ -1935,7 +1964,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">52</span>
+                <span class="site-state-item-count">54</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -1957,7 +1986,7 @@
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">24</span>
+                <span class="site-state-item-count">25</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>

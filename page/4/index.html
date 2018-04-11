@@ -278,6 +278,328 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/08/18/2016-08-18-OpenCV实现图像亮区扩张/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="kongqw">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="孔庆威的博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2016/08/18/2016-08-18-OpenCV实现图像亮区扩张/" itemprop="url">OpenCV实现图像亮区扩张</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-08-18T17:43:36+08:00">
+                2016-08-18
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/OpenCV/" itemprop="url" rel="index">
+                    <span itemprop="name">OpenCV</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2016/08/18/2016-08-18-OpenCV实现图像亮区扩张/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2016/08/18/2016-08-18-OpenCV实现图像亮区扩张/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <hr>
+<p>转载请说明出处！<br>作者：<a href="http://kongqw.github.io/about/index.html" target="_blank" rel="external">kqw攻城狮</a><br>出处：<a href="http://kongqw.github.io" target="_blank" rel="external">个人站</a> | <a href="http://blog.csdn.net/q4878802/" target="_blank" rel="external">CSDN</a></p>
+<hr>
+<h1 id="效果图"><a href="#效果图" class="headerlink" title="效果图"></a>效果图</h1><p><img src="http://img.blog.csdn.net/20160818180119062" alt="效果图"></p>
+<p><img src="http://img.blog.csdn.net/20160818180137296" alt="效果图"></p>
+<h1 id="源码"><a href="#源码" class="headerlink" title="源码"></a>源码</h1><p><a href="https://github.com/kongqw/KqwOpenCVBlurDemo" target="_blank" rel="external">KqwOpenCVBlurDemo</a></p>
+<p>亮区扩张，也叫<strong>膨胀</strong>，要实现这样的效果，我们可以选取一个合适大小的<strong>核</strong>，用被核覆盖的最大值代替锚点像素。膨胀可以用来融合可能被分割的目标。</p>
+<p><img src="http://img.blog.csdn.net/20160818180211141" alt="二值图像（左）和膨胀后的图像（右）"></p>
+<p>我们首先定义一个合适大小的核</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">Mat kernelDilate = Imgproc.getStructuringElement(Imgproc.MORPH_RECT, <span class="keyword">new</span> Size(<span class="number">3</span>, <span class="number">3</span>));</div></pre></td></tr></table></figure>
+<p>然后调用<code>Imgproc.dilate()</code>方法把图像的亮区放大</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 扩大亮区</span></div><div class="line">Imgproc.dilate(src, src, kernelDilate);</div></pre></td></tr></table></figure>
+<h1 id="封装"><a href="#封装" class="headerlink" title="封装"></a>封装</h1><p>这里我用到了RxJava。主要是因为图片处理是耗时操作，会阻塞线程，为了防止界面卡顿，这里使用RxJava进行了线程切换。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line"><span class="comment"> * 扩大图片亮区</span></div><div class="line"><span class="comment"> *</span></div><div class="line"><span class="comment"> * <span class="doctag">@param</span> bitmap 要处理的图片</span></div><div class="line"><span class="comment"> */</span></div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">dilate</span><span class="params">(Bitmap bitmap)</span> </span>&#123;</div><div class="line">    <span class="comment">// 使用RxJava处理图片</span></div><div class="line">    <span class="keyword">if</span> (<span class="keyword">null</span> != mSubscriber)</div><div class="line">        Observable</div><div class="line">                .just(bitmap)</div><div class="line">                .map(<span class="keyword">new</span> Func1&lt;Bitmap, Bitmap&gt;() &#123;</div><div class="line"></div><div class="line">                    <span class="meta">@Override</span></div><div class="line">                    <span class="function"><span class="keyword">public</span> Bitmap <span class="title">call</span><span class="params">(Bitmap bitmap)</span> </span>&#123;</div><div class="line">                        <span class="comment">// Bitmap转为Mat</span></div><div class="line">                        Mat src = <span class="keyword">new</span> Mat(bitmap.getHeight(), bitmap.getWidth(), CvType.CV_8UC4);</div><div class="line">                        Utils.bitmapToMat(bitmap, src);</div><div class="line"></div><div class="line">                        <span class="comment">// 定义一个合适大小的核</span></div><div class="line">                        Mat kernelDilate = Imgproc.getStructuringElement(Imgproc.MORPH_RECT, <span class="keyword">new</span> Size(<span class="number">3</span>, <span class="number">3</span>));</div><div class="line">                        <span class="comment">// 扩大亮区</span></div><div class="line">                        Imgproc.dilate(src, src, kernelDilate);</div><div class="line"></div><div class="line">                        <span class="comment">// Mat转Bitmap</span></div><div class="line">                        Bitmap processedImage = Bitmap.createBitmap(src.cols(), src.rows(), Bitmap.Config.ARGB_8888);</div><div class="line">                        Utils.matToBitmap(src, processedImage);</div><div class="line"></div><div class="line">                        <span class="keyword">return</span> processedImage;</div><div class="line">                    &#125;</div><div class="line">                &#125;)</div><div class="line">                .subscribeOn(Schedulers.io())</div><div class="line">                .observeOn(AndroidSchedulers.mainThread())</div><div class="line">                .subscribe(mSubscriber);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h1 id="调用"><a href="#调用" class="headerlink" title="调用"></a>调用</h1><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 图片处理的工具类</span></div><div class="line">mBlurUtil = <span class="keyword">new</span> BlurUtil(<span class="keyword">new</span> Subscriber&lt;Bitmap&gt;() &#123;</div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onCompleted</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="comment">// 图片处理完成</span></div><div class="line">        dismissProgressDialog();</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onError</span><span class="params">(Throwable e)</span> </span>&#123;</div><div class="line">        <span class="comment">// 图片处理异常</span></div><div class="line">        dismissProgressDialog();</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onNext</span><span class="params">(Bitmap bitmap)</span> </span>&#123;</div><div class="line">        <span class="comment">// 获取到处理后的图片</span></div><div class="line">        mIvImageProcessed.setImageBitmap(bitmap);</div><div class="line">    &#125;</div><div class="line">&#125;);</div><div class="line"></div><div class="line"><span class="comment">// 扩大图片亮区</span></div><div class="line">mBlurUtil.dilate(mSelectImage);</div></pre></td></tr></table></figure>
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/08/18/2016-08-18-OpenCV实现图片锐化/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="kongqw">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="孔庆威的博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2016/08/18/2016-08-18-OpenCV实现图片锐化/" itemprop="url">OpenCV实现图片锐化</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-08-18T16:39:48+08:00">
+                2016-08-18
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/OpenCV/" itemprop="url" rel="index">
+                    <span itemprop="name">OpenCV</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2016/08/18/2016-08-18-OpenCV实现图片锐化/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2016/08/18/2016-08-18-OpenCV实现图片锐化/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <hr>
+<p>转载请说明出处！<br>作者：<a href="http://kongqw.github.io/about/index.html" target="_blank" rel="external">kqw攻城狮</a><br>出处：<a href="http://kongqw.github.io" target="_blank" rel="external">个人站</a> | <a href="http://blog.csdn.net/q4878802/" target="_blank" rel="external">CSDN</a></p>
+<hr>
+<h1 id="效果图"><a href="#效果图" class="headerlink" title="效果图"></a>效果图</h1><p><img src="http://img.blog.csdn.net/20160818170631519" alt="效果图"></p>
+<p><img src="http://img.blog.csdn.net/20160818170646648" alt="效果图"></p>
+<h1 id="源码"><a href="#源码" class="headerlink" title="源码"></a>源码</h1><p><a href="https://github.com/kongqw/KqwOpenCVBlurDemo" target="_blank" rel="external">KqwOpenCVBlurDemo</a></p>
+<p><strong>锐化</strong>也可以看作是一种线性滤波操作，并且锚点像素有较高的权重，而周围的像素权重较低。<br>因此，我们可以自定义一个这样的<strong>核</strong>。</p>
+<p><img src="http://img.blog.csdn.net/20160818170529752" alt="自定义核"></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/*</span></div><div class="line"><span class="comment">    自定义核</span></div><div class="line"><span class="comment">     0	-1	 0</span></div><div class="line"><span class="comment">    -1   5	-1</span></div><div class="line"><span class="comment">     0	-1	 0</span></div><div class="line"><span class="comment">  */</span></div><div class="line">Mat kernel = <span class="keyword">new</span> Mat(<span class="number">3</span>, <span class="number">3</span>, CvType.CV_16SC1);</div><div class="line">kernel.put(<span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, -<span class="number">1</span>, <span class="number">0</span>, -<span class="number">1</span>, <span class="number">5</span>, -<span class="number">1</span>, <span class="number">0</span>, -<span class="number">1</span>, <span class="number">0</span>);</div></pre></td></tr></table></figure>
+<p>这里我们将图像的深度设为<code>16SC1</code>，表示包含一个通道（C1），图像中的每个像素包含一个16比特有符号整型数（16S）。</p>
+<p>定义完<strong>核</strong>以后，我们对图像和<strong>核</strong>做卷积操作</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 对图像和自定义核做卷积</span></div><div class="line">Imgproc.filter2D(src, src, src.depth(), kernel);</div></pre></td></tr></table></figure>
+<ul>
+<li>第一个参数表示输入的图像</li>
+<li>第二个参数表示输出的图像</li>
+<li>第三个参数表示图像的深度</li>
+<li>第四个参数是我们自定义的核</li>
+</ul>
+<h1 id="封装"><a href="#封装" class="headerlink" title="封装"></a>封装</h1><p>这里我用到了RxJava。主要是因为图片处理是耗时操作，会阻塞线程，为了防止界面卡顿，这里使用RxJava进行了线程切换。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line"><span class="comment"> * 锐化图片</span></div><div class="line"><span class="comment"> *</span></div><div class="line"><span class="comment"> * <span class="doctag">@param</span> bitmap 要处理的图片</span></div><div class="line"><span class="comment"> */</span></div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">filter2D</span><span class="params">(Bitmap bitmap)</span> </span>&#123;</div><div class="line">    <span class="comment">// 使用RxJava处理图片</span></div><div class="line">    <span class="keyword">if</span> (<span class="keyword">null</span> != mSubscriber)</div><div class="line">        Observable</div><div class="line">                .just(bitmap)</div><div class="line">                .map(<span class="keyword">new</span> Func1&lt;Bitmap, Bitmap&gt;() &#123;</div><div class="line"></div><div class="line">                    <span class="meta">@Override</span></div><div class="line">                    <span class="function"><span class="keyword">public</span> Bitmap <span class="title">call</span><span class="params">(Bitmap bitmap)</span> </span>&#123;</div><div class="line">                        <span class="comment">// Bitmap转为Mat</span></div><div class="line">                        Mat src = <span class="keyword">new</span> Mat(bitmap.getHeight(), bitmap.getWidth(), CvType.CV_8UC4);</div><div class="line">                        Utils.bitmapToMat(bitmap, src);</div><div class="line"></div><div class="line">                        <span class="comment">/*</span></div><div class="line"><span class="comment">                            自定义核</span></div><div class="line"><span class="comment">                            0   -1  0</span></div><div class="line"><span class="comment">                            -1  5   -1</span></div><div class="line"><span class="comment">                            0   -1  0</span></div><div class="line"><span class="comment">                          */</span></div><div class="line">                        Mat kernel = <span class="keyword">new</span> Mat(<span class="number">3</span>, <span class="number">3</span>, CvType.CV_16SC1);</div><div class="line">                        kernel.put(<span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, -<span class="number">1</span>, <span class="number">0</span>, -<span class="number">1</span>, <span class="number">5</span>, -<span class="number">1</span>, <span class="number">0</span>, -<span class="number">1</span>, <span class="number">0</span>);</div><div class="line">                        <span class="comment">// 对图像和自定义核做卷积</span></div><div class="line">                        Imgproc.filter2D(src, src, src.depth(), kernel);</div><div class="line"></div><div class="line">                        <span class="comment">// Mat转Bitmap</span></div><div class="line">                        Bitmap processedImage = Bitmap.createBitmap(src.cols(), src.rows(), Bitmap.Config.ARGB_8888);</div><div class="line">                        Utils.matToBitmap(src, processedImage);</div><div class="line"></div><div class="line">                        <span class="keyword">return</span> processedImage;</div><div class="line">                    &#125;</div><div class="line">                &#125;)</div><div class="line">                .subscribeOn(Schedulers.io())</div><div class="line">                .observeOn(AndroidSchedulers.mainThread())</div><div class="line">                .subscribe(mSubscriber);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h1 id="调用"><a href="#调用" class="headerlink" title="调用"></a>调用</h1><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 图片处理的工具类</span></div><div class="line">mBlurUtil = <span class="keyword">new</span> BlurUtil(<span class="keyword">new</span> Subscriber&lt;Bitmap&gt;() &#123;</div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onCompleted</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="comment">// 图片处理完成</span></div><div class="line">        dismissProgressDialog();</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onError</span><span class="params">(Throwable e)</span> </span>&#123;</div><div class="line">        <span class="comment">// 图片处理异常</span></div><div class="line">        dismissProgressDialog();</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onNext</span><span class="params">(Bitmap bitmap)</span> </span>&#123;</div><div class="line">        <span class="comment">// 获取到处理后的图片</span></div><div class="line">        mIvImageProcessed.setImageBitmap(bitmap);</div><div class="line">    &#125;</div><div class="line">&#125;);</div><div class="line"></div><div class="line"><span class="comment">// 锐化图片</span></div><div class="line">mBlurUtil.filter2D(mSelectImage);</div></pre></td></tr></table></figure>
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/08/18/2016-08-18-OpenCV中值模糊方法/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1657,322 +1979,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/08/12/2016-08-12-灵云语音合成/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="kongqw">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="孔庆威的博客">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2016/08/12/2016-08-12-灵云语音合成/" itemprop="url">灵云语音合成</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-08-12T12:57:44+08:00">
-                2016-08-12
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/语音/" itemprop="url" rel="index">
-                    <span itemprop="name">语音</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-              <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-                <a href="/2016/08/12/2016-08-12-灵云语音合成/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count"
-                        data-disqus-identifier="2016/08/12/2016-08-12-灵云语音合成/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <hr>
-<p>转载请说明出处！<br>作者：<a href="http://kongqw.github.io/about/index.html" target="_blank" rel="external">kqw攻城狮</a><br>出处：<a href="http://kongqw.github.io" target="_blank" rel="external">个人站</a> | <a href="http://blog.csdn.net/q4878802/" target="_blank" rel="external">CSDN</a></p>
-<hr>
-<h1 id="注册"><a href="#注册" class="headerlink" title="注册"></a>注册</h1><p><a href="http://www.hcicloud.com/" target="_blank" rel="external">官网</a></p>
-<p>注册比较简单，就不做过多介绍了，注册万应用以后，在后台创建自己的应用，创建完应用以后需要给应用开通对应的语音能力。</p>
-<p><img src="http://img.blog.csdn.net/20160812143355874" alt="开通语音能力"></p>
-<h1 id="集成"><a href="#集成" class="headerlink" title="集成"></a>集成</h1><p><a href="http://www.hcicloud.com/dev/sdk/viewsdk/typeid/1" target="_blank" rel="external">下载灵云SDK</a></p>
-<p>如果使用在线功能，下载对应的SDK，里面有jar包和so，就可以满足需求了。如果要使用离线的语音功能，还需要<a href="http://www.hcicloud.com/dev/application/viewres.html" target="_blank" rel="external">下载灵云资源文件</a></p>
-<h1 id="源码"><a href="#源码" class="headerlink" title="源码"></a>源码</h1><p><a href="https://github.com/kongqw/KqwHciDemo" target="_blank" rel="external">GitHub</a></p>
-<h1 id="灵云在线语音合成"><a href="#灵云在线语音合成" class="headerlink" title="灵云在线语音合成"></a>灵云在线语音合成</h1><h2 id="权限"><a href="#权限" class="headerlink" title="权限"></a>权限</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">&lt;uses-permission android:name=<span class="string">"android.permission.INTERNET"</span> /&gt;</div><div class="line">&lt;uses-permission android:name=<span class="string">"android.permission.WRITE_EXTERNAL_STORAGE"</span> /&gt;</div><div class="line">&lt;uses-permission android:name=<span class="string">"android.permission.ACCESS_NETWORK_STATE"</span> /&gt;</div><div class="line">&lt;uses-permission android:name=<span class="string">"android.permission.SYSTEM_ALERT_WINDOW"</span> /&gt;</div><div class="line">&lt;uses-permission android:name=<span class="string">"android.permission.ACCESS_COARSE_LOCATION"</span> /&gt;</div><div class="line">&lt;uses-permission android:name=<span class="string">"android.permission.ACCESS_FINE_LOCATION"</span> /&gt;</div></pre></td></tr></table></figure>
-<h2 id="配置类"><a href="#配置类" class="headerlink" title="配置类"></a>配置类</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">package</span> kong.qingwei.kqwhcittsdemo;</div><div class="line"></div><div class="line"><span class="comment">/**</span></div><div class="line"><span class="comment"> * Created by kqw on 2016/8/12.</span></div><div class="line"><span class="comment"> * 灵云配置信息</span></div><div class="line"><span class="comment"> */</span></div><div class="line"><span class="keyword">public</span> <span class="keyword">final</span> <span class="class"><span class="keyword">class</span> <span class="title">ConfigUtil</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="comment">/**</span></div><div class="line"><span class="comment">     * 灵云APP_KEY</span></div><div class="line"><span class="comment">     */</span></div><div class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> String APP_KEY = <span class="string">"填入自己的APP KEY"</span>;</div><div class="line"></div><div class="line">    <span class="comment">/**</span></div><div class="line"><span class="comment">     * 开发者密钥</span></div><div class="line"><span class="comment">     */</span></div><div class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> String DEVELOPER_KEY = <span class="string">"填入自己的DEVELOPER KEY"</span>;</div><div class="line"></div><div class="line">    <span class="comment">/**</span></div><div class="line"><span class="comment">     * 灵云云服务的接口地址</span></div><div class="line"><span class="comment">     */</span></div><div class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> String CLOUD_URL = <span class="string">"test.api.hcicloud.com:8888"</span>;</div><div class="line"></div><div class="line">    <span class="comment">/**</span></div><div class="line"><span class="comment">     * 需要运行的灵云能力</span></div><div class="line"><span class="comment">     */</span></div><div class="line">    <span class="comment">// public static final String CAP_KEY = "tts.local.synth";</span></div><div class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> String CAP_KEY = <span class="string">"tts.cloud.wangjing"</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h2 id="封装灵云语音的初始化"><a href="#封装灵云语音的初始化" class="headerlink" title="封装灵云语音的初始化"></a>封装灵云语音的初始化</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div><div class="line">95</div><div class="line">96</div><div class="line">97</div><div class="line">98</div><div class="line">99</div><div class="line">100</div><div class="line">101</div><div class="line">102</div><div class="line">103</div><div class="line">104</div><div class="line">105</div><div class="line">106</div><div class="line">107</div><div class="line">108</div><div class="line">109</div><div class="line">110</div><div class="line">111</div><div class="line">112</div><div class="line">113</div><div class="line">114</div><div class="line">115</div><div class="line">116</div><div class="line">117</div><div class="line">118</div><div class="line">119</div><div class="line">120</div><div class="line">121</div><div class="line">122</div><div class="line">123</div><div class="line">124</div><div class="line">125</div><div class="line">126</div><div class="line">127</div><div class="line">128</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">package</span> kong.qingwei.kqwhcittsdemo;</div><div class="line"></div><div class="line"><span class="keyword">import</span> android.app.Activity;</div><div class="line"><span class="keyword">import</span> android.os.Environment;</div><div class="line"><span class="keyword">import</span> android.util.Log;</div><div class="line"><span class="keyword">import</span> android.widget.Toast;</div><div class="line"></div><div class="line"><span class="keyword">import</span> com.sinovoice.hcicloudsdk.api.HciCloudSys;</div><div class="line"><span class="keyword">import</span> com.sinovoice.hcicloudsdk.common.AuthExpireTime;</div><div class="line"><span class="keyword">import</span> com.sinovoice.hcicloudsdk.common.HciErrorCode;</div><div class="line"><span class="keyword">import</span> com.sinovoice.hcicloudsdk.common.InitParam;</div><div class="line"></div><div class="line"><span class="keyword">import</span> java.io.File;</div><div class="line"><span class="keyword">import</span> java.text.SimpleDateFormat;</div><div class="line"><span class="keyword">import</span> java.util.Date;</div><div class="line"><span class="keyword">import</span> java.util.Locale;</div><div class="line"></div><div class="line"><span class="comment">/**</span></div><div class="line"><span class="comment"> * Created by kqw on 2016/8/12.</span></div><div class="line"><span class="comment"> * 初始化灵云语音</span></div><div class="line"><span class="comment"> */</span></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">HciUtil</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String TAG = <span class="string">"HciUtil"</span>;</div><div class="line">    <span class="keyword">private</span> Activity mActivity;</div><div class="line">    <span class="keyword">private</span> <span class="keyword">final</span> String mConfigStr;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">HciUtil</span><span class="params">(Activity activity)</span> </span>&#123;</div><div class="line">        mActivity = activity;</div><div class="line"></div><div class="line">        <span class="comment">// 加载信息,返回InitParam, 获得配置参数的字符串</span></div><div class="line">        InitParam initParam = getInitParam();</div><div class="line">        mConfigStr = initParam.getStringConfig();</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">initHci</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="comment">// 初始化</span></div><div class="line">        <span class="keyword">int</span> errCode = HciCloudSys.hciInit(mConfigStr, mActivity);</div><div class="line">        <span class="keyword">if</span> (errCode != HciErrorCode.HCI_ERR_NONE &amp;&amp; errCode != HciErrorCode.HCI_ERR_SYS_ALREADY_INIT) &#123;</div><div class="line">            Toast.makeText(mActivity, <span class="string">"hciInit error: "</span> + HciCloudSys.hciGetErrorInfo(errCode), Toast.LENGTH_SHORT).show();</div><div class="line">            <span class="keyword">return</span> <span class="keyword">false</span>;</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        <span class="comment">// 获取授权/更新授权文件 :</span></div><div class="line">        errCode = checkAuthAndUpdateAuth();</div><div class="line">        <span class="keyword">if</span> (errCode != HciErrorCode.HCI_ERR_NONE) &#123;</div><div class="line">            <span class="comment">// 由于系统已经初始化成功,在结束前需要调用方法hciRelease()进行系统的反初始化</span></div><div class="line">            Toast.makeText(mActivity, <span class="string">"CheckAuthAndUpdateAuth error: "</span> + HciCloudSys.hciGetErrorInfo(errCode), Toast.LENGTH_SHORT).show();</div><div class="line">            HciCloudSys.hciRelease();</div><div class="line">            <span class="keyword">return</span> <span class="keyword">false</span>;</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">return</span> <span class="keyword">true</span>;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="comment">/**</span></div><div class="line"><span class="comment">     * 加载初始化信息</span></div><div class="line"><span class="comment">     *</span></div><div class="line"><span class="comment">     * <span class="doctag">@return</span> 系统初始化参数</span></div><div class="line"><span class="comment">     */</span></div><div class="line">    <span class="function"><span class="keyword">private</span> InitParam <span class="title">getInitParam</span><span class="params">()</span> </span>&#123;</div><div class="line">        String authDirPath = mActivity.getFilesDir().getAbsolutePath();</div><div class="line">        <span class="comment">// 前置条件：无</span></div><div class="line">        InitParam initparam = <span class="keyword">new</span> InitParam();</div><div class="line">        <span class="comment">// 授权文件所在路径，此项必填</span></div><div class="line">        initparam.addParam(InitParam.AuthParam.PARAM_KEY_AUTH_PATH, authDirPath);</div><div class="line">        <span class="comment">// 是否自动访问云授权,详见 获取授权/更新授权文件处注释</span></div><div class="line">        initparam.addParam(InitParam.AuthParam.PARAM_KEY_AUTO_CLOUD_AUTH, <span class="string">"no"</span>);</div><div class="line">        <span class="comment">// 灵云云服务的接口地址，此项必填</span></div><div class="line">        initparam.addParam(InitParam.AuthParam.PARAM_KEY_CLOUD_URL, ConfigUtil.CLOUD_URL);</div><div class="line">        <span class="comment">// 开发者Key，此项必填，由捷通华声提供</span></div><div class="line">        initparam.addParam(InitParam.AuthParam.PARAM_KEY_DEVELOPER_KEY, ConfigUtil.DEVELOPER_KEY);</div><div class="line">        <span class="comment">// 应用Key，此项必填，由捷通华声提供</span></div><div class="line">        initparam.addParam(InitParam.AuthParam.PARAM_KEY_APP_KEY, ConfigUtil.APP_KEY);</div><div class="line">        <span class="comment">// 配置日志参数</span></div><div class="line">        String sdcardState = Environment.getExternalStorageState();</div><div class="line">        <span class="keyword">if</span> (Environment.MEDIA_MOUNTED.equals(sdcardState)) &#123;</div><div class="line">            String sdPath = Environment.getExternalStorageDirectory().getAbsolutePath();</div><div class="line">            String packageName = mActivity.getPackageName();</div><div class="line">            String logPath = sdPath + File.separator + <span class="string">"sinovoice"</span> + File.separator + packageName + File.separator + <span class="string">"log"</span> + File.separator;</div><div class="line">            <span class="comment">// 日志文件地址</span></div><div class="line">            File fileDir = <span class="keyword">new</span> File(logPath);</div><div class="line">            <span class="keyword">if</span> (!fileDir.exists()) &#123;</div><div class="line">                fileDir.mkdirs();</div><div class="line">            &#125;</div><div class="line">            <span class="comment">// 日志的路径，可选，如果不传或者为空则不生成日志</span></div><div class="line">            initparam.addParam(InitParam.LogParam.PARAM_KEY_LOG_FILE_PATH, logPath);</div><div class="line">            <span class="comment">// 日志数目，默认保留多少个日志文件，超过则覆盖最旧的日志</span></div><div class="line">            initparam.addParam(InitParam.LogParam.PARAM_KEY_LOG_FILE_COUNT, <span class="string">"5"</span>);</div><div class="line">            <span class="comment">// 日志大小，默认一个日志文件写多大，单位为K</span></div><div class="line">            initparam.addParam(InitParam.LogParam.PARAM_KEY_LOG_FILE_SIZE, <span class="string">"1024"</span>);</div><div class="line">            <span class="comment">// 日志等级，0=无，1=错误，2=警告，3=信息，4=细节，5=调试，SDK将输出小于等于logLevel的日志信息</span></div><div class="line">            initparam.addParam(InitParam.LogParam.PARAM_KEY_LOG_LEVEL, <span class="string">"5"</span>);</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">return</span> initparam;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="comment">/**</span></div><div class="line"><span class="comment">     * 获取授权</span></div><div class="line"><span class="comment">     *</span></div><div class="line"><span class="comment">     * <span class="doctag">@return</span> 授权结果</span></div><div class="line"><span class="comment">     */</span></div><div class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">int</span> <span class="title">checkAuthAndUpdateAuth</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="comment">// 获取系统授权到期时间</span></div><div class="line">        <span class="keyword">int</span> initResult;</div><div class="line">        AuthExpireTime objExpireTime = <span class="keyword">new</span> AuthExpireTime();</div><div class="line">        initResult = HciCloudSys.hciGetAuthExpireTime(objExpireTime);</div><div class="line">        <span class="keyword">if</span> (initResult == HciErrorCode.HCI_ERR_NONE) &#123;</div><div class="line">            <span class="comment">// 显示授权日期,如用户不需要关注该值,此处代码可忽略</span></div><div class="line">            Date date = <span class="keyword">new</span> Date(objExpireTime.getExpireTime() * <span class="number">1000</span>);</div><div class="line">            SimpleDateFormat sdf = <span class="keyword">new</span> SimpleDateFormat(<span class="string">"yyyy-MM-dd"</span>, Locale.CHINA);</div><div class="line">            Log.i(TAG, <span class="string">"expire time: "</span> + sdf.format(date));</div><div class="line">            <span class="keyword">if</span> (objExpireTime.getExpireTime() * <span class="number">1000</span> &gt; System.currentTimeMillis()) &#123;</div><div class="line">                <span class="comment">// 已经成功获取了授权,并且距离授权到期有充足的时间(&gt;7天)</span></div><div class="line">                Log.i(TAG, <span class="string">"checkAuth success"</span>);</div><div class="line">                <span class="keyword">return</span> initResult;</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">        <span class="comment">// 获取过期时间失败或者已经过期</span></div><div class="line">        initResult = HciCloudSys.hciCheckAuth();</div><div class="line">        <span class="keyword">if</span> (initResult == HciErrorCode.HCI_ERR_NONE) &#123;</div><div class="line">            Log.i(TAG, <span class="string">"checkAuth success"</span>);</div><div class="line">            <span class="keyword">return</span> initResult;</div><div class="line">        &#125; <span class="keyword">else</span> &#123;</div><div class="line">            Log.e(TAG, <span class="string">"checkAuth failed: "</span> + initResult);</div><div class="line">            <span class="keyword">return</span> initResult;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h2 id="封装灵云语音合成能"><a href="#封装灵云语音合成能" class="headerlink" title="封装灵云语音合成能"></a>封装灵云语音合成能</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div><div class="line">95</div><div class="line">96</div><div class="line">97</div><div class="line">98</div><div class="line">99</div><div class="line">100</div><div class="line">101</div><div class="line">102</div><div class="line">103</div><div class="line">104</div><div class="line">105</div><div class="line">106</div><div class="line">107</div><div class="line">108</div><div class="line">109</div><div class="line">110</div><div class="line">111</div><div class="line">112</div><div class="line">113</div><div class="line">114</div><div class="line">115</div><div class="line">116</div><div class="line">117</div><div class="line">118</div><div class="line">119</div><div class="line">120</div><div class="line">121</div><div class="line">122</div><div class="line">123</div><div class="line">124</div><div class="line">125</div><div class="line">126</div><div class="line">127</div><div class="line">128</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">package</span> kong.qingwei.kqwhcittsdemo;</div><div class="line"></div><div class="line"><span class="keyword">import</span> android.app.Activity;</div><div class="line"><span class="keyword">import</span> android.os.Environment;</div><div class="line"><span class="keyword">import</span> android.util.Log;</div><div class="line"><span class="keyword">import</span> android.widget.Toast;</div><div class="line"></div><div class="line"><span class="keyword">import</span> com.sinovoice.hcicloudsdk.api.HciCloudSys;</div><div class="line"><span class="keyword">import</span> com.sinovoice.hcicloudsdk.common.AuthExpireTime;</div><div class="line"><span class="keyword">import</span> com.sinovoice.hcicloudsdk.common.HciErrorCode;</div><div class="line"><span class="keyword">import</span> com.sinovoice.hcicloudsdk.common.InitParam;</div><div class="line"></div><div class="line"><span class="keyword">import</span> java.io.File;</div><div class="line"><span class="keyword">import</span> java.text.SimpleDateFormat;</div><div class="line"><span class="keyword">import</span> java.util.Date;</div><div class="line"><span class="keyword">import</span> java.util.Locale;</div><div class="line"></div><div class="line"><span class="comment">/**</span></div><div class="line"><span class="comment"> * Created by kqw on 2016/8/12.</span></div><div class="line"><span class="comment"> * 初始化灵云语音</span></div><div class="line"><span class="comment"> */</span></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">HciUtil</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String TAG = <span class="string">"HciUtil"</span>;</div><div class="line">    <span class="keyword">private</span> Activity mActivity;</div><div class="line">    <span class="keyword">private</span> <span class="keyword">final</span> String mConfigStr;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">HciUtil</span><span class="params">(Activity activity)</span> </span>&#123;</div><div class="line">        mActivity = activity;</div><div class="line"></div><div class="line">        <span class="comment">// 加载信息,返回InitParam, 获得配置参数的字符串</span></div><div class="line">        InitParam initParam = getInitParam();</div><div class="line">        mConfigStr = initParam.getStringConfig();</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">initHci</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="comment">// 初始化</span></div><div class="line">        <span class="keyword">int</span> errCode = HciCloudSys.hciInit(mConfigStr, mActivity);</div><div class="line">        <span class="keyword">if</span> (errCode != HciErrorCode.HCI_ERR_NONE &amp;&amp; errCode != HciErrorCode.HCI_ERR_SYS_ALREADY_INIT) &#123;</div><div class="line">            Toast.makeText(mActivity, <span class="string">"hciInit error: "</span> + HciCloudSys.hciGetErrorInfo(errCode), Toast.LENGTH_SHORT).show();</div><div class="line">            <span class="keyword">return</span> <span class="keyword">false</span>;</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        <span class="comment">// 获取授权/更新授权文件 :</span></div><div class="line">        errCode = checkAuthAndUpdateAuth();</div><div class="line">        <span class="keyword">if</span> (errCode != HciErrorCode.HCI_ERR_NONE) &#123;</div><div class="line">            <span class="comment">// 由于系统已经初始化成功,在结束前需要调用方法hciRelease()进行系统的反初始化</span></div><div class="line">            Toast.makeText(mActivity, <span class="string">"CheckAuthAndUpdateAuth error: "</span> + HciCloudSys.hciGetErrorInfo(errCode), Toast.LENGTH_SHORT).show();</div><div class="line">            HciCloudSys.hciRelease();</div><div class="line">            <span class="keyword">return</span> <span class="keyword">false</span>;</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">return</span> <span class="keyword">true</span>;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="comment">/**</span></div><div class="line"><span class="comment">     * 加载初始化信息</span></div><div class="line"><span class="comment">     *</span></div><div class="line"><span class="comment">     * <span class="doctag">@return</span> 系统初始化参数</span></div><div class="line"><span class="comment">     */</span></div><div class="line">    <span class="function"><span class="keyword">private</span> InitParam <span class="title">getInitParam</span><span class="params">()</span> </span>&#123;</div><div class="line">        String authDirPath = mActivity.getFilesDir().getAbsolutePath();</div><div class="line">        <span class="comment">// 前置条件：无</span></div><div class="line">        InitParam initparam = <span class="keyword">new</span> InitParam();</div><div class="line">        <span class="comment">// 授权文件所在路径，此项必填</span></div><div class="line">        initparam.addParam(InitParam.AuthParam.PARAM_KEY_AUTH_PATH, authDirPath);</div><div class="line">        <span class="comment">// 是否自动访问云授权,详见 获取授权/更新授权文件处注释</span></div><div class="line">        initparam.addParam(InitParam.AuthParam.PARAM_KEY_AUTO_CLOUD_AUTH, <span class="string">"no"</span>);</div><div class="line">        <span class="comment">// 灵云云服务的接口地址，此项必填</span></div><div class="line">        initparam.addParam(InitParam.AuthParam.PARAM_KEY_CLOUD_URL, ConfigUtil.CLOUD_URL);</div><div class="line">        <span class="comment">// 开发者Key，此项必填，由捷通华声提供</span></div><div class="line">        initparam.addParam(InitParam.AuthParam.PARAM_KEY_DEVELOPER_KEY, ConfigUtil.DEVELOPER_KEY);</div><div class="line">        <span class="comment">// 应用Key，此项必填，由捷通华声提供</span></div><div class="line">        initparam.addParam(InitParam.AuthParam.PARAM_KEY_APP_KEY, ConfigUtil.APP_KEY);</div><div class="line">        <span class="comment">// 配置日志参数</span></div><div class="line">        String sdcardState = Environment.getExternalStorageState();</div><div class="line">        <span class="keyword">if</span> (Environment.MEDIA_MOUNTED.equals(sdcardState)) &#123;</div><div class="line">            String sdPath = Environment.getExternalStorageDirectory().getAbsolutePath();</div><div class="line">            String packageName = mActivity.getPackageName();</div><div class="line">            String logPath = sdPath + File.separator + <span class="string">"sinovoice"</span> + File.separator + packageName + File.separator + <span class="string">"log"</span> + File.separator;</div><div class="line">            <span class="comment">// 日志文件地址</span></div><div class="line">            File fileDir = <span class="keyword">new</span> File(logPath);</div><div class="line">            <span class="keyword">if</span> (!fileDir.exists()) &#123;</div><div class="line">                fileDir.mkdirs();</div><div class="line">            &#125;</div><div class="line">            <span class="comment">// 日志的路径，可选，如果不传或者为空则不生成日志</span></div><div class="line">            initparam.addParam(InitParam.LogParam.PARAM_KEY_LOG_FILE_PATH, logPath);</div><div class="line">            <span class="comment">// 日志数目，默认保留多少个日志文件，超过则覆盖最旧的日志</span></div><div class="line">            initparam.addParam(InitParam.LogParam.PARAM_KEY_LOG_FILE_COUNT, <span class="string">"5"</span>);</div><div class="line">            <span class="comment">// 日志大小，默认一个日志文件写多大，单位为K</span></div><div class="line">            initparam.addParam(InitParam.LogParam.PARAM_KEY_LOG_FILE_SIZE, <span class="string">"1024"</span>);</div><div class="line">            <span class="comment">// 日志等级，0=无，1=错误，2=警告，3=信息，4=细节，5=调试，SDK将输出小于等于logLevel的日志信息</span></div><div class="line">            initparam.addParam(InitParam.LogParam.PARAM_KEY_LOG_LEVEL, <span class="string">"5"</span>);</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">return</span> initparam;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="comment">/**</span></div><div class="line"><span class="comment">     * 获取授权</span></div><div class="line"><span class="comment">     *</span></div><div class="line"><span class="comment">     * <span class="doctag">@return</span> 授权结果</span></div><div class="line"><span class="comment">     */</span></div><div class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">int</span> <span class="title">checkAuthAndUpdateAuth</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="comment">// 获取系统授权到期时间</span></div><div class="line">        <span class="keyword">int</span> initResult;</div><div class="line">        AuthExpireTime objExpireTime = <span class="keyword">new</span> AuthExpireTime();</div><div class="line">        initResult = HciCloudSys.hciGetAuthExpireTime(objExpireTime);</div><div class="line">        <span class="keyword">if</span> (initResult == HciErrorCode.HCI_ERR_NONE) &#123;</div><div class="line">            <span class="comment">// 显示授权日期,如用户不需要关注该值,此处代码可忽略</span></div><div class="line">            Date date = <span class="keyword">new</span> Date(objExpireTime.getExpireTime() * <span class="number">1000</span>);</div><div class="line">            SimpleDateFormat sdf = <span class="keyword">new</span> SimpleDateFormat(<span class="string">"yyyy-MM-dd"</span>, Locale.CHINA);</div><div class="line">            Log.i(TAG, <span class="string">"expire time: "</span> + sdf.format(date));</div><div class="line">            <span class="keyword">if</span> (objExpireTime.getExpireTime() * <span class="number">1000</span> &gt; System.currentTimeMillis()) &#123;</div><div class="line">                <span class="comment">// 已经成功获取了授权,并且距离授权到期有充足的时间(&gt;7天)</span></div><div class="line">                Log.i(TAG, <span class="string">"checkAuth success"</span>);</div><div class="line">                <span class="keyword">return</span> initResult;</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">        <span class="comment">// 获取过期时间失败或者已经过期</span></div><div class="line">        initResult = HciCloudSys.hciCheckAuth();</div><div class="line">        <span class="keyword">if</span> (initResult == HciErrorCode.HCI_ERR_NONE) &#123;</div><div class="line">            Log.i(TAG, <span class="string">"checkAuth success"</span>);</div><div class="line">            <span class="keyword">return</span> initResult;</div><div class="line">        &#125; <span class="keyword">else</span> &#123;</div><div class="line">            Log.e(TAG, <span class="string">"checkAuth failed: "</span> + initResult);</div><div class="line">            <span class="keyword">return</span> initResult;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h2 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h2><h3 id="初始化"><a href="#初始化" class="headerlink" title="初始化"></a>初始化</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 灵云语音工具类</span></div><div class="line">HciUtil mInitTts = <span class="keyword">new</span> HciUtil(<span class="keyword">this</span>);</div><div class="line"><span class="comment">// 初始化灵云语音</span></div><div class="line"><span class="keyword">boolean</span> isInitHci = mInitTts.initHci();</div><div class="line"><span class="keyword">if</span> (isInitHci) &#123; <span class="comment">// 初始化成功</span></div><div class="line">    <span class="comment">// 语音合成能力工具类</span></div><div class="line">    mTtsUtil = <span class="keyword">new</span> TtsUtil(<span class="keyword">this</span>);</div><div class="line">    <span class="comment">// 初始化语音合成</span></div><div class="line">    isInitPlayer = mTtsUtil.initPlayer(<span class="keyword">this</span>);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h3 id="语音合成"><a href="#语音合成" class="headerlink" title="语音合成"></a>语音合成</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line"><span class="comment"> * 开始合成</span></div><div class="line"><span class="comment"> *</span></div><div class="line"><span class="comment"> * <span class="doctag">@param</span> view v</span></div><div class="line"><span class="comment"> */</span></div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">synth</span><span class="params">(View view)</span> </span>&#123;</div><div class="line">    <span class="keyword">if</span> (!isInitPlayer) &#123;</div><div class="line">        Toast.makeText(<span class="keyword">this</span>, <span class="string">"初始化失败"</span>, Toast.LENGTH_SHORT).show();</div><div class="line">        <span class="keyword">return</span>;</div><div class="line">    &#125;</div><div class="line">    String text = mEditText.getText().toString();</div><div class="line">    <span class="keyword">if</span> (TextUtils.isEmpty(text)) &#123;</div><div class="line">        Toast.makeText(<span class="keyword">this</span>, <span class="string">"合成内容为空"</span>, Toast.LENGTH_SHORT).show();</div><div class="line">        <span class="keyword">return</span>;</div><div class="line">    &#125;</div><div class="line">    mTtsUtil.synth(text);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h3 id="语音合成回调"><a href="#语音合成回调" class="headerlink" title="语音合成回调"></a>语音合成回调</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 语音合成状态的回调</span></div><div class="line"><span class="meta">@Override</span></div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onPlayerEventStateChange</span><span class="params">(TTSCommonPlayer.PlayerEvent playerEvent)</span> </span>&#123;</div><div class="line">    Log.i(TAG, <span class="string">"onStateChange "</span> + playerEvent.name());</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">// 合成进度回调</span></div><div class="line"><span class="meta">@Override</span></div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onPlayerEventProgressChange</span><span class="params">(TTSCommonPlayer.PlayerEvent playerEvent, <span class="keyword">int</span> start, <span class="keyword">int</span> end)</span> </span>&#123;</div><div class="line">    Log.i(TAG, <span class="string">"onProcessChange "</span> + playerEvent.name() + <span class="string">" from "</span> + start + <span class="string">" to "</span> + end);</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">// 错误回调</span></div><div class="line"><span class="meta">@Override</span></div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onPlayerEventPlayerError</span><span class="params">(TTSCommonPlayer.PlayerEvent playerEvent, <span class="keyword">int</span> errorCode)</span> </span>&#123;</div><div class="line">    Log.i(TAG, <span class="string">"onError "</span> + playerEvent.name() + <span class="string">" code: "</span> + errorCode);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h1 id="灵云离线语音合成"><a href="#灵云离线语音合成" class="headerlink" title="灵云离线语音合成"></a>灵云离线语音合成</h1><p>离线语音合成相对也比较简单，首先要下载离线资源，下载完以后是一个zip包，解压缩里面有类似这样的几个文件</p>
-<p><img src="http://img.blog.csdn.net/20160812143433406" alt="下载离线资源文件"></p>
-<p>给每个文件重命名，前面加<code>lib</code>，后面加后缀<code>.so</code>，然后导入工程</p>
-<p><img src="http://img.blog.csdn.net/20160812143459376" alt="重命名"></p>
-<p>导入资源文件以后，修改capKey为离线语音合成</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> String CAP_KEY = <span class="string">"tts.local.synth"</span>;</div></pre></td></tr></table></figure>
-<blockquote>
-<p><strong>注：灵云的离线语音能力，第一次使用的时候也是需要有一个联网授权的过程，授权成功以后，即可在授权期内使用离线语音能力。</strong></p>
-</blockquote>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/08/04/2016-08-04-Android连接WIFI/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="kongqw">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="孔庆威的博客">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2016/08/04/2016-08-04-Android连接WIFI/" itemprop="url">Android连接WIFI</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-08-04T10:22:01+08:00">
-                2016-08-04
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-              <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-                <a href="/2016/08/04/2016-08-04-Android连接WIFI/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count"
-                        data-disqus-identifier="2016/08/04/2016-08-04-Android连接WIFI/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <hr>
-<p>转载请说明出处！<br>作者：<a href="http://kongqw.github.io/about/index.html" target="_blank" rel="external">kqw攻城狮</a><br>出处：<a href="http://kongqw.github.io" target="_blank" rel="external">个人站</a> | <a href="http://blog.csdn.net/q4878802/" target="_blank" rel="external">CSDN</a></p>
-<hr>
-<h1 id="效果图"><a href="#效果图" class="headerlink" title="效果图"></a>效果图</h1><h2 id="打开WIFI并获取WIFI列表"><a href="#打开WIFI并获取WIFI列表" class="headerlink" title="打开WIFI并获取WIFI列表"></a>打开WIFI并获取WIFI列表</h2><p><img src="http://img.blog.csdn.net/20160818142227952" alt="打开WIFI并获取WIFI列表"></p>
-<h2 id="连接到指定WIFI"><a href="#连接到指定WIFI" class="headerlink" title="连接到指定WIFI"></a>连接到指定WIFI</h2><p><img src="http://img.blog.csdn.net/20160818142248858" alt="连接到指定WIFI"></p>
-<h2 id="直接连接配置过的WIFI"><a href="#直接连接配置过的WIFI" class="headerlink" title="直接连接配置过的WIFI"></a>直接连接配置过的WIFI</h2><p><img src="http://img.blog.csdn.net/20160818142308905" alt="直接连接配置过的WIFI"></p>
-<h2 id="密码错误"><a href="#密码错误" class="headerlink" title="密码错误"></a>密码错误</h2><p><img src="http://img.blog.csdn.net/20160818142330936" alt="密码错误"></p>
-<h1 id="源码"><a href="#源码" class="headerlink" title="源码"></a>源码</h1><p><a href="https://github.com/kongqw/KqwWifiManagerDemo" target="_blank" rel="external">KqwWifiManagerDemo</a></p>
-<p>WIFI的获取、连接状态等等的信息，都是通过广播获取的.</p>
-<p>下面介绍了主要的方法，更多请查看<a href="https://github.com/kongqw/KqwWifiManagerDemo/blob/master/app/src/main/java/kong/qingwei/kqwwifimanagerdemo/KqwWifiManager.java" target="_blank" rel="external">KqwWifiManager</a></p>
-<h1 id="注册广播接收者"><a href="#注册广播接收者" class="headerlink" title="注册广播接收者"></a>注册广播接收者</h1><figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">&lt;!-- 监听网络状态的广播接收者 --&gt;</div><div class="line">&lt;receiver android:name=<span class="string">".KqwWifiManager$NetworkBroadcastReceiver"</span>&gt;</div><div class="line">    &lt;intent-filter&gt;</div><div class="line">        &lt;!-- AP扫描完成，客户端得到可用的结果集 --&gt;</div><div class="line">        &lt;action android:name=<span class="string">"android.net.wifi.SCAN_RESULTS"</span> /&gt;</div><div class="line">        &lt;action android:name=<span class="string">"android.net.conn.CONNECTIVITY_CHANGE"</span> /&gt;</div><div class="line">        &lt;action android:name=<span class="string">"android.net.wifi.WIFI_STATE_CHANGED"</span> /&gt;</div><div class="line">        &lt;action android:name=<span class="string">"android.net.wifi.STATE_CHANGE"</span> /&gt;</div><div class="line">        &lt;action android:name=<span class="string">"android.net.wifi.supplicant.STATE_CHANGE"</span> /&gt;</div><div class="line">    &lt;/intent-filter&gt;</div><div class="line">&lt;/receiver&gt;</div></pre></td></tr></table></figure>
-<h1 id="广播接收者"><a href="#广播接收者" class="headerlink" title="广播接收者"></a>广播接收者</h1><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div><div class="line">95</div><div class="line">96</div><div class="line">97</div><div class="line">98</div><div class="line">99</div><div class="line">100</div><div class="line">101</div><div class="line">102</div><div class="line">103</div><div class="line">104</div><div class="line">105</div><div class="line">106</div><div class="line">107</div><div class="line">108</div><div class="line">109</div><div class="line">110</div><div class="line">111</div><div class="line">112</div><div class="line">113</div><div class="line">114</div><div class="line">115</div><div class="line">116</div><div class="line">117</div><div class="line">118</div><div class="line">119</div><div class="line">120</div><div class="line">121</div><div class="line">122</div><div class="line">123</div><div class="line">124</div><div class="line">125</div><div class="line">126</div><div class="line">127</div><div class="line">128</div><div class="line">129</div><div class="line">130</div><div class="line">131</div><div class="line">132</div><div class="line">133</div><div class="line">134</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line"><span class="comment"> * 广播接收者</span></div><div class="line"><span class="comment"> */</span></div><div class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">NetworkBroadcastReceiver</span> <span class="keyword">extends</span> <span class="title">BroadcastReceiver</span> </span>&#123;</div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onReceive</span><span class="params">(Context context, Intent intent)</span> </span>&#123;</div><div class="line">        <span class="keyword">try</span> &#123;</div><div class="line">            String action = intent.getAction();</div><div class="line">            Log.i(TAG, <span class="string">"onReceive: action = "</span> + action);</div><div class="line">            <span class="comment">// 监听WIFI的启用状态</span></div><div class="line">            <span class="keyword">if</span> (WifiManager.WIFI_STATE_CHANGED_ACTION.equals(action)) &#123;</div><div class="line">                <span class="keyword">int</span> wifiState = intent.getIntExtra(WifiManager.EXTRA_WIFI_STATE, <span class="number">0</span>);</div><div class="line">                <span class="keyword">switch</span> (wifiState) &#123;</div><div class="line">                    <span class="keyword">case</span> WifiManager.WIFI_STATE_ENABLING:</div><div class="line">                        Log.i(TAG, <span class="string">"onReceive: 正在打开 WIFI..."</span>);</div><div class="line">                        <span class="keyword">break</span>;</div><div class="line">                    <span class="keyword">case</span> WifiManager.WIFI_STATE_ENABLED:</div><div class="line">                        Log.i(TAG, <span class="string">"onReceive: WIFI 已打开"</span>);</div><div class="line">                        <span class="keyword">if</span> (<span class="keyword">null</span> != mOnWifiEnabledListener) &#123;</div><div class="line">                            mOnWifiEnabledListener.onWifiEnabled(<span class="keyword">true</span>);</div><div class="line">                            mOnWifiEnabledListener.onFinish();</div><div class="line">                        &#125;</div><div class="line">                        <span class="keyword">break</span>;</div><div class="line">                    <span class="keyword">case</span> WifiManager.WIFI_STATE_DISABLING:</div><div class="line">                        Log.i(TAG, <span class="string">"onReceive: 正在关闭 WIFI..."</span>);</div><div class="line">                        <span class="keyword">break</span>;</div><div class="line">                    <span class="keyword">case</span> WifiManager.WIFI_STATE_DISABLED:</div><div class="line">                        Log.i(TAG, <span class="string">"onReceive: WIFI 已关闭"</span>);</div><div class="line">                        <span class="keyword">if</span> (<span class="keyword">null</span> != mOnWifiEnabledListener) &#123;</div><div class="line">                            mOnWifiEnabledListener.onWifiEnabled(<span class="keyword">false</span>);</div><div class="line">                            mOnWifiEnabledListener.onFinish();</div><div class="line">                        &#125;</div><div class="line">                        <span class="keyword">break</span>;</div><div class="line">                    <span class="keyword">case</span> WifiManager.WIFI_STATE_UNKNOWN:</div><div class="line">                        Log.i(TAG, <span class="string">"onReceive: WIFI 状态未知!"</span>);</div><div class="line">                        <span class="keyword">break</span>;</div><div class="line">                    <span class="keyword">default</span>:</div><div class="line">                        <span class="keyword">break</span>;</div><div class="line">                &#125;</div><div class="line">            &#125;</div><div class="line"></div><div class="line">            <span class="comment">// WIFI扫描完成</span></div><div class="line">            <span class="keyword">if</span> (WifiManager.SCAN_RESULTS_AVAILABLE_ACTION.equals(action)) &#123;</div><div class="line">                <span class="keyword">if</span> (<span class="keyword">null</span> != mOnWifiScanResultsListener) &#123;</div><div class="line">                    mOnWifiScanResultsListener.onScanResults(getScanResults());</div><div class="line">                    mOnWifiScanResultsListener.onFinish();</div><div class="line">                &#125;</div><div class="line">            &#125;</div><div class="line"></div><div class="line">            <span class="comment">// WIFI 连接状态的监听（只有WIFI可用的时候，监听才会有效）</span></div><div class="line">            <span class="keyword">if</span> (WifiManager.NETWORK_STATE_CHANGED_ACTION.equals(action)) &#123;</div><div class="line">                NetworkInfo networkInfo = intent.getParcelableExtra(WifiManager.EXTRA_NETWORK_INFO);</div><div class="line">                <span class="keyword">if</span> (<span class="keyword">null</span> != networkInfo &amp;&amp; networkInfo.isConnected()) &#123;</div><div class="line">                    WifiInfo wifiInfo = intent.getParcelableExtra(WifiManager.EXTRA_WIFI_INFO);</div><div class="line">                    <span class="keyword">if</span> (<span class="keyword">null</span> != wifiInfo &amp;&amp; String.format(<span class="string">"\"%s\""</span>, mConnectingSSID).equals(wifiInfo.getSSID()) &amp;&amp; <span class="keyword">null</span> != mOnWifiConnectListener) &#123;</div><div class="line">                        <span class="comment">// WIFI连接成功</span></div><div class="line">                        mOnWifiConnectListener.onSuccess(wifiInfo.getSSID());</div><div class="line">                        mOnWifiConnectListener.onFinish();</div><div class="line">                        mOnWifiConnectListener = <span class="keyword">null</span>;</div><div class="line">                    &#125;</div><div class="line">                &#125;</div><div class="line">            &#125;</div><div class="line"></div><div class="line">            <span class="comment">// WIFI连接过程的监听</span></div><div class="line">            <span class="keyword">if</span> (intent.getAction().equals(WifiManager.SUPPLICANT_STATE_CHANGED_ACTION)) &#123;</div><div class="line">                WifiInfo wifiInfo = mWifiManager.getConnectionInfo();</div><div class="line">                SupplicantState state = wifiInfo.getSupplicantState();</div><div class="line">                <span class="keyword">switch</span> (state) &#123;</div><div class="line">                    <span class="keyword">case</span> INTERFACE_DISABLED: <span class="comment">// 接口禁用</span></div><div class="line">                        Log.i(TAG, <span class="string">"onReceive: INTERFACE_DISABLED 接口禁用"</span>);</div><div class="line">                        <span class="keyword">break</span>;</div><div class="line">                    <span class="keyword">case</span> DISCONNECTED:<span class="comment">// 断开连接</span></div><div class="line">                    <span class="keyword">case</span> INACTIVE: <span class="comment">// 不活跃的</span></div><div class="line">                        Log.i(TAG, <span class="string">"onReceive: INACTIVE 不活跃的 DISCONNECTED:// 断开连接"</span>);</div><div class="line">                        <span class="keyword">if</span> (<span class="keyword">null</span> != mOnWifiConnectListener) &#123;</div><div class="line">                            <span class="comment">// 断开当前网络失败</span></div><div class="line">                            mOnWifiConnectListener.onFailure();</div><div class="line">                            <span class="comment">// 连接完成</span></div><div class="line">                            mOnWifiConnectListener.onFinish();</div><div class="line">                            mOnWifiConnectListener = <span class="keyword">null</span>;</div><div class="line">                            mConnectingSSID = <span class="keyword">null</span>;</div><div class="line">                        &#125;</div><div class="line">                        <span class="keyword">break</span>;</div><div class="line">                    <span class="keyword">case</span> SCANNING: <span class="comment">// 正在扫描</span></div><div class="line">                        Log.i(TAG, <span class="string">"onReceive: SCANNING 正在扫描"</span>);</div><div class="line">                        <span class="keyword">break</span>;</div><div class="line">                    <span class="keyword">case</span> AUTHENTICATING: <span class="comment">// 正在验证</span></div><div class="line">                        Log.i(TAG, <span class="string">"onReceive: AUTHENTICATING: // 正在验证"</span>);</div><div class="line">                        <span class="keyword">if</span> (<span class="keyword">null</span> != mOnWifiConnectListener) &#123;</div><div class="line">                            mOnWifiConnectListener.onConnectingMessage(<span class="string">"正在验证"</span>);</div><div class="line">                        &#125;</div><div class="line">                        <span class="keyword">break</span>;</div><div class="line">                    <span class="keyword">case</span> ASSOCIATING: <span class="comment">// 正在关联</span></div><div class="line">                        Log.i(TAG, <span class="string">"onReceive: ASSOCIATING: // 正在关联"</span>);</div><div class="line">                        <span class="keyword">if</span> (<span class="keyword">null</span> != mOnWifiConnectListener) &#123;</div><div class="line">                            mOnWifiConnectListener.onConnectingMessage(<span class="string">"正在关联"</span>);</div><div class="line">                        &#125;</div><div class="line">                        <span class="keyword">break</span>;</div><div class="line">                    <span class="keyword">case</span> ASSOCIATED: <span class="comment">// 已经关联</span></div><div class="line">                        Log.i(TAG, <span class="string">"onReceive: ASSOCIATED: // 已经关联"</span>);</div><div class="line">                        <span class="keyword">if</span> (<span class="keyword">null</span> != mOnWifiConnectListener) &#123;</div><div class="line">                            mOnWifiConnectListener.onConnectingMessage(<span class="string">"已经关联"</span>);</div><div class="line">                        &#125;</div><div class="line">                        <span class="keyword">break</span>;</div><div class="line">                    <span class="keyword">case</span> FOUR_WAY_HANDSHAKE:</div><div class="line">                        Log.i(TAG, <span class="string">"onReceive: FOUR_WAY_HANDSHAKE:"</span>);</div><div class="line">                        <span class="keyword">break</span>;</div><div class="line">                    <span class="keyword">case</span> GROUP_HANDSHAKE:</div><div class="line">                        Log.i(TAG, <span class="string">"onReceive: GROUP_HANDSHAKE:"</span>);</div><div class="line">                        <span class="keyword">break</span>;</div><div class="line">                    <span class="keyword">case</span> COMPLETED: <span class="comment">// 完成</span></div><div class="line">                        Log.i(TAG, <span class="string">"onReceive: COMPLETED: // 完成"</span>);</div><div class="line">                        <span class="keyword">if</span> (<span class="keyword">null</span> != mOnWifiConnectListener) &#123;</div><div class="line">                            mOnWifiConnectListener.onConnectingMessage(<span class="string">"正在连接..."</span>);</div><div class="line">                        &#125;</div><div class="line">                        <span class="keyword">break</span>;</div><div class="line">                    <span class="keyword">case</span> DORMANT:</div><div class="line">                        Log.i(TAG, <span class="string">"onReceive: DORMANT:"</span>);</div><div class="line">                        <span class="keyword">break</span>;</div><div class="line">                    <span class="keyword">case</span> UNINITIALIZED: <span class="comment">// 未初始化</span></div><div class="line">                        Log.i(TAG, <span class="string">"onReceive: UNINITIALIZED: // 未初始化"</span>);</div><div class="line">                        <span class="keyword">break</span>;</div><div class="line">                    <span class="keyword">case</span> INVALID: <span class="comment">// 无效的</span></div><div class="line">                        Log.i(TAG, <span class="string">"onReceive: INVALID: // 无效的"</span>);</div><div class="line">                        <span class="keyword">break</span>;</div><div class="line">                    <span class="keyword">default</span>:</div><div class="line">                        <span class="keyword">break</span>;</div><div class="line">                &#125;</div><div class="line">            &#125;</div><div class="line">        &#125; <span class="keyword">catch</span> (Exception e) &#123;</div><div class="line">            e.printStackTrace();</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h1 id="权限"><a href="#权限" class="headerlink" title="权限"></a>权限</h1><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">&lt;uses-permission android:name=<span class="string">"android.permission.ACCESS_WIFI_STATE"</span> /&gt;</div><div class="line">&lt;uses-permission android:name=<span class="string">"android.permission.CHANGE_WIFI_STATE"</span> /&gt;</div><div class="line">&lt;uses-permission android:name=<span class="string">"android.permission.CHANGE_NETWORK_STATE"</span> /&gt;</div><div class="line">&lt;uses-permission android:name=<span class="string">"android.permission.ACCESS_NETWORK_STATE"</span> /&gt;</div></pre></td></tr></table></figure>
-<h1 id="打开WIFI"><a href="#打开WIFI" class="headerlink" title="打开WIFI"></a>打开WIFI</h1><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line"><span class="comment"> * 打开Wifi</span></div><div class="line"><span class="comment"> */</span></div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">openWifi</span><span class="params">(@NonNull OnWifiEnabledListener listener)</span> </span>&#123;</div><div class="line">    <span class="keyword">if</span> (!mWifiManager.isWifiEnabled()) &#123;</div><div class="line">        mOnWifiEnabledListener = listener;</div><div class="line">        mOnWifiEnabledListener.onStart(<span class="keyword">true</span>);</div><div class="line">        mWifiManager.setWifiEnabled(<span class="keyword">true</span>);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h1 id="关闭WIFI"><a href="#关闭WIFI" class="headerlink" title="关闭WIFI"></a>关闭WIFI</h1><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line"><span class="comment"> * 关闭Wifi</span></div><div class="line"><span class="comment"> */</span></div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">closeWifi</span><span class="params">(@NonNull OnWifiEnabledListener listener)</span> </span>&#123;</div><div class="line">    <span class="keyword">if</span> (mWifiManager.isWifiEnabled()) &#123;</div><div class="line">        mOnWifiEnabledListener = listener;</div><div class="line">        mOnWifiEnabledListener.onStart(<span class="keyword">false</span>);</div><div class="line">        mWifiManager.setWifiEnabled(<span class="keyword">false</span>);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h1 id="扫描附近的WIFI"><a href="#扫描附近的WIFI" class="headerlink" title="扫描附近的WIFI"></a>扫描附近的WIFI</h1><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line"><span class="comment"> * 扫描附近的WIFI</span></div><div class="line"><span class="comment"> *</span></div><div class="line"><span class="comment"> * <span class="doctag">@param</span> listener 扫描完成的回调接口</span></div><div class="line"><span class="comment"> */</span></div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">startScan</span><span class="params">(@NonNull OnWifiScanResultsListener listener)</span> </span>&#123;</div><div class="line">    <span class="keyword">try</span> &#123;</div><div class="line">        mOnWifiScanResultsListener = listener;</div><div class="line">        mOnWifiScanResultsListener.onStart();</div><div class="line">        <span class="comment">// 先返回缓存</span></div><div class="line">        mOnWifiScanResultsListener.onScanResults(getScanResults());</div><div class="line">        <span class="comment">// 重新开始扫描</span></div><div class="line">        mWifiManager.startScan();</div><div class="line">    &#125; <span class="keyword">catch</span> (Exception e) &#123;</div><div class="line">        e.printStackTrace();</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h1 id="获取WIFI列表"><a href="#获取WIFI列表" class="headerlink" title="获取WIFI列表"></a>获取WIFI列表</h1><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line"><span class="comment"> * 获取Wifi列表</span></div><div class="line"><span class="comment"> *</span></div><div class="line"><span class="comment"> * <span class="doctag">@return</span> Wifi列表</span></div><div class="line"><span class="comment"> */</span></div><div class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">static</span> List&lt;ScanResult&gt; <span class="title">getScanResults</span><span class="params">()</span> </span>&#123;</div><div class="line">    <span class="keyword">try</span> &#123;</div><div class="line">        <span class="comment">// 得到扫描结果</span></div><div class="line">        <span class="keyword">return</span> mWifiManager.getScanResults();</div><div class="line">    &#125; <span class="keyword">catch</span> (Exception e) &#123;</div><div class="line">        e.printStackTrace();</div><div class="line">        <span class="keyword">return</span> <span class="keyword">null</span>;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h1 id="通过密码连接到WIFI"><a href="#通过密码连接到WIFI" class="headerlink" title="通过密码连接到WIFI"></a>通过密码连接到WIFI</h1><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line"><span class="comment"> * 通过密码连接到WIFI</span></div><div class="line"><span class="comment"> *</span></div><div class="line"><span class="comment"> * <span class="doctag">@param</span> scanResult 要连接的WIFI</span></div><div class="line"><span class="comment"> * <span class="doctag">@param</span> pwd        密码</span></div><div class="line"><span class="comment"> * <span class="doctag">@param</span> listener   连接的监听</span></div><div class="line"><span class="comment"> */</span></div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">connectionWifiByPassword</span><span class="params">(@NonNull ScanResult scanResult, @Nullable String pwd, @NonNull OnWifiConnectListener listener)</span> </span>&#123;</div><div class="line">    <span class="comment">// SSID</span></div><div class="line">    String SSID = scanResult.SSID;</div><div class="line">    <span class="comment">// 加密方式</span></div><div class="line">    SecurityMode securityMode = getSecurityMode(scanResult);</div><div class="line"></div><div class="line">    <span class="comment">// 生成配置文件</span></div><div class="line">    WifiConfiguration addConfig = createWifiConfiguration(SSID, pwd, securityMode);</div><div class="line">    <span class="keyword">int</span> netId;</div><div class="line">    <span class="comment">// 判断当前配置是否存在</span></div><div class="line">    WifiConfiguration updateConfig = isExists(addConfig);</div><div class="line">    <span class="keyword">if</span> (<span class="keyword">null</span> != updateConfig) &#123;</div><div class="line">        <span class="comment">// 更新配置</span></div><div class="line">        netId = mWifiManager.updateNetwork(updateConfig);</div><div class="line">    &#125; <span class="keyword">else</span> &#123;</div><div class="line">        <span class="comment">// 添加配置</span></div><div class="line">        netId = mWifiManager.addNetwork(addConfig);</div><div class="line">    &#125;</div><div class="line">    <span class="comment">// 通过NetworkID连接到WIFI</span></div><div class="line">    connectionWifiByNetworkId(SSID, netId, listener);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h1 id="直接连接配置过的WIFI-1"><a href="#直接连接配置过的WIFI-1" class="headerlink" title="直接连接配置过的WIFI"></a>直接连接配置过的WIFI</h1><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line"><span class="comment"> * 通过NetworkId连接到WIFI （配置过的网络可以直接获取到NetworkID，从而不用再输入密码）</span></div><div class="line"><span class="comment"> *</span></div><div class="line"><span class="comment"> * <span class="doctag">@param</span> SSID      WIFI名字</span></div><div class="line"><span class="comment"> * <span class="doctag">@param</span> networkId NetworkId</span></div><div class="line"><span class="comment"> * <span class="doctag">@param</span> listener  连接的监听</span></div><div class="line"><span class="comment"> */</span></div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">connectionWifiByNetworkId</span><span class="params">(@NonNull String SSID, <span class="keyword">int</span> networkId, @NonNull OnWifiConnectListener listener)</span> </span>&#123;</div><div class="line">    <span class="comment">// 正要连接的SSID</span></div><div class="line">    mConnectingSSID = SSID;</div><div class="line">    <span class="comment">// 连接的回调监听</span></div><div class="line">    mOnWifiConnectListener = listener;</div><div class="line">    <span class="comment">// 连接开始的回调</span></div><div class="line">    mOnWifiConnectListener.onStart(SSID);</div><div class="line">    <span class="comment">/*</span></div><div class="line"><span class="comment">     * 判断 NetworkId 是否有效</span></div><div class="line"><span class="comment">     * -1 表示配置参数不正确</span></div><div class="line"><span class="comment">     */</span></div><div class="line">    <span class="keyword">if</span> (-<span class="number">1</span> == networkId) &#123;</div><div class="line">        <span class="comment">// 连接WIFI失败</span></div><div class="line">        <span class="keyword">if</span> (<span class="keyword">null</span> != mOnWifiConnectListener) &#123;</div><div class="line">            <span class="comment">// 配置错误</span></div><div class="line">            mOnWifiConnectListener.onFailure();</div><div class="line">            <span class="comment">// 连接完成</span></div><div class="line">            mOnWifiConnectListener.onFinish();</div><div class="line">            mOnWifiConnectListener = <span class="keyword">null</span>;</div><div class="line">            mConnectingSSID = <span class="keyword">null</span>;</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">return</span>;</div><div class="line">    &#125;</div><div class="line">    <span class="comment">// 获取当前的网络连接</span></div><div class="line">    WifiInfo wifiInfo = getConnectionInfo();</div><div class="line">    <span class="keyword">if</span> (<span class="keyword">null</span> != wifiInfo) &#123;</div><div class="line">        <span class="comment">// 断开当前连接</span></div><div class="line">        <span class="keyword">boolean</span> isDisconnect = disconnectWifi(wifiInfo.getNetworkId());</div><div class="line">        <span class="keyword">if</span> (!isDisconnect) &#123;</div><div class="line">            <span class="comment">// 断开当前网络失败</span></div><div class="line">            <span class="keyword">if</span> (<span class="keyword">null</span> != mOnWifiConnectListener) &#123;</div><div class="line">                <span class="comment">// 断开当前网络失败</span></div><div class="line">                mOnWifiConnectListener.onFailure();</div><div class="line">                <span class="comment">// 连接完成</span></div><div class="line">                mOnWifiConnectListener.onFinish();</div><div class="line">                mOnWifiConnectListener = <span class="keyword">null</span>;</div><div class="line">                mConnectingSSID = <span class="keyword">null</span>;</div><div class="line">            &#125;</div><div class="line">            <span class="keyword">return</span>;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="comment">// 连接WIFI</span></div><div class="line">    <span class="keyword">boolean</span> isEnable = mWifiManager.enableNetwork(networkId, <span class="keyword">true</span>);</div><div class="line">    <span class="keyword">if</span> (!isEnable) &#123;</div><div class="line">        <span class="comment">// 连接失败</span></div><div class="line">        <span class="keyword">if</span> (<span class="keyword">null</span> != mOnWifiConnectListener) &#123;</div><div class="line">            <span class="comment">// 连接失败</span></div><div class="line">            mOnWifiConnectListener.onFailure();</div><div class="line">            <span class="comment">// 连接完成</span></div><div class="line">            mOnWifiConnectListener.onFinish();</div><div class="line">            mOnWifiConnectListener = <span class="keyword">null</span>;</div><div class="line">            mConnectingSSID = <span class="keyword">null</span>;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h1 id="断开指定WIFI"><a href="#断开指定WIFI" class="headerlink" title="断开指定WIFI"></a>断开指定WIFI</h1><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line"><span class="comment"> * 断开WIFI</span></div><div class="line"><span class="comment"> *</span></div><div class="line"><span class="comment"> * <span class="doctag">@param</span> netId netId</span></div><div class="line"><span class="comment"> * <span class="doctag">@return</span> 是否断开</span></div><div class="line"><span class="comment"> */</span></div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">disconnectWifi</span><span class="params">(<span class="keyword">int</span> netId)</span> </span>&#123;</div><div class="line">    <span class="keyword">boolean</span> isDisable = mWifiManager.disableNetwork(netId);</div><div class="line">    <span class="keyword">boolean</span> isDisconnect = mWifiManager.disconnect();</div><div class="line">    <span class="keyword">return</span> isDisable &amp;&amp; isDisconnect;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h1 id="删除配置"><a href="#删除配置" class="headerlink" title="删除配置"></a>删除配置</h1><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line"><span class="comment"> * 删除配置</span></div><div class="line"><span class="comment"> *</span></div><div class="line"><span class="comment"> * <span class="doctag">@param</span> netId netId</span></div><div class="line"><span class="comment"> * <span class="doctag">@return</span> 是否删除成功</span></div><div class="line"><span class="comment"> */</span></div><div class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">boolean</span> <span class="title">deleteConfig</span><span class="params">(<span class="keyword">int</span> netId)</span> </span>&#123;</div><div class="line">    <span class="keyword">boolean</span> isDisable = mWifiManager.disableNetwork(netId);</div><div class="line">    <span class="keyword">boolean</span> isRemove = mWifiManager.removeNetwork(netId);</div><div class="line">    <span class="keyword">boolean</span> isSave = mWifiManager.saveConfiguration();</div><div class="line">    <span class="keyword">return</span> isDisable &amp;&amp; isRemove &amp;&amp; isSave;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h1 id="生成配置信息"><a href="#生成配置信息" class="headerlink" title="生成配置信息"></a>生成配置信息</h1><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line"><span class="comment"> * 生成新的配置信息 用于连接Wifi</span></div><div class="line"><span class="comment"> *</span></div><div class="line"><span class="comment"> * <span class="doctag">@param</span> SSID     WIFI名字</span></div><div class="line"><span class="comment"> * <span class="doctag">@param</span> password WIFI密码</span></div><div class="line"><span class="comment"> * <span class="doctag">@param</span> mode     WIFI加密类型</span></div><div class="line"><span class="comment"> * <span class="doctag">@return</span> 配置</span></div><div class="line"><span class="comment"> */</span></div><div class="line"><span class="function"><span class="keyword">private</span> WifiConfiguration <span class="title">createWifiConfiguration</span><span class="params">(@NonNull String SSID, @Nullable String password, @NonNull SecurityMode mode)</span> </span>&#123;</div><div class="line">    WifiConfiguration config = <span class="keyword">new</span> WifiConfiguration();</div><div class="line">    config.allowedAuthAlgorithms.clear();</div><div class="line">    config.allowedGroupCiphers.clear();</div><div class="line">    config.allowedKeyManagement.clear();</div><div class="line">    config.allowedPairwiseCiphers.clear();</div><div class="line">    config.allowedProtocols.clear();</div><div class="line">    config.SSID = <span class="string">"\""</span> + SSID + <span class="string">"\""</span>;</div><div class="line"></div><div class="line">    <span class="keyword">if</span> (mode == SecurityMode.OPEN) &#123;</div><div class="line">        <span class="comment">//WIFICIPHER_NOPASS</span></div><div class="line">        <span class="comment">// config.wepKeys[0] = "";</span></div><div class="line">        config.allowedKeyManagement.set(WifiConfiguration.KeyMgmt.NONE);</div><div class="line">        <span class="comment">// config.wepTxKeyIndex = 0;</span></div><div class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (mode == SecurityMode.WEP) &#123;</div><div class="line">        <span class="comment">//WIFICIPHER_WEP</span></div><div class="line">        config.hiddenSSID = <span class="keyword">true</span>;</div><div class="line">        config.wepKeys[<span class="number">0</span>] = <span class="string">"\""</span> + password + <span class="string">"\""</span>;</div><div class="line">        config.allowedAuthAlgorithms.set(WifiConfiguration.AuthAlgorithm.SHARED);</div><div class="line">        config.allowedGroupCiphers.set(WifiConfiguration.GroupCipher.CCMP);</div><div class="line">        config.allowedGroupCiphers.set(WifiConfiguration.GroupCipher.TKIP);</div><div class="line">        config.allowedGroupCiphers.set(WifiConfiguration.GroupCipher.WEP40);</div><div class="line">        config.allowedGroupCiphers.set(WifiConfiguration.GroupCipher.WEP104);</div><div class="line">        config.allowedKeyManagement.set(WifiConfiguration.KeyMgmt.NONE);</div><div class="line">        config.wepTxKeyIndex = <span class="number">0</span>;</div><div class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (mode == SecurityMode.WPA) &#123;</div><div class="line">        <span class="comment">//WIFICIPHER_WPA</span></div><div class="line">        config.preSharedKey = <span class="string">"\""</span> + password + <span class="string">"\""</span>;</div><div class="line">        config.hiddenSSID = <span class="keyword">true</span>;</div><div class="line">        config.allowedAuthAlgorithms.set(WifiConfiguration.AuthAlgorithm.OPEN);</div><div class="line">        config.allowedGroupCiphers.set(WifiConfiguration.GroupCipher.TKIP);</div><div class="line">        config.allowedKeyManagement.set(WifiConfiguration.KeyMgmt.WPA_PSK);</div><div class="line">        config.allowedPairwiseCiphers.set(WifiConfiguration.PairwiseCipher.TKIP);</div><div class="line">        <span class="comment">//config.allowedProtocols.set(WifiConfiguration.Protocol.WPA);</span></div><div class="line">        config.allowedGroupCiphers.set(WifiConfiguration.GroupCipher.CCMP);</div><div class="line">        config.allowedPairwiseCiphers.set(WifiConfiguration.PairwiseCipher.CCMP);</div><div class="line">        config.status = WifiConfiguration.Status.ENABLED;</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> config;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h1 id="目前存在的问题"><a href="#目前存在的问题" class="headerlink" title="目前存在的问题"></a>目前存在的问题</h1><blockquote>
-<p>目前存在的问题是，当删除配置以后，再连接WIFI，调用<code>addNetwork</code>或者<code>updateNetwork</code>都会返回<code>-1</code>，需要重启一下WIFI才会正常，有知道原因还请指点一下。</p>
-</blockquote>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
@@ -2022,7 +2028,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">52</span>
+                <span class="site-state-item-count">54</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -2044,7 +2050,7 @@
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">24</span>
+                <span class="site-state-item-count">25</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
