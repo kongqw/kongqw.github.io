@@ -6,8 +6,6 @@ tags:
 - 事件传递
 ---
 
-# 【Kotlin】关于Android事件传递的整理
-
 关于事件传递的流程，已经有很多大神介绍过了，我在使用的过程中，也遇到了一些问题，在此整理一下，相信有不少同学也有遇到我这样的问题。
 
 ## 问题一：为什么我的`onTouchEvent`方法只响应了`MotionEvent.ACTION_DOWN`动作
@@ -22,7 +20,7 @@ tags:
 
 > 注意，只有`ViewGroup`有`onInterceptTouchEvent`方法，View是没有`onInterceptTouchEvent`方法的，因为`View`不能再有子View，不涉及到事件传递
 
-![ViewA->ViewB->ViewC](https://img-blog.csdn.net/20180403122110568?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3E0ODc4ODAy/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70)
+![ViewA->ViewB->ViewC](https://github.com/kongqw/kongqw.github.io/blob/next/source/img/Screenshot_1522379519.png?raw=true)
 
 当我们手指触摸C控件的时候，事件的传递过程为
 
@@ -64,7 +62,7 @@ tags:
 
 现在我们想实现这样一个功能，在页面上下滑动可以翻页，在控件上左右滑动可以拦截翻页动作
 
-![这里写图片描述](https://img-blog.csdn.net/20180403122659514?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3E0ODc4ODAy/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70)
+![这里写图片描述](https://github.com/kongqw/kongqw.github.io/blob/next/source/img/Screenshot_1522379272.gif?raw=true)
 
 思路:
 
